@@ -151,6 +151,22 @@ public class RoomNode
         return leaves;
     }
 
+    public List<RoomNode> GetAllNodes()
+    {
+        var nodes = new List<RoomNode>();
+        GetAllNodesInternal(nodes);
+        return nodes;
+    }
+
+    private void GetAllNodesInternal(List<RoomNode> nodes)
+    {
+        nodes.Add(this);
+        foreach (var child in _children) 
+        {
+            child.GetAllNodesInternal(nodes);
+        }
+    }
+
     private void GetLeavesInternal(List<RoomNode> leaves)
     {
         foreach (var child in _children)
