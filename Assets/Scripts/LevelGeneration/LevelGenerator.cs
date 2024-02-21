@@ -37,7 +37,7 @@ public class LevelGenerator : MonoBehaviour
             List<RoomNode> leaves = _root.GetLeaves();
             foreach (var leaf in leaves)
             {
-                var direction = Random.Range(0, 2) == 0 ? RoomNode.SliceDirection.horizontal : RoomNode.SliceDirection.vertical;
+                var direction = leaf.GetHeight() > leaf.GetWidth() ? RoomNode.SliceDirection.horizontal : RoomNode.SliceDirection.vertical;
                 leaf.Slice(direction, Random.Range(1, 4), Random.Range(1, 4));
             }   
         }
