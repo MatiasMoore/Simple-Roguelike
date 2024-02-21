@@ -183,7 +183,7 @@ public class RoomNode
         RoomNode sister = null;
         if (_parent != null)
         {
-            var sisters = _parent.GetChildren();
+            var sisters = _parent._children;
             foreach (var s in sisters)
             {
                 if (s != this)
