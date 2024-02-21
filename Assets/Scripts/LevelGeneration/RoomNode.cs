@@ -59,7 +59,7 @@ public class RoomNode
                 float maxY = _center.y + _height / 2 - margin;
                 float minY = _center.y - _height / 2 + margin;
 
-                if (newPoint.x < maxX && newPoint.x > minX && newPoint.y < maxY && newPoint.y > minY)
+                if (!points.Contains(newPoint) && newPoint.x < maxX && newPoint.x > minX && newPoint.y < maxY && newPoint.y > minY)
                     points.Add(newPoint);
             }
         }
