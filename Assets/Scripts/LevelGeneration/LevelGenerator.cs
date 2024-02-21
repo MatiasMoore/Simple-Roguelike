@@ -17,7 +17,7 @@ public class LevelGenerator : MonoBehaviour
     private bool _cutOffSomeLeafs = false;
 
     [SerializeField]
-    private bool _debugDrawRooms = true;
+    private bool _debugDrawRoomEdges = true;
     [SerializeField]
     private bool _debugDrawRoomCenter = false;
     [SerializeField]
@@ -81,98 +81,94 @@ public class LevelGenerator : MonoBehaviour
 
     void Update()
     {
-        if (_debugDrawRooms)
+        var leaves = _root.GetLeaves();
+        foreach (var leave in leaves)
         {
-            var leaves = _root.GetLeaves();
-            foreach (var leave in leaves)
-            {
+            if (_debugDrawRoomEdges)
                 leave.DebugDraw(Color.blue);
-                if (_debugDrawTiles)
-                {
-                    var points = leave.GetAllGridPoints();
-                    foreach (var p1 in points)
-                    {
-                        DebugDrawCell(p1, 1, Color.cyan);
-                    }
-                }
-            }
-
-            var allNodes = _root.GetAllNodes();
-            foreach (var node in allNodes)
+            if (_debugDrawTiles)
             {
-                var sister = node.GetSister();
-                if (sister != null)
+                var points = leave.GetAllGridPoints();
+                foreach (var p1 in points)
                 {
-                    var currentLeaves = node.GetLeaves();
-                    var sisterLeaves = sister.GetLeaves();
-
-                    RoomNode firstRoom = null;
-                    RoomNode secondRoom = null;
-                    float minDistance = float.MaxValue;
-                    foreach (var p1 in currentLeaves)
-                    {
-                        foreach (var p2 in sisterLeaves)
-                        {
-                            var d = Vector2.Distance(p1.GetCenter(), p2.GetCenter());
-                            if (d < minDistance)
-                            {
-                                minDistance = d;
-                                firstRoom = p1;
-                                secondRoom = p2;
-                            }
-                        }
-                    }
-
-                    if (_debugDrawRoomConnections)
-                        Debug.DrawLine(firstRoom.GetCenter(), secondRoom.GetCenter(), Color.red);
-
-                    if (_debugDrawRoomCenter)
-                    {
-                        DebugDrawCross(firstRoom.GetCenter(), 2, Color.green);
-                        DebugDrawCross(secondRoom.GetCenter(), 2, Color.green);
-                    }
-                    
-
-                    if (_debugDrawRoomCorridors)
-                    {
-                        Vector2 firstRoomTile = Vector2.zero;
-                        Vector2 secondRoomTile = Vector2.zero;
-
-                        Vector2 toSecondRoomCenter = secondRoom.GetCenter() - firstRoom.GetCenter();
-                        Vector2 roomMiddlePoint = firstRoom.GetCenter() + (0.5f * toSecondRoomCenter.magnitude) * toSecondRoomCenter.normalized;
-
-                        minDistance = float.MaxValue;
-                        float minDistanceToRoomMiddle = float.MaxValue;
-
-                        foreach (var p1 in firstRoom.GetAllGridPoints())
-                        {
-                            foreach (var p2 in secondRoom.GetAllGridPoints())
-                            {
-                                var d = Vector2.Distance(p1, p2);
-                                if (d <= minDistance)
-                                {
-                                    minDistance = d;
-
-                                    Vector2 toSecondPoint = p2 - p1;
-                                    Vector2 tileMiddlePoint = p1 + (0.5f * toSecondPoint.magnitude) * toSecondPoint.normalized;
-                                    var distToRoomMiddle = Vector2.Distance(roomMiddlePoint, tileMiddlePoint);
-
-                                    if (distToRoomMiddle < minDistanceToRoomMiddle)
-                                    {
-                                        minDistanceToRoomMiddle = distToRoomMiddle;
-                                        firstRoomTile = p1;
-                                        secondRoomTile = p2;
-                                    }
-                                }
-                            }
-                        }
-
-                        Debug.DrawLine(firstRoomTile, secondRoomTile, Color.magenta);
-                    }
+                    DebugDrawCell(p1, 1, Color.cyan);
                 }
             }
         }
 
+        var allNodes = _root.GetAllNodes();
+        foreach (var node in allNodes)
+        {
+            var sister = node.GetSister();
+            if (sister != null)
+            {
+                var currentLeaves = node.GetLeaves();
+                var sisterLeaves = sister.GetLeaves();
 
+                RoomNode firstRoom = null;
+                RoomNode secondRoom = null;
+                float minDistance = float.MaxValue;
+                foreach (var p1 in currentLeaves)
+                {
+                    foreach (var p2 in sisterLeaves)
+                    {
+                        var d = Vector2.Distance(p1.GetCenter(), p2.GetCenter());
+                        if (d < minDistance)
+                        {
+                            minDistance = d;
+                            firstRoom = p1;
+                            secondRoom = p2;
+                        }
+                    }
+                }
+
+                if (_debugDrawRoomConnections)
+                    Debug.DrawLine(firstRoom.GetCenter(), secondRoom.GetCenter(), Color.red);
+
+                if (_debugDrawRoomCenter)
+                {
+                    DebugDrawCross(firstRoom.GetCenter(), 2, Color.green);
+                    DebugDrawCross(secondRoom.GetCenter(), 2, Color.green);
+                }
+
+
+                if (_debugDrawRoomCorridors)
+                {
+                    Vector2 firstRoomTile = Vector2.zero;
+                    Vector2 secondRoomTile = Vector2.zero;
+
+                    Vector2 toSecondRoomCenter = secondRoom.GetCenter() - firstRoom.GetCenter();
+                    Vector2 roomMiddlePoint = firstRoom.GetCenter() + (0.5f * toSecondRoomCenter.magnitude) * toSecondRoomCenter.normalized;
+
+                    minDistance = float.MaxValue;
+                    float minDistanceToRoomMiddle = float.MaxValue;
+
+                    foreach (var p1 in firstRoom.GetAllGridPoints())
+                    {
+                        foreach (var p2 in secondRoom.GetAllGridPoints())
+                        {
+                            var d = Vector2.Distance(p1, p2);
+                            if (d <= minDistance)
+                            {
+                                minDistance = d;
+
+                                Vector2 toSecondPoint = p2 - p1;
+                                Vector2 tileMiddlePoint = p1 + (0.5f * toSecondPoint.magnitude) * toSecondPoint.normalized;
+                                var distToRoomMiddle = Vector2.Distance(roomMiddlePoint, tileMiddlePoint);
+
+                                if (distToRoomMiddle < minDistanceToRoomMiddle)
+                                {
+                                    minDistanceToRoomMiddle = distToRoomMiddle;
+                                    firstRoomTile = p1;
+                                    secondRoomTile = p2;
+                                }
+                            }
+                        }
+                    }
+
+                    Debug.DrawLine(firstRoomTile, secondRoomTile, Color.magenta);
+                }
+            }
+        }
     }
 }
