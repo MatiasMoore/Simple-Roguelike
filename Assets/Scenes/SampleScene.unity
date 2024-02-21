@@ -259,16 +259,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e3fcf618c0b36243bc9c739942c7a09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _initialWidth: 50
-  _initialHeight: 50
+  _initialWidth: 100
+  _initialHeight: 40
   _initialCenter: {x: 0, y: 0}
-  _iterCount: 4
+  _iterCount: 7
   _cutOffSomeLeafs: 0
-  _debugDrawRooms: 1
+  _debugDrawRoomEdges: 0
   _debugDrawRoomCenter: 0
-  _debugDrawTiles: 0
+  _debugDrawTiles: 1
   _debugDrawRoomConnections: 0
-  _debugDrawRoomCorridors: 0
+  _debugDrawRoomCorridors: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
