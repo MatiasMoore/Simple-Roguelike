@@ -800,7 +800,7 @@ MonoBehaviour:
   _name: wall
   _interactWith: []
   _distToNeighbour: 1
-  _updateOnTransformChange: 1
+  _updateOnTransformChange: 0
   _updateOnEnable: 1
   _updateOnDisable: 1
   _edgeLeft: {fileID: 2804403501290072761}
