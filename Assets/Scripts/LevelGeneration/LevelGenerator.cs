@@ -137,17 +137,32 @@ public class LevelGenerator : MonoBehaviour
                     {
                         Vector2 firstRoomTile = Vector2.zero;
                         Vector2 secondRoomTile = Vector2.zero;
+
+                        Vector2 toSecondRoomCenter = secondRoom.GetCenter() - firstRoom.GetCenter();
+                        Vector2 roomMiddlePoint = firstRoom.GetCenter() + (0.5f * toSecondRoomCenter.magnitude) * toSecondRoomCenter.normalized;
+
                         minDistance = float.MaxValue;
+                        float minDistanceToRoomMiddle = float.MaxValue;
+
                         foreach (var p1 in firstRoom.GetAllGridPoints())
                         {
                             foreach (var p2 in secondRoom.GetAllGridPoints())
                             {
                                 var d = Vector2.Distance(p1, p2);
-                                if (d < minDistance)
+                                if (d <= minDistance)
                                 {
                                     minDistance = d;
-                                    firstRoomTile = p1;
-                                    secondRoomTile = p2;
+
+                                    Vector2 toSecondPoint = p2 - p1;
+                                    Vector2 tileMiddlePoint = p1 + (0.5f * toSecondPoint.magnitude) * toSecondPoint.normalized;
+                                    var distToRoomMiddle = Vector2.Distance(roomMiddlePoint, tileMiddlePoint);
+
+                                    if (distToRoomMiddle < minDistanceToRoomMiddle)
+                                    {
+                                        minDistanceToRoomMiddle = distToRoomMiddle;
+                                        firstRoomTile = p1;
+                                        secondRoomTile = p2;
+                                    }
                                 }
                             }
                         }
