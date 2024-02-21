@@ -263,7 +263,12 @@ MonoBehaviour:
   _initialHeight: 50
   _initialCenter: {x: 0, y: 0}
   _iterCount: 4
-  _debugDrawLeaves: 1
+  _cutOffSomeLeafs: 0
+  _debugDrawRooms: 1
+  _debugDrawRoomCenter: 0
+  _debugDrawTiles: 0
+  _debugDrawRoomConnections: 0
+  _debugDrawRoomCorridors: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
