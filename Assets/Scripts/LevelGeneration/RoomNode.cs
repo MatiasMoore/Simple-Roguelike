@@ -121,7 +121,7 @@ public class RoomNode
 
         if (direction == SliceDirection.vertical)
         {
-            float firstHalf = firstRatio * (_width / (firstRatio + secondRatio));
+            float firstHalf = (int)(firstRatio * (_width / (firstRatio + secondRatio)));
             float secondHalf = _width - firstHalf;
 
             if (Mathf.Min(firstHalf, secondHalf) < 4)
@@ -135,7 +135,7 @@ public class RoomNode
         }
         else
         {
-            float firstHalf = firstRatio * (_height / (firstRatio + secondRatio));
+            float firstHalf = (int)(firstRatio * (_height / (firstRatio + secondRatio)));
             float secondHalf = _height - firstHalf;
 
             if (Mathf.Min(firstHalf, secondHalf) < 4)
