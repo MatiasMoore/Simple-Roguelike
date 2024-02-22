@@ -5,12 +5,36 @@ using UnityEngine;
 
 public class RoomNode
 {
+    private class RoomConnection
+    {
+        public RoomNode _start { get; private set; }
+        public Vector2 _startTilePos { get; private set; }
+
+        public RoomNode _end { get; private set; }
+        public Vector2 _endTilePos { get; private set; }
+
+        public RoomConnection(RoomNode start, Vector2 startTilePos, RoomNode end, Vector2 endTilePos)
+        {
+            _start = start;
+            _startTilePos = startTilePos;
+
+            _end = end;
+            _endTilePos = endTilePos;
+        }
+
+        public bool Contains(RoomNode node)
+        {
+            return _start == node || _end == node;
+        }
+    }
+
     private Vector2 _center;
     private float _width;
     private float _height;
 
     private RoomNode _parent;
     private List<RoomNode> _children = new List<RoomNode>();
+    private List<RoomConnection> _connections = new List<RoomConnection>();
 
     public RoomNode(Vector2 center, float width, float height)
     {
@@ -27,6 +51,25 @@ public class RoomNode
         _center = center;
         _width = width;
         _height = height;
+    }
+
+    public bool IsConnectedTo(RoomNode node) 
+    {
+        foreach (var connection in _connections)
+        {
+            if (connection.Contains(node))
+                return true;
+        }
+        return false;
+    }
+
+    public static void ConnectNodes(RoomNode nodeA, Vector2 nodeATilePos, RoomNode nodeB, Vector2 nodeBTilePos)
+    {
+        if (nodeA.IsConnectedTo(nodeB) || nodeB.IsConnectedTo(nodeA)) 
+            throw new System.Exception($"Node at {nodeA._center} is already connected to node at {nodeB._center}");
+
+        nodeA._connections.Add(new RoomConnection(nodeA, nodeATilePos, nodeB, nodeBTilePos));
+        nodeB._connections.Add(new RoomConnection(nodeB, nodeBTilePos, nodeA, nodeATilePos));
     }
 
     public List<RoomNode> GetChildren()
