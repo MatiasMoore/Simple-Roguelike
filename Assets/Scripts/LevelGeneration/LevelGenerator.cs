@@ -6,9 +6,9 @@ using UnityEngine;
 public class LevelGenerator : MonoBehaviour
 {
     [SerializeField]
-    private float _initialWidth = 50;
+    private int _initialWidth = 50;
     [SerializeField]
-    private float _initialHeight = 50;
+    private int _initialHeight = 50;
     [SerializeField]
     private Vector2 _initialCenter = new Vector2(0, 0);
     [SerializeField]
