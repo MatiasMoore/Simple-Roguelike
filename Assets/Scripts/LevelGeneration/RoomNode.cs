@@ -118,6 +118,100 @@ public class RoomNode
         return points;
     }
 
+    //This entire function is not very well written
+    //but it will be fine for now
+    //(the performance is not bad there's just way too much repetition)
+    public List<Vector2> GetPerimeterGridPoints()
+    {
+        var points = new List<Vector2>();
+
+        const float margin = 0.0f;
+        float maxX = _center.x + _width / 2 - margin;
+        float minX = _center.x - _width / 2 + margin;
+        float maxY = _center.y + _height / 2 - margin;
+        float minY = _center.y - _height / 2 + margin;
+
+        float step = 0.3f;
+
+        //Get top row
+        for (int i = 0; i <= _width / step; i++)
+        {
+            Vector2 newPoint = GetUpperLeft() + new Vector2(i * step, 0);
+            newPoint = new Vector2((int)newPoint.x, (int)newPoint.y);
+
+            if (newPoint.y >= maxY)
+            {
+                newPoint.y -= 1;
+                newPoint = new Vector2((int)newPoint.x, (int)newPoint.y);
+            }
+
+            bool isWithinBounds = newPoint.x < maxX && newPoint.x > minX
+                    && newPoint.y < maxY && newPoint.y > minY;
+
+            if (!points.Contains(newPoint) && isWithinBounds)
+                points.Add(newPoint);
+        }
+
+        //Get bottom row
+        for (int i = 0; i <= _width / step; i++)
+        {
+            Vector2 newPoint = GetLowerLeft() + new Vector2(step, step) + new Vector2(i * step, 0);
+            newPoint = new Vector2((int)newPoint.x, (int)newPoint.y);
+
+            if (newPoint.y <= minY)
+            {
+                newPoint.y += 1;
+                newPoint = new Vector2((int)newPoint.x, (int)newPoint.y);
+            }
+
+            bool isWithinBounds = newPoint.x < maxX && newPoint.x > minX
+                    && newPoint.y < maxY && newPoint.y > minY;
+
+            if (!points.Contains(newPoint) && isWithinBounds) 
+                points.Add(newPoint);
+        }
+
+        //Get left collumn
+        for (int i = 0; i <= _height / step; i++)
+        {
+            Vector2 newPoint = GetLowerLeft() + new Vector2(step, step) + new Vector2(0, i * step);
+            newPoint = new Vector2((int)newPoint.x, (int)newPoint.y);
+
+            if (newPoint.x <= minX)
+            {
+                newPoint.x += 1;
+                newPoint = new Vector2((int)newPoint.x, (int)newPoint.y);
+            }
+
+            bool isWithinBounds = newPoint.x < maxX && newPoint.x > minX
+                    && newPoint.y < maxY && newPoint.y > minY;
+
+            if (!points.Contains(newPoint) && isWithinBounds) 
+                points.Add(newPoint);
+        }
+
+        //Get right collumn
+        for (int i = 0; i <= _height / step; i++)
+        {
+            Vector2 newPoint = GetLowerRight() + new Vector2(-step, step) + new Vector2(0, i * step);
+            newPoint = new Vector2((int)newPoint.x, (int)newPoint.y);
+
+            if (newPoint.x >= maxX)
+            {
+                newPoint.x -= 1;
+                newPoint = new Vector2((int)newPoint.x, (int)newPoint.y);
+            }
+
+            bool isWithinBounds = newPoint.x < maxX && newPoint.x > minX
+                    && newPoint.y < maxY && newPoint.y > minY;
+
+            if (!points.Contains(newPoint) && isWithinBounds) 
+                points.Add(newPoint);
+        }
+
+        return points;
+    }
+
     public RoomNode GetParent()
     {
         return _parent;
