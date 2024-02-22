@@ -79,7 +79,7 @@ public class LevelGenerator : MonoBehaviour
         Debug.DrawLine(pos + new Vector2(half, -half), pos + new Vector2(half, half), color);
     }
 
-    void Update()
+    void OnDrawGizmosSelected()
     {
         var leaves = _root.GetLeaves();
         foreach (var leave in leaves)
