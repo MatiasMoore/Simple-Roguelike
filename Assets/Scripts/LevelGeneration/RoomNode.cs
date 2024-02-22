@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class RoomNode
 {
-    private class RoomConnection
+    public class RoomConnection
     {
         public RoomNode _start { get; private set; }
         public Vector2 _startTilePos { get; private set; }
@@ -61,6 +61,11 @@ public class RoomNode
                 return true;
         }
         return false;
+    }
+
+    public List<RoomConnection> GetRoomConnections()
+    {
+        return _connections;
     }
 
     public static void ConnectNodes(RoomNode nodeA, Vector2 nodeATilePos, RoomNode nodeB, Vector2 nodeBTilePos)
