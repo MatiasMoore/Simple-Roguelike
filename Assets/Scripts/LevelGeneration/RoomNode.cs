@@ -91,7 +91,14 @@ public class RoomNode
     {
         var points = new List<Vector2>();
 
+        const float margin = 0.0f;
+        float maxX = _center.x + _width / 2 - margin;
+        float minX = _center.x - _width / 2 + margin;
+        float maxY = _center.y + _height / 2 - margin;
+        float minY = _center.y - _height / 2 + margin;
+
         const float step = 0.3f;
+
         var start = GetLowerLeft();
 
         for (int i = 0; i <= _width / step; i++)
@@ -101,13 +108,10 @@ public class RoomNode
                 Vector2 newPoint = start + new Vector2(i * step, j * step);
                 newPoint = new Vector2((int)newPoint.x, (int)newPoint.y);
 
-                const float margin = 0.0f;
-                float maxX = _center.x + _width / 2 - margin;
-                float minX = _center.x - _width / 2 + margin;
-                float maxY = _center.y + _height / 2 - margin;
-                float minY = _center.y - _height / 2 + margin;
+                bool isWithinBounds = newPoint.x < maxX && newPoint.x > minX
+                    && newPoint.y < maxY && newPoint.y > minY;
 
-                if (!points.Contains(newPoint) && newPoint.x < maxX && newPoint.x > minX && newPoint.y < maxY && newPoint.y > minY)
+                if (!points.Contains(newPoint) && isWithinBounds)
                     points.Add(newPoint);
             }
         }
