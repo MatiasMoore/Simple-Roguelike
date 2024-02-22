@@ -83,17 +83,17 @@ public class LevelGenerator : MonoBehaviour
     {
         var leaves = _root.GetLeaves();
         foreach (var leave in leaves)
-        {
-            if (_debugDrawRoomEdges)
-                leave.DebugDraw(Color.blue);
+        {   
             if (_debugDrawTiles)
             {
                 var points = leave.GetAllGridPoints();
                 foreach (var p1 in points)
                 {
-                    DebugDrawCell(p1, 1, Color.cyan);
+                    DebugDrawCell(p1, 1, Color.white);
                 }
             }
+            if (_debugDrawRoomEdges)
+                leave.DebugDraw(Color.blue);
         }
 
         var allNodes = _root.GetAllNodes();
