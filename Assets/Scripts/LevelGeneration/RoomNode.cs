@@ -295,33 +295,6 @@ public class RoomNode
         }
     }
 
-    public void DebugDrawTree()
-    {
-        DebugDrawTree(Color.blue);
-    }
-
-    public void DebugDrawTree(Color color)
-    {
-        this.DebugDraw(color);
-        foreach (var child in _children)
-        {
-            child.DebugDrawTree(color);
-        }
-    }
-
-    public void DebugDraw()
-    {
-        DebugDraw(Color.blue);
-    }
-
-    public void DebugDraw(Color color) 
-    {
-        Debug.DrawLine(GetUpperLeft(), GetUpperRight(), color);
-        Debug.DrawLine(GetLowerRight(), GetLowerLeft(), color);
-        Debug.DrawLine(GetLowerLeft(), GetUpperLeft(), color);
-        Debug.DrawLine(GetLowerRight(), GetUpperRight(), color);
-    }
-
     public List<RoomNode> GetLeaves()
     {
         var leaves = new List<RoomNode>();

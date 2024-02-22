@@ -21,7 +21,9 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField]
     private bool _debugDrawRoomCenter = false;
     [SerializeField]
-    private bool _debugDrawTiles = false;
+    private bool _debugDrawAllTiles = false;
+    [SerializeField]
+    private bool _debugDrawPerimeterTiles = false;
     [SerializeField]
     private bool _debugDrawRoomConnections = false;
     [SerializeField]
@@ -38,14 +40,15 @@ public class LevelGenerator : MonoBehaviour
     public void GenerateNewLevel()
     {
         _root = new RoomNode(_initialCenter, _initialWidth, _initialHeight);
-        SliceLeaves(_iterCount);
+        SliceLeaves(_root, _iterCount);
+        GenerateConnectionsForTree(_root);
     }
 
-    public void SliceLeaves(int iterCount)
+    public void SliceLeaves(RoomNode rootNode, int iterCount)
     {
         for (int i = 0; i < iterCount; i++)
         {
-            List<RoomNode> leaves = _root.GetLeaves();
+            List<RoomNode> leaves = rootNode.GetLeaves();
             foreach (var leaf in leaves)
             {
                 var direction = leaf.GetHeight() > leaf.GetWidth() ? RoomNode.SliceDirection.horizontal : RoomNode.SliceDirection.vertical;
@@ -55,7 +58,7 @@ public class LevelGenerator : MonoBehaviour
 
         if (_cutOffSomeLeafs )
         {
-            foreach (var leaf in _root.GetLeaves())
+            foreach (var leaf in rootNode.GetLeaves())
             {
                 if (leaf.GetSister() != null)
                     leaf.RemoveFromParent();
@@ -63,112 +66,180 @@ public class LevelGenerator : MonoBehaviour
         }
     }
 
-    void DebugDrawCross(Vector2 pos, float length, Color color)
+    (RoomNode roomA, RoomNode roomB) FindTwoClosestRooms(List<RoomNode> listA, List<RoomNode> listB)
     {
-        Debug.DrawLine(pos + new Vector2(-length, 0), pos + new Vector2(length, 0), color);
-        Debug.DrawLine(pos + new Vector2(0, -length), pos + new Vector2(0, length), color);
-    }
+        if (listA.Count == 0)
+            throw new System.Exception("List A is empty. Both lists need to have elements inside");
 
-    void DebugDrawCell(Vector2 pos, float length, Color color)
-    {
-        float half = length / 2;
-        Debug.DrawLine(pos + new Vector2(-half, half), pos + new Vector2(half, half), color);
-        Debug.DrawLine(pos + new Vector2(-half, -half), pos + new Vector2(half, -half), color);
+        if (listB.Count == 0)
+            throw new System.Exception("List B is empty. Both lists need to have elements inside");
 
-        Debug.DrawLine(pos + new Vector2(-half, -half), pos + new Vector2(-half, half), color);
-        Debug.DrawLine(pos + new Vector2(half, -half), pos + new Vector2(half, half), color);
-    }
-
-    void Update()
-    {
-        var leaves = _root.GetLeaves();
-        foreach (var leave in leaves)
-        {   
-            if (_debugDrawTiles)
+        RoomNode firstRoom = null;
+        RoomNode secondRoom = null;
+        float minDistance = float.MaxValue;
+        foreach (var nodeA in listA)
+        {
+            foreach (var nodeB in listB)
             {
-                var points = leave.GetAllGridPoints();
-                foreach (var p1 in points)
+                var distBetween = Vector2.Distance(nodeA.GetCenter(), nodeB.GetCenter());
+                if (distBetween < minDistance)
                 {
-                    DebugDrawCell(p1, 1, Color.white);
+                    minDistance = distBetween;
+                    firstRoom = nodeA;
+                    secondRoom = nodeB;
                 }
             }
-            if (_debugDrawRoomEdges)
-                leave.DebugDraw(Color.blue);
+        }
+        return (firstRoom, secondRoom);
+    }
+    
+    public (Vector2 tileA, Vector2 tileB) FindConnectingTiles(RoomNode roomA, RoomNode roomB)
+    {
+        Vector2 tileA, tileB;
+        bool success;
+        (tileA, tileB) = FindConnectingTiles(roomA, roomB, true, out success);
+        if (!success)
+            (tileA, tileB) = FindConnectingTiles(roomA, roomB, false, out success);
+
+        if (!success)
+            throw new System.Exception("Critical error! Could not find connecting tiles! Something went very wrong!!!");
+
+        return (tileA, tileB);
+    }
+
+    private (Vector2 tileA, Vector2 tileB) FindConnectingTiles(RoomNode roomA, RoomNode roomB, bool excludeDiagonals, out bool success)
+    {
+        success = false;
+
+        Vector2 firstRoomTile = Vector2.zero;
+        Vector2 secondRoomTile = Vector2.zero;
+
+        float minDistance = float.MaxValue;
+        float minDistToCenters = float.MaxValue;
+
+        var roomATiles = roomA.GetPerimeterGridPoints();
+        var roomBTiles = roomB.GetPerimeterGridPoints();
+        foreach (var tileA in roomATiles)
+        {
+            foreach (var tileB in roomBTiles)
+            {
+                bool isDiagonal = !(tileA.x == tileB.x || tileA.y == tileB.y);
+
+                if (isDiagonal && excludeDiagonals)
+                    continue;
+
+                var distBetweenTiles = Vector2.Distance(tileA, tileB);
+                if (distBetweenTiles <= minDistance)
+                {
+                    minDistance = distBetweenTiles;
+
+                    Vector2 toTileB = tileB - tileA;
+                    Vector2 tileMiddlePoint = tileA + (0.5f * toTileB.magnitude) * toTileB.normalized;
+                    var distToCenters = Vector2.Distance(tileA, roomB.GetCenter()) + Vector2.Distance(tileB, roomA.GetCenter());
+
+                    if (distToCenters < minDistToCenters)
+                    {
+                        minDistToCenters = distToCenters;
+                        firstRoomTile = tileA;
+                        secondRoomTile = tileB;
+                        success = true;
+                    }
+                }
+            }
         }
 
-        var allNodes = _root.GetAllNodes();
+        return (firstRoomTile, secondRoomTile);
+    }
+    
+    void GenerateConnectionsForTree(RoomNode rootNode)
+    {
+        //For each node in tree
+        var allNodes = rootNode.GetAllNodes();
         foreach (var node in allNodes)
         {
+            //Try to connect to sister node
             var sister = node.GetSister();
             if (sister != null)
             {
+                //Find two closest rooms
                 var currentLeaves = node.GetLeaves();
                 var sisterLeaves = sister.GetLeaves();
-
                 RoomNode firstRoom = null;
                 RoomNode secondRoom = null;
-                float minDistance = float.MaxValue;
-                foreach (var p1 in currentLeaves)
+                (firstRoom, secondRoom) = FindTwoClosestRooms(currentLeaves, sisterLeaves);
+                if (firstRoom == null || secondRoom == null)
+                    throw new System.Exception("Critical error! Could not find connecting tiles! Something went very wrong!!!");
+
+                //Connect rooms if they are not connected
+                if (!firstRoom.IsConnectedTo(secondRoom))
                 {
-                    foreach (var p2 in sisterLeaves)
-                    {
-                        var d = Vector2.Distance(p1.GetCenter(), p2.GetCenter());
-                        if (d < minDistance)
-                        {
-                            minDistance = d;
-                            firstRoom = p1;
-                            secondRoom = p2;
-                        }
-                    }
-                }
-
-                if (_debugDrawRoomConnections)
-                    Debug.DrawLine(firstRoom.GetCenter(), secondRoom.GetCenter(), Color.red);
-
-                if (_debugDrawRoomCenter)
-                {
-                    DebugDrawCross(firstRoom.GetCenter(), 2, Color.green);
-                    DebugDrawCross(secondRoom.GetCenter(), 2, Color.green);
-                }
-
-
-                if (_debugDrawRoomCorridors)
-                {
+                    //Find connecting tiles (to connect the rooms)
                     Vector2 firstRoomTile = Vector2.zero;
                     Vector2 secondRoomTile = Vector2.zero;
+                    (firstRoomTile, secondRoomTile) = FindConnectingTiles(firstRoom, secondRoom);
 
-                    Vector2 toSecondRoomCenter = secondRoom.GetCenter() - firstRoom.GetCenter();
-                    Vector2 roomMiddlePoint = firstRoom.GetCenter() + (0.5f * toSecondRoomCenter.magnitude) * toSecondRoomCenter.normalized;
-
-                    minDistance = float.MaxValue;
-                    float minDistanceToRoomMiddle = float.MaxValue;
-
-                    foreach (var p1 in firstRoom.GetAllGridPoints())
-                    {
-                        foreach (var p2 in secondRoom.GetAllGridPoints())
-                        {
-                            var d = Vector2.Distance(p1, p2);
-                            if (d <= minDistance)
-                            {
-                                minDistance = d;
-
-                                Vector2 toSecondPoint = p2 - p1;
-                                Vector2 tileMiddlePoint = p1 + (0.5f * toSecondPoint.magnitude) * toSecondPoint.normalized;
-                                var distToRoomMiddle = Vector2.Distance(roomMiddlePoint, tileMiddlePoint);
-
-                                if (distToRoomMiddle < minDistanceToRoomMiddle)
-                                {
-                                    minDistanceToRoomMiddle = distToRoomMiddle;
-                                    firstRoomTile = p1;
-                                    secondRoomTile = p2;
-                                }
-                            }
-                        }
-                    }
-
-                    Debug.DrawLine(firstRoomTile, secondRoomTile, Color.magenta);
+                    //Create a connection
+                    RoomNode.ConnectNodes(firstRoom, firstRoomTile, secondRoom, secondRoomTile);
                 }
             }
         }
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        if (_root != null)
+            DrawRoomNodeTree(_root, _debugDrawRoomEdges, _debugDrawRoomCenter, _debugDrawAllTiles, _debugDrawPerimeterTiles, _debugDrawRoomConnections, _debugDrawRoomCorridors);
+    }
+
+    private void DrawRoomNodeTree(RoomNode rootNode, bool drawNodeEdges, bool drawNodeCenters, bool drawAllRoomTiles, bool drawRoomPerimeterTiles, bool drawCenterConnections, bool drawConnections) 
+    {
+        var rooms = rootNode.GetLeaves();
+        foreach (var room in rooms)
+        {
+            if (drawAllRoomTiles)
+            {
+                var tiles = room.GetAllGridPoints();
+                foreach (var tile in tiles)
+                {
+                    DebugDraw.DrawCell(tile, 1, Color.cyan);
+                }
+            }
+            else if (drawRoomPerimeterTiles)
+            {
+                var tiles = room.GetPerimeterGridPoints();
+                foreach (var tile in tiles)
+                {
+                    DebugDraw.DrawCell(tile, 1, Color.cyan);
+                }
+            }
+
+            if (drawNodeEdges)
+            {
+                DebugDraw.DrawRectangle(
+                    room.GetUpperLeft(),
+                    room.GetUpperRight(),
+                    room.GetLowerRight(),
+                    room.GetLowerLeft(),
+                    Color.blue);
+            }
+
+            if (drawNodeCenters)
+            {
+                DebugDraw.DrawCross(room.GetCenter(), 1, Color.green);
+            }
+
+            if (drawCenterConnections || drawConnections)
+            {
+                foreach (var connection in room.GetRoomConnections())
+                {
+                    if (drawCenterConnections)
+                        DebugDraw.DrawLine(connection._start.GetCenter(), connection._end.GetCenter(), Color.red);
+
+                    if (drawConnections)
+                        DebugDraw.DrawLine(connection._startTilePos, connection._endTilePos, Color.magenta);
+                }
+            }
+        }
+        
     }
 }
