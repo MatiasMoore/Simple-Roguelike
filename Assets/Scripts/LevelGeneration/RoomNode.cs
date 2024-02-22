@@ -43,17 +43,17 @@ public class RoomNode
     {
         var points = new List<Vector2>();
 
-        const float step = 1f;
+        const float step = 0.3f;
         var start = GetLowerLeft();
 
-        for (int i = 0; i < _width; i++)
+        for (int i = 0; i <= _width / step; i++)
         {
-            for (int j = 0; j < _height; j++)
+            for (int j = 0; j <= _height / step; j++)
             {
                 Vector2 newPoint = start + new Vector2(i * step, j * step);
                 newPoint = new Vector2((int)newPoint.x, (int)newPoint.y);
 
-                const float margin = 0.5f;
+                const float margin = 0.0f;
                 float maxX = _center.x + _width / 2 - margin;
                 float minX = _center.x - _width / 2 + margin;
                 float maxY = _center.y + _height / 2 - margin;
