@@ -87,15 +87,21 @@ public class RoomNode
         return _children.Count;
     }
 
+    public bool IsTileWithinBounds(Vector2 tileCenter)
+    {
+        const float tileSize = 1.0f;
+        float maxX = _center.x + _width / 2 - tileSize / 2;
+        float minX = _center.x - _width / 2 + tileSize / 2;
+        float maxY = _center.y + _height / 2 - tileSize / 2;
+        float minY = _center.y - _height / 2 + tileSize / 2;
+
+        return tileCenter.x <= maxX && tileCenter.x >= minX
+                    && tileCenter.y <= maxY && tileCenter.y >= minY;
+    }
+
     public List<Vector2> GetAllGridPoints()
     {
         var points = new List<Vector2>();
-
-        const float margin = 0.0f;
-        float maxX = _center.x + _width / 2 - margin;
-        float minX = _center.x - _width / 2 + margin;
-        float maxY = _center.y + _height / 2 - margin;
-        float minY = _center.y - _height / 2 + margin;
 
         const float step = 0.3f;
 
@@ -108,10 +114,7 @@ public class RoomNode
                 Vector2 newPoint = start + new Vector2(i * step, j * step);
                 newPoint = new Vector2((int)newPoint.x, (int)newPoint.y);
 
-                bool isWithinBounds = newPoint.x < maxX && newPoint.x > minX
-                    && newPoint.y < maxY && newPoint.y > minY;
-
-                if (!points.Contains(newPoint) && isWithinBounds)
+                if (!points.Contains(newPoint) && IsTileWithinBounds(newPoint))
                     points.Add(newPoint);
             }
         }
@@ -124,13 +127,6 @@ public class RoomNode
     public List<Vector2> GetPerimeterGridPoints()
     {
         var points = new List<Vector2>();
-
-        const float margin = 0.0f;
-        float maxX = _center.x + _width / 2 - margin;
-        float minX = _center.x - _width / 2 + margin;
-        float maxY = _center.y + _height / 2 - margin;
-        float minY = _center.y - _height / 2 + margin;
-
         float step = 0.3f;
 
         //Get top row
@@ -139,16 +135,13 @@ public class RoomNode
             Vector2 newPoint = GetUpperLeft() + new Vector2(i * step, 0);
             newPoint = new Vector2((int)newPoint.x, (int)newPoint.y);
 
-            if (newPoint.y >= maxY)
+            if (!IsTileWithinBounds(newPoint))
             {
                 newPoint.y -= 1;
                 newPoint = new Vector2((int)newPoint.x, (int)newPoint.y);
             }
 
-            bool isWithinBounds = newPoint.x < maxX && newPoint.x > minX
-                    && newPoint.y < maxY && newPoint.y > minY;
-
-            if (!points.Contains(newPoint) && isWithinBounds)
+            if (!points.Contains(newPoint) && IsTileWithinBounds(newPoint))
                 points.Add(newPoint);
         }
 
@@ -158,16 +151,13 @@ public class RoomNode
             Vector2 newPoint = GetLowerLeft() + new Vector2(step, step) + new Vector2(i * step, 0);
             newPoint = new Vector2((int)newPoint.x, (int)newPoint.y);
 
-            if (newPoint.y <= minY)
+            if (!IsTileWithinBounds(newPoint))
             {
                 newPoint.y += 1;
                 newPoint = new Vector2((int)newPoint.x, (int)newPoint.y);
             }
 
-            bool isWithinBounds = newPoint.x < maxX && newPoint.x > minX
-                    && newPoint.y < maxY && newPoint.y > minY;
-
-            if (!points.Contains(newPoint) && isWithinBounds) 
+            if (!points.Contains(newPoint) && IsTileWithinBounds(newPoint)) 
                 points.Add(newPoint);
         }
 
@@ -177,16 +167,13 @@ public class RoomNode
             Vector2 newPoint = GetLowerLeft() + new Vector2(step, step) + new Vector2(0, i * step);
             newPoint = new Vector2((int)newPoint.x, (int)newPoint.y);
 
-            if (newPoint.x <= minX)
+            if (!IsTileWithinBounds(newPoint))
             {
                 newPoint.x += 1;
                 newPoint = new Vector2((int)newPoint.x, (int)newPoint.y);
             }
 
-            bool isWithinBounds = newPoint.x < maxX && newPoint.x > minX
-                    && newPoint.y < maxY && newPoint.y > minY;
-
-            if (!points.Contains(newPoint) && isWithinBounds) 
+            if (!points.Contains(newPoint) && IsTileWithinBounds(newPoint)) 
                 points.Add(newPoint);
         }
 
@@ -196,16 +183,13 @@ public class RoomNode
             Vector2 newPoint = GetLowerRight() + new Vector2(-step, step) + new Vector2(0, i * step);
             newPoint = new Vector2((int)newPoint.x, (int)newPoint.y);
 
-            if (newPoint.x >= maxX)
+            if (!IsTileWithinBounds(newPoint))
             {
                 newPoint.x -= 1;
                 newPoint = new Vector2((int)newPoint.x, (int)newPoint.y);
             }
 
-            bool isWithinBounds = newPoint.x < maxX && newPoint.x > minX
-                    && newPoint.y < maxY && newPoint.y > minY;
-
-            if (!points.Contains(newPoint) && isWithinBounds) 
+            if (!points.Contains(newPoint) && IsTileWithinBounds(newPoint)) 
                 points.Add(newPoint);
         }
 
