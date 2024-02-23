@@ -8,7 +8,7 @@ public class PlayerTestSceneEntryPoint : MonoBehaviour
     private InputSystem _inputSystem;
 
     [SerializeField]
-    private Player _player;
+    private PlayerMovement _player;
 
     private void Start()
     {
@@ -20,7 +20,7 @@ public class PlayerTestSceneEntryPoint : MonoBehaviour
                 _player.Init(_inputSystem);
             } else
             {
-                Debug.LogWarning("Player is not assigned");
+                Debug.LogWarning("PlayerMovement is not assigned");
             }
         } else
         {

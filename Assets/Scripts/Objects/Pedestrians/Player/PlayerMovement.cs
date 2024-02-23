@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : Pedestrian
+public class PlayerMovement : Pedestrian
 {
     private Rigidbody2D _rigidbody;
 
