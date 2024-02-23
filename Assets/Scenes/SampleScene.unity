@@ -266,12 +266,12 @@ MonoBehaviour:
   _cutOffSomeLeafs: 0
   _seed: 0
   _randomiseSeed: 1
-  _debugDrawRoomEdges: 1
-  _debugDrawRoomCenter: 0
-  _debugDrawAllTiles: 0
-  _debugDrawPerimeterTiles: 0
-  _debugDrawRoomConnections: 0
-  _debugDrawRoomCorridors: 1
+  _drawRoomEdges: 1
+  _drawRoomCenter: 0
+  _drawAllTiles: 0
+  _drawPerimeterTiles: 0
+  _drawCenterConnections: 0
+  _drawRoomConnections: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
