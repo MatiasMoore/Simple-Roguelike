@@ -4,7 +4,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Collider2D))]
-public class PlayerMovement : Pedestrian
+public class PlayerMovementController : Pedestrian
 {
     private Rigidbody2D _rigidbody;
 
@@ -56,12 +56,10 @@ public class PlayerMovement : Pedestrian
         {
             _animator.SetFloat(_speedX, InputSystem.Movement.x);
             _animator.SetFloat(_speedY, InputSystem.Movement.y);
-            
-            //translate cursor position to scene position
-            Vector2 cursorPosition = Camera.main.ScreenToWorldPoint(InputSystem.CursorPosition);
+                 
 
-            _animator.SetFloat(_cursorX, cursorPosition.x - transform.position.x);
-            _animator.SetFloat(_cursorY, cursorPosition.y - transform.position.y);
+            _animator.SetFloat(_cursorX, InputSystem.CursorPosition.x - transform.position.x);
+            _animator.SetFloat(_cursorY, InputSystem.CursorPosition.y - transform.position.y);
 
             _objectMovement = _objectMovement.Update(InputSystem.Movement, Time.deltaTime);
             UpdateDebug();
