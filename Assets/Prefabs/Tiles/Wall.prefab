@@ -797,12 +797,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3048325e33307e4db3197737984dc70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _name: wall
-  _interactWith: []
+  _id: 0
+  _interactWith: 
   _distToNeighbour: 1
   _updateOnTransformChange: 0
-  _updateOnEnable: 0
-  _updateOnDisable: 0
+  _updateOnEnable: 1
+  _updateOnDisable: 1
   _edgeLeft: {fileID: 2804403501290072761}
   _edgeRight: {fileID: 2247037526310192723}
   _edgeTop: {fileID: 1441905611781482078}

@@ -79,6 +79,14 @@ public class SpriteConfigurator : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        if (!_updateOnEnable)
+            return;
+
+        UpdateSprite();
+    }
+
     private void OnEnable()
     {
         if (!_updateOnEnable) 
@@ -98,6 +106,11 @@ public class SpriteConfigurator : MonoBehaviour
     public void InteractWithId(int newId)
     {
         _interactWith.Add(newId);
+    }
+
+    public List<int> GetInteractList()
+    {
+        return _interactWith;
     }
 
     public void SetId(int newId)
