@@ -125,7 +125,7 @@
                 {
                     "name": "left",
                     "id": "533eb14a-a03f-49fd-8293-a69933ac40e0",
-                    "path": "<Keyboard>/downArrow",
+                    "path": "<Keyboard>/leftArrow",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
