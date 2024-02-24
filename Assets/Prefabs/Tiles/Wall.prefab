@@ -801,8 +801,8 @@ MonoBehaviour:
   _interactWith: []
   _distToNeighbour: 1
   _updateOnTransformChange: 0
-  _updateOnEnable: 1
-  _updateOnDisable: 1
+  _updateOnEnable: 0
+  _updateOnDisable: 0
   _edgeLeft: {fileID: 2804403501290072761}
   _edgeRight: {fileID: 2247037526310192723}
   _edgeTop: {fileID: 1441905611781482078}

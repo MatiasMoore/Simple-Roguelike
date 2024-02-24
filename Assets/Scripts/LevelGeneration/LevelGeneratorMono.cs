@@ -6,11 +6,17 @@ using UnityEngine;
 
 public class LevelGeneratorMono : MonoBehaviour
 {
-    [Header("Press this to generate a level!")]
+    [Header("Press this to generate a level blueprint!")]
     [SerializeField]
     private bool _generateNewLevel = false;
     [SerializeField]
     private bool _abort = false;
+
+    [Header("Press this to build a level using the blueprint!")]
+    [SerializeField]
+    private bool _buildLevel = false;
+    [SerializeField]
+    private bool _deleteCurrentLevel = false;
 
     [Header("Generation settings")]
     [SerializeField]
@@ -45,6 +51,10 @@ public class LevelGeneratorMono : MonoBehaviour
     private LevelGenerator _generator;
     private Task<RoomNode> _levelTask;
 
+    [Header("Helper classes")]
+    [SerializeField]
+    private LevelBuilder _levelBuilder;
+
     private void Start()
     {
         _generator = new LevelGenerator();
@@ -68,6 +78,19 @@ public class LevelGeneratorMono : MonoBehaviour
         {
             _generator.AbortTasks();
             _abort = false;
+        }
+
+        if (_buildLevel)
+        {
+            if (_levelTask != null && _levelTask.IsCompleted)
+                _levelBuilder.BuildLevelFromNodes(_levelTask.Result);
+            _buildLevel = false;
+        }
+
+        if (_deleteCurrentLevel)
+        {
+            _levelBuilder.DeleteCurrentLevel();
+            _deleteCurrentLevel = false;
         }
     }
 
