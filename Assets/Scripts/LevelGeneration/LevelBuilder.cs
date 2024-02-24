@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class LevelBuilder : MonoBehaviour
@@ -166,16 +165,8 @@ public class LevelBuilder : MonoBehaviour
         yield break;
     }
 
-    private void BuildCorridor(Vector2 start, Vector2 end, Transform parent, int corridorId)
+    private void PlotCorridorLine(Vector2 start, Vector2 end, Transform parent, int corridorId)
     {
-        SpriteConfigurator endSpriteConf = null;
-        var endHit = Physics2D.OverlapPoint(end);
-        if (endHit != null)
-        {
-            endSpriteConf = endHit.GetComponent<SpriteConfigurator>();
-            corridorId = endSpriteConf.GetInteractList()[0];
-        }
-
         const float step = 0.3f;
         var toEnd = end - start;
         var toEndDir = toEnd.normalized;
@@ -210,6 +201,25 @@ public class LevelBuilder : MonoBehaviour
             spriteConf.InteractWithId(corridorId);
             spriteConf.UpdateSprite();
         }
+    }
+
+    private void BuildCorridor(Vector2 start, Vector2 end, Transform parent, int corridorId)
+    {
+        SpriteConfigurator endSpriteConf = null;
+        var endHit = Physics2D.OverlapPoint(end);
+        if (endHit != null)
+        {
+            endSpriteConf = endHit.GetComponent<SpriteConfigurator>();
+            corridorId = endSpriteConf.GetInteractList()[0];
+        }
+
+        var middlePoint = new Vector2(start.x, end.y);
+
+        if (endSpriteConf == null)
+            middlePoint = new Vector2(end.x, start.y);
+
+        PlotCorridorLine(start, middlePoint, parent, corridorId);
+        PlotCorridorLine(middlePoint, end, parent, corridorId);
 
         if (endSpriteConf != null)
         {
