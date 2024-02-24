@@ -23,6 +23,9 @@ public class InputSystem : MonoBehaviour
 
     public UnityEvent<Vector2> CursorClickEvent;
 
+    [SerializeField]
+    private bool _isDebugOn;
+
     public void Init()
 
     {
@@ -46,13 +49,16 @@ public class InputSystem : MonoBehaviour
 
         CursorPosition = _cursorPosition.ReadValue<Vector2>();   
         
-        Debug.Log($"Cursor position: {CursorPosition}");
+        if (_isDebugOn)
+            Debug.Log($"Cursor position: {CursorPosition}");
+        
 
     }
 
     public void OnCursorClick()
     {
-        Debug.Log("Cursor click");
+        if (_isDebugOn)
+            Debug.Log("Cursor click");
         CursorClickEvent?.Invoke(CursorPosition);
     }   
 
