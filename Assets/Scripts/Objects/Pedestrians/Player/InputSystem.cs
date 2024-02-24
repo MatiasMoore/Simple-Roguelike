@@ -8,12 +8,20 @@ using UnityEngine.InputSystem;
 public class InputSystem : MonoBehaviour
 {
     public static Vector2 Movement;
+    
+    public static Vector2 CursorPosition;
 
     public static InputSystem Instance { get; private set; }
 
     private PlayerInput _playerInput;
 
     private InputAction _moveAction;
+
+    private InputAction _cursorPosition;
+
+    private InputAction _cursorClick;
+
+    public UnityEvent<Vector2> CursorClickEvent;
 
     public void Init()
 
@@ -23,12 +31,29 @@ public class InputSystem : MonoBehaviour
 
         _moveAction = _playerInput.actions["Move"];
 
+        _cursorPosition = _playerInput.actions["CursorPosition"];
+
+        _cursorClick = _playerInput.actions["CursorClick"];
+
+        _cursorClick.performed += (var) => OnCursorClick();
+
         Instance = this;
     }
 
     private void Update()
     {
         Movement = _moveAction.ReadValue<Vector2>();
+
+        CursorPosition = _cursorPosition.ReadValue<Vector2>();   
+        
+        Debug.Log($"Cursor position: {CursorPosition}");
+
     }
+
+    public void OnCursorClick()
+    {
+        Debug.Log("Cursor click");
+        CursorClickEvent?.Invoke(CursorPosition);
+    }   
 
 }
