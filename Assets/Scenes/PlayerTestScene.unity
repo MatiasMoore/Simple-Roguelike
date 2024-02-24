@@ -434,6 +434,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 8251870464887782944, guid: 25453989806c7cd488f86d78925433b6, type: 3}
+      propertyPath: _accelerationTime
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8251870464887782944, guid: 25453989806c7cd488f86d78925433b6, type: 3}
+      propertyPath: _decelerationTime
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8251870464887782944, guid: 25453989806c7cd488f86d78925433b6, type: 3}
+      propertyPath: _changeDirectionTime
+      value: 0.1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
