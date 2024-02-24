@@ -1,6 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
-using Unity.Collections;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class LevelGenerator
@@ -8,42 +8,106 @@ public class LevelGenerator
     private RoomNode _root;
     private int _iterCount, _seed;
     private bool _cutoffSomeLeaves;
+    private Vector2 _centerOffset;
+    int _width, _height;
 
     private System.Random _random;
 
-    public LevelGenerator(Vector2 centerOffset, int width, int height, int iterCount, bool cutoffSomeLeaves, int seed)
+    private bool _isFinished = false;
+
+    CancellationTokenSource _tokenSource = new CancellationTokenSource();
+
+    private Task _mainTask;
+
+    private string _currentStatus = "none";
+    private bool _isStatusUpdated = false;
+
+    private void SetStatusString(string newStatus)
     {
-        _root = new RoomNode(centerOffset, width, height);
+        _currentStatus = newStatus;
+        _isStatusUpdated = true;
+    }
+
+    public string GetStatusString()
+    {
+        _isStatusUpdated = false;
+        return _currentStatus;
+    }
+
+    public bool IsStatusUpdated()
+    {
+        return _isStatusUpdated;
+    }
+
+    public void GenerateNewLevel(Vector2 centerOffset, int width, int height, int iterCount, bool cutoffSomeLeaves, int seed)
+    {
+        _centerOffset = centerOffset;
+        _width = width;
+        _height = height;
+        _root = new RoomNode(_centerOffset, _width, _height);
         _iterCount = iterCount;
         _cutoffSomeLeaves = cutoffSomeLeaves;
         SetNewSeed(seed);
+
+        if (_mainTask != null && !_mainTask.IsCompleted)
+            AbortTasks();
+
+        _mainTask = GenerateNewLevelTask(_seed, _tokenSource);
     }
 
-    public void GenerateNewLevel()
+    public void AbortTasks()
     {
-        GenerateNewLevel(_seed);
+        Debug.Log("Aborting!");
+        _tokenSource.Cancel();
+        _tokenSource = new CancellationTokenSource();
     }
 
-    public void GenerateNewLevel(int newSeed)
+    private Task GenerateNewLevelTask(int newSeed, CancellationTokenSource tokenSource)
     {
-        SetNewSeed(_seed);
-        
-        SliceLeaves(_root, _iterCount);
-
-        if (_cutoffSomeLeaves)
+        _isFinished = false;
+        SetStatusString("Initialising generation");
+        var t = new Task(() =>
         {
-            foreach (var leaf in _root.GetLeaves())
-            {
-                if (leaf.GetSister() != null)
-                    leaf.RemoveFromParent();
-            }
-        }
+            SetNewSeed(newSeed);
 
-        GenerateConnectionsForTree(_root);
+            var sliceTask = SliceLeavesTask(_root, _iterCount, tokenSource);
+            sliceTask.Wait();
+
+            if (tokenSource.Token.IsCancellationRequested)
+                tokenSource.Token.ThrowIfCancellationRequested();
+
+            if (_cutoffSomeLeaves)
+            {
+                foreach (var leaf in _root.GetLeaves())
+                {
+                    if (leaf.GetSister() != null)
+                        leaf.RemoveFromParent();
+                }
+            }
+
+            var connectionsTask = GenerateConnectionsForTreeTask(_root, tokenSource);
+            connectionsTask.Wait();
+
+            if (tokenSource.Token.IsCancellationRequested)
+                tokenSource.Token.ThrowIfCancellationRequested();
+
+            _isFinished = true;
+
+            SetStatusString("Finished generating!");
+
+        }, tokenSource.Token);
+        t.Start();
+        return t;
     }
 
     public void DebugDrawLevel(bool drawNodeEdges, bool drawNodeCenters, bool drawAllRoomTiles, bool drawRoomPerimeterTiles, bool drawCenterConnections, bool drawConnections)
     {
+        if (!_isFinished) 
+            return;
+
+        if (!drawNodeEdges && !drawNodeCenters && !drawAllRoomTiles && !drawRoomPerimeterTiles && !drawCenterConnections && !drawConnections)
+            return;
+
         if (_root == null)
             throw new System.Exception("Critical error! The level's root node is null! Something went very wrong!!!");
 
@@ -97,51 +161,73 @@ public class LevelGenerator
 
     }
 
-    private void SliceLeaves(RoomNode rootNode, int iterCount)
+    private Task SliceLeavesTask(RoomNode rootNode, int iterCount, CancellationTokenSource tokenSource)
     {
-        for (int i = 0; i < iterCount; i++)
+        var t = new Task(() =>
         {
-            List<RoomNode> leaves = rootNode.GetLeaves();
-            foreach (var leaf in leaves)
+            for (int i = 0; i < iterCount; i++)
             {
-                var direction = leaf.GetHeight() > leaf.GetWidth() ? RoomNode.SliceDirection.horizontal : RoomNode.SliceDirection.vertical;
-                leaf.Slice(direction, _random.Next(1, 4), _random.Next(1, 4));
-            }   
-        }
+                List<RoomNode> leaves = rootNode.GetLeaves();
+                foreach (var leaf in leaves)
+                {
+                    var direction = leaf.GetHeight() > leaf.GetWidth() ? RoomNode.SliceDirection.horizontal : RoomNode.SliceDirection.vertical;
+                    leaf.Slice(direction, _random.Next(1, 4), _random.Next(1, 4));
+
+                    if (tokenSource.Token.IsCancellationRequested)
+                        tokenSource.Token.ThrowIfCancellationRequested();
+                }
+
+                SetStatusString($"Finished slicing iteration {i+1} out of {iterCount}");
+            }
+        }, tokenSource.Token);
+        t.Start();  
+        return t;
     }
 
-    private void GenerateConnectionsForTree(RoomNode rootNode)
+    private Task GenerateConnectionsForTreeTask(RoomNode rootNode, CancellationTokenSource tokenSource)
     {
-        //For each node in tree
-        var allNodes = rootNode.GetAllNodes();
-        foreach (var node in allNodes)
+        var t = new Task(() =>
         {
-            //Try to connect to sister node
-            var sister = node.GetSister();
-            if (sister != null)
+            //For each node in tree
+            var allNodes = rootNode.GetAllNodes();
+            for (int i = 0; i < allNodes.Count; i++)
             {
-                //Find two closest rooms
-                var currentLeaves = node.GetLeaves();
-                var sisterLeaves = sister.GetLeaves();
-                RoomNode firstRoom = null;
-                RoomNode secondRoom = null;
-                (firstRoom, secondRoom) = FindTwoClosestRooms(currentLeaves, sisterLeaves);
-                if (firstRoom == null || secondRoom == null)
-                    throw new System.Exception("Critical error! Could not find connecting tiles! Something went very wrong!!!");
+                var node = allNodes[i];
 
-                //Connect rooms if they are not connected
-                if (!firstRoom.IsConnectedTo(secondRoom))
+                //Try to connect to sister node
+                var sister = node.GetSister();
+                if (sister != null)
                 {
-                    //Find connecting tiles (to connect the rooms)
-                    Vector2 firstRoomTile = Vector2.zero;
-                    Vector2 secondRoomTile = Vector2.zero;
-                    (firstRoomTile, secondRoomTile) = FindConnectingTiles(firstRoom, secondRoom);
+                    //Find two closest rooms
+                    var currentLeaves = node.GetLeaves();
+                    var sisterLeaves = sister.GetLeaves();
+                    RoomNode firstRoom = null;
+                    RoomNode secondRoom = null;
+                    (firstRoom, secondRoom) = FindTwoClosestRooms(currentLeaves, sisterLeaves);
+                    if (firstRoom == null || secondRoom == null)
+                        throw new System.Exception("Critical error! Could not find connecting tiles! Something went very wrong!!!");
 
-                    //Create a connection
-                    RoomNode.ConnectNodes(firstRoom, firstRoomTile, secondRoom, secondRoomTile);
+                    //Connect rooms if they are not connected
+                    if (!firstRoom.IsConnectedTo(secondRoom))
+                    {
+                        //Find connecting tiles (to connect the rooms)
+                        Vector2 firstRoomTile = Vector2.zero;
+                        Vector2 secondRoomTile = Vector2.zero;
+                        (firstRoomTile, secondRoomTile) = FindConnectingTiles(firstRoom, secondRoom);
+
+                        //Create a connection
+                        RoomNode.ConnectNodes(firstRoom, firstRoomTile, secondRoom, secondRoomTile);
+                    }
                 }
+
+                SetStatusString($"Finished connecting node {i+1} out of {allNodes.Count}");
+
+                if (tokenSource.Token.IsCancellationRequested)
+                    tokenSource.Token.ThrowIfCancellationRequested();
             }
-        }
+        }, tokenSource.Token);
+        t.Start();
+        return t;
     }
 
     private (RoomNode roomA, RoomNode roomB) FindTwoClosestRooms(List<RoomNode> listA, List<RoomNode> listB)

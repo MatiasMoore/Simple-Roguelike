@@ -8,6 +8,8 @@ public class LevelGeneratorMono : MonoBehaviour
     [Header("Press this to generate a level!")]
     [SerializeField]
     private bool _generateNewLevel = false;
+    [SerializeField]
+    private bool _abort = false;
 
     [Header("Generation settings")]
     [SerializeField]
@@ -41,6 +43,16 @@ public class LevelGeneratorMono : MonoBehaviour
 
     private LevelGenerator _generator;
 
+    private void Start()
+    {
+        _generator = new LevelGenerator();
+    }
+
+    private void FixedUpdate()
+    {
+        if (_generator.IsStatusUpdated())
+            Debug.Log(_generator.GetStatusString());
+    }
 
     private void OnValidate()
     {
@@ -49,6 +61,12 @@ public class LevelGeneratorMono : MonoBehaviour
             GenerateNewLevel();
             _generateNewLevel = false;
         }
+
+        if (_abort)
+        {
+            _generator.AbortTasks();
+            _abort = false;
+        }
     }
 
     private void GenerateNewLevel()
@@ -56,8 +74,7 @@ public class LevelGeneratorMono : MonoBehaviour
         if (_randomiseSeed) 
             _seed = Random.Range(int.MinValue, int.MaxValue);
 
-        _generator = new LevelGenerator(_initialCenter, _initialWidth, _initialHeight, _iterCount, _cutOffSomeLeafs, _seed);
-        _generator.GenerateNewLevel();
+        _generator.GenerateNewLevel(_initialCenter, _initialWidth, _initialHeight, _iterCount, _cutOffSomeLeafs, _seed);
     }
 
     private void OnDrawGizmosSelected()
