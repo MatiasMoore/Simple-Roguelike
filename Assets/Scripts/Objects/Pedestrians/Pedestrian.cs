@@ -9,8 +9,6 @@ public class Pedestrian : MonoBehaviour
     [SerializeField]
     private float _hp;
     [SerializeField]
-    private float _speed;
-    [SerializeField]
     private float damage;
 
     public UnityEvent OnDeath;
@@ -23,16 +21,6 @@ public class Pedestrian : MonoBehaviour
         {
             Die();
         }
-    }
-
-    public float GetSpeed()
-    {
-        return _speed;
-    }
-
-    public void SetSpeed(float speed)
-    {
-        _speed = speed;
     }
 
     public void SetHp(int hp)
