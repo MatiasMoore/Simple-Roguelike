@@ -6,21 +6,30 @@ using UnityEngine;
 public class LevelGenerator
 {
     private RoomNode _root;
-    private int _iterCount, _seed;
+    private int _iterCount;
     private bool _cutoffSomeLeaves;
     private Vector2 _centerOffset;
-    int _width, _height;
+    private int _width, _height;
 
+    private int _seed;
     private System.Random _random;
 
-    private bool _isFinished = false;
+    private CancellationTokenSource _tokenSource = new CancellationTokenSource();
 
-    CancellationTokenSource _tokenSource = new CancellationTokenSource();
+    private Task<RoomNode> _mainTask;
 
-    private Task _mainTask;
-
-    private string _currentStatus = "none";
+    private string _currentStatus;
     private bool _isStatusUpdated = false;
+
+    public LevelGenerator()
+    {
+        SetStatusString("Idle");
+    }
+
+    public bool IsGenerationInProgress()
+    {
+        return _mainTask != null && !_mainTask.IsCompleted;
+    }
 
     private void SetStatusString(string newStatus)
     {
@@ -39,7 +48,7 @@ public class LevelGenerator
         return _isStatusUpdated;
     }
 
-    public void GenerateNewLevel(Vector2 centerOffset, int width, int height, int iterCount, bool cutoffSomeLeaves, int seed)
+    public Task<RoomNode> GenerateNewLevel(Vector2 centerOffset, int width, int height, int iterCount, bool cutoffSomeLeaves, int seed)
     {
         _centerOffset = centerOffset;
         _width = width;
@@ -53,20 +62,20 @@ public class LevelGenerator
             AbortTasks();
 
         _mainTask = GenerateNewLevelTask(_seed, _tokenSource);
+        return _mainTask;
     }
 
     public void AbortTasks()
     {
-        Debug.Log("Aborting!");
+        SetStatusString("Interrupted and idle");
         _tokenSource.Cancel();
         _tokenSource = new CancellationTokenSource();
     }
 
-    private Task GenerateNewLevelTask(int newSeed, CancellationTokenSource tokenSource)
+    private Task<RoomNode> GenerateNewLevelTask(int newSeed, CancellationTokenSource tokenSource)
     {
-        _isFinished = false;
         SetStatusString("Initialising generation");
-        var t = new Task(() =>
+        var t = new Task<RoomNode>(() =>
         {
             SetNewSeed(newSeed);
 
@@ -91,27 +100,23 @@ public class LevelGenerator
             if (tokenSource.Token.IsCancellationRequested)
                 tokenSource.Token.ThrowIfCancellationRequested();
 
-            _isFinished = true;
-
             SetStatusString("Finished generating!");
 
+            return _root;
         }, tokenSource.Token);
         t.Start();
         return t;
     }
 
-    public void DebugDrawLevel(bool drawNodeEdges, bool drawNodeCenters, bool drawAllRoomTiles, bool drawRoomPerimeterTiles, bool drawCenterConnections, bool drawConnections)
+    public static void DebugDrawLevel(RoomNode rootNode, bool drawNodeEdges, bool drawNodeCenters, bool drawAllRoomTiles, bool drawRoomPerimeterTiles, bool drawCenterConnections, bool drawConnections)
     {
-        if (!_isFinished) 
-            return;
-
         if (!drawNodeEdges && !drawNodeCenters && !drawAllRoomTiles && !drawRoomPerimeterTiles && !drawCenterConnections && !drawConnections)
             return;
 
-        if (_root == null)
+        if (rootNode == null)
             throw new System.Exception("Critical error! The level's root node is null! Something went very wrong!!!");
 
-        var rooms = _root.GetLeaves();
+        var rooms = rootNode.GetLeaves();
         foreach (var room in rooms)
         {
             if (drawAllRoomTiles)

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Unity.Collections;
 using UnityEngine;
 
@@ -42,6 +43,7 @@ public class LevelGeneratorMono : MonoBehaviour
     private bool _drawRoomConnections = true;
 
     private LevelGenerator _generator;
+    private Task<RoomNode> _levelTask;
 
     private void Start()
     {
@@ -74,12 +76,12 @@ public class LevelGeneratorMono : MonoBehaviour
         if (_randomiseSeed) 
             _seed = Random.Range(int.MinValue, int.MaxValue);
 
-        _generator.GenerateNewLevel(_initialCenter, _initialWidth, _initialHeight, _iterCount, _cutOffSomeLeafs, _seed);
+        _levelTask = _generator.GenerateNewLevel(_initialCenter, _initialWidth, _initialHeight, _iterCount, _cutOffSomeLeafs, _seed);
     }
 
     private void OnDrawGizmosSelected()
     {
-        if (_generator != null)
-            _generator.DebugDrawLevel(_drawRoomEdges, _drawRoomCenter, _drawAllTiles, _drawPerimeterTiles, _drawCenterConnections, _drawRoomConnections);
+        if (_levelTask != null && _levelTask.IsCompleted)
+            LevelGenerator.DebugDrawLevel(_levelTask.Result, _drawRoomEdges, _drawRoomCenter, _drawAllTiles, _drawPerimeterTiles, _drawCenterConnections, _drawRoomConnections);
     }
 }
