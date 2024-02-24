@@ -47,7 +47,8 @@ public class InputSystem : MonoBehaviour
     {
         Movement = _moveAction.ReadValue<Vector2>();
 
-        CursorPosition = _cursorPosition.ReadValue<Vector2>();   
+        //translate cursor position to scene position
+        CursorPosition = Camera.main.ScreenToWorldPoint(_cursorPosition.ReadValue<Vector2>());
         
         if (_isDebugOn)
             Debug.Log($"Cursor position: {CursorPosition}");
