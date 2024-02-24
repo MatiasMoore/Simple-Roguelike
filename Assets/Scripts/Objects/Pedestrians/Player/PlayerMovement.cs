@@ -13,6 +13,31 @@ public class PlayerMovement : Pedestrian
     [SerializeField]
     private Animator _animator;
 
+    [SerializeField]
+    private float _accelerationTime = 0.1f;
+    [SerializeField]
+    private float _decelerationTime = 0.1f;
+    [SerializeField]
+    private float _changeDirectionTime = 5f;
+    [SerializeField]
+    private float _maxSpeed = 5f;
+
+    private ObjectMovement _objectMovement;
+
+    // START OF DEBUG FIELDS: \\
+    enum MovementState
+    {
+        Idle,
+        Acceleration,
+        Linear,
+        Deceleration,
+        ChangeDirection
+    }
+
+    private MovementState _debugStates = MovementState.Idle;
+    private Vector3 _direction;
+    // START END OF DEBUG FIELDS: \\
+
     private const string _speedX = "SpeedX";
     private const string _speedY = "SpeedY";
     private const string _cursorX = "CursorX";
@@ -21,6 +46,7 @@ public class PlayerMovement : Pedestrian
     public void Init(InputSystem inputSystem)
     { 
         _rigidbody = GetComponent<Rigidbody2D>();
+        _objectMovement = new Idle(_rigidbody, _accelerationTime, _decelerationTime, _changeDirectionTime, _maxSpeed);
         _inputSystem = inputSystem;
     }
 
@@ -28,7 +54,6 @@ public class PlayerMovement : Pedestrian
     {
         if (_inputSystem != null)
         {
-            Move(InputSystem.Movement);
             _animator.SetFloat(_speedX, InputSystem.Movement.x);
             _animator.SetFloat(_speedY, InputSystem.Movement.y);
             
@@ -37,14 +62,36 @@ public class PlayerMovement : Pedestrian
 
             _animator.SetFloat(_cursorX, cursorPosition.x - transform.position.x);
             _animator.SetFloat(_cursorY, cursorPosition.y - transform.position.y);
+
+            _objectMovement = _objectMovement.Update(InputSystem.Movement, Time.deltaTime);
+            UpdateDebug();
         } 
     }
 
-    private void Move(Vector2 direction)
+    private void UpdateDebug()
     {
         
-        _rigidbody.velocity = direction * GetSpeed();
-        Debug.Log($"direction {direction}, velocity {_rigidbody.velocity}");
+       if (_objectMovement is Idle)
+        {
+           _debugStates = MovementState.Idle;
+       }
+       else if (_objectMovement is Acceleration)
+        {
+           _debugStates = MovementState.Acceleration;
+       }
+       else if (_objectMovement is Linear)
+        {
+           _debugStates = MovementState.Linear;
+       }
+       else if (_objectMovement is Deceleration)
+        {
+           _debugStates = MovementState.Deceleration;
+       } else if (_objectMovement is ChangeDirection)
+       {
+           _debugStates = MovementState.ChangeDirection;
+       }
+
+        _direction = InputSystem.Movement;
     }
 
 }
