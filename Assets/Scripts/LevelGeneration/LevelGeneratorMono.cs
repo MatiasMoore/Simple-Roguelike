@@ -18,6 +18,12 @@ public class LevelGeneratorMono : MonoBehaviour
     [SerializeField]
     private bool _deleteCurrentLevel = false;
 
+    [Header("Press this to stream a level using the blueprint!")]
+    [SerializeField]
+    private bool _streamLevel = false;
+    [SerializeField]
+    private bool _stopStreamingLevel = false;
+
     [Header("Generation settings")]
     [SerializeField]
     private int _initialWidth = 50;
@@ -54,6 +60,8 @@ public class LevelGeneratorMono : MonoBehaviour
     [Header("Helper classes")]
     [SerializeField]
     private LevelBuilder _levelBuilder;
+    [SerializeField]
+    private LevelStreaming _levelStreaming;
 
     private void Start()
     {
@@ -91,6 +99,19 @@ public class LevelGeneratorMono : MonoBehaviour
         {
             _levelBuilder.DeleteCurrentLevel();
             _deleteCurrentLevel = false;
+        }
+
+        if (_streamLevel)
+        {
+            if (_levelTask != null && _levelTask.IsCompleted)
+                _levelStreaming.StartStreamingLevel(_levelTask.Result);
+            _streamLevel = false;
+        }
+
+        if (_stopStreamingLevel)
+        {
+            _levelStreaming.StopStreaming();
+            _stopStreamingLevel = false;
         }
     }
 

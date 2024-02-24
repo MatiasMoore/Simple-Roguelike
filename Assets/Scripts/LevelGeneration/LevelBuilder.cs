@@ -1,4 +1,7 @@
 using System.Collections;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using UnityEditor;
 using UnityEngine;
 
 public class LevelBuilder : MonoBehaviour
@@ -17,20 +20,24 @@ public class LevelBuilder : MonoBehaviour
         StartCoroutine(BuildLevelCoroutine(rootNode));
     }
 
-    private IEnumerator BuildRoom(RoomNode room)
+    public IEnumerator BuildRoomCoroutine(RoomNode room)
+    {
+        var roomObj = new GameObject("Room");
+        roomObj.transform.parent = _tileRoot;
+        yield return BuildRoom(room, roomObj.transform);
+    }
+
+    private IEnumerator BuildRoom(RoomNode room, Transform parent)
     {
         const int maxTilesPerFrame = 10;
         const int maxCorridorsCreated = 2;
-
-        var roomObj = new GameObject("Room");
-        roomObj.transform.parent = _tileRoot;
 
         //Place all tiles
         var tilesToFill = room.GetAllGridPoints();
         int tilesCreated = 0;
         foreach (var tilePos in tilesToFill)
         {
-            var createdObj = Instantiate(_floorTile, tilePos, Quaternion.identity, roomObj.transform);
+            var createdObj = Instantiate(_floorTile, tilePos, Quaternion.identity, parent);
             var spriteConf = createdObj.GetComponent<SpriteConfigurator>();
 
             if (spriteConf == null)
@@ -53,7 +60,7 @@ public class LevelBuilder : MonoBehaviour
         var connections = room.GetRoomConnections();
         for (int i = 0; i < connections.Count; i++)
         {
-            BuildCorridor(connections[i]._startTilePos, connections[i]._endTilePos, roomObj.transform, _lastID);
+            BuildCorridor(connections[i]._startTilePos, connections[i]._endTilePos, parent, _lastID);
             if (corridorsCreated >= maxCorridorsCreated)
             {
                 corridorsCreated = 0;
@@ -63,73 +70,73 @@ public class LevelBuilder : MonoBehaviour
 
         _lastID++;
 
+        _builtRooms.Add((parent.gameObject, room));
+
         yield break;
     }
     /**/
-    public IEnumerator BuildLevelCoroutine(RoomNode rootNode)
-    {
-        Debug.Log("Balls");
-        var rooms = rootNode.GetLeaves();
 
-        foreach (var room in rooms)
+    private List<(GameObject, RoomNode)> _builtRooms = new List<(GameObject, RoomNode)>();
+
+    public bool IsRoomBuilt(RoomNode room)
+    {
+        foreach (var tuple in _builtRooms)
         {
-            yield return StartCoroutine(BuildRoom(room));
+            GameObject obj;
+            RoomNode node;
+            (obj, node) = tuple;
+            if (node == room)
+                return true;
         }
-
-        yield break;
+        return false;
     }
-    /**/
 
-    /**
-    public IEnumerator BuildLevelCoroutine(RoomNode rootNode)
+    public IEnumerator DestroyBuiltRoom(RoomNode room)
     {
-        const int maxTilesPerFrame = 10;
-
-        var rooms = rootNode.GetLeaves();
-        for (int i = 0; i < rooms.Count; i++)
+        foreach (var tuple in _builtRooms)
         {
-            var tilesToFill = rooms[i].GetAllGridPoints();
-            int tilesCreated = 0;
-            foreach (var tilePos in tilesToFill)
+            GameObject obj;
+            RoomNode node;
+            (obj, node) = tuple;
+            if (node == room)
             {
-                var createdObj = Instantiate(_floorTile, tilePos, Quaternion.identity, _tileRoot);
-                var spriteConf = createdObj.GetComponent<SpriteConfigurator>();
+                _builtRooms.Remove(tuple);
+                yield return DestroyRoomObj(obj);
+                yield break;
+            }
+        }
+    }
 
-                if (spriteConf == null)
-                    throw new System.Exception("A floor tile doesn't have a sprite configurator!");
+    private IEnumerator DestroyRoomObj(GameObject roomObj)
+    {
+        int destroyedChildren = 0;
+        const int maxDestroyedChildren = 10;
+        for (int i = 0; i < roomObj.transform.childCount; i++)
+        {
+            Destroy(roomObj.transform.GetChild(i).gameObject);
 
-                spriteConf.SetId(i);
-
-                tilesCreated++;
-                if (tilesCreated >= maxTilesPerFrame)
-                {
-                    tilesCreated = 0;
-                    yield return null;
-                }
+            destroyedChildren++;
+            if (destroyedChildren >= maxDestroyedChildren)
+            {
+                destroyedChildren = 0;
+                yield return null;
             }
         }
 
-        const int maxCorridorsCreated = 10;
-        int corridorsCreated = 0;
-        foreach (var room in rooms)
-        {
-            var connections = room.GetRoomConnections();
-            for (int i = 0; i < connections.Count; i++)
-            {
-                BuildCorridor(connections[i]._startTilePos, connections[i]._endTilePos, _tileRoot, i);
-                if (corridorsCreated >= maxCorridorsCreated)
-                {
-                    corridorsCreated = 0;
-                    yield return null;
-                }
-            }
-        }
-
-        StartCoroutine(UpdateTileVisuals());
+        Destroy(roomObj);
 
         yield break;
     }
-    /**/
+
+    public IEnumerator BuildLevelCoroutine(RoomNode rootNode)
+    {
+        var rooms = rootNode.GetLeaves();
+        foreach (var room in rooms)
+            yield return BuildRoomCoroutine(room);
+
+        yield break;
+    }
+
     public void DeleteCurrentLevel()
     {
         StopAllCoroutines();
@@ -138,6 +145,9 @@ public class LevelBuilder : MonoBehaviour
             var currentChild = _tileRoot.GetChild(i).gameObject;
             Destroy(currentChild);
         }
+
+        _builtRooms.Clear();
+        _lastID = 0;
     }
 
     private IEnumerator UpdateTileVisuals()

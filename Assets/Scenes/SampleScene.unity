@@ -280,7 +280,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7b8a4b7a96805af4a93aa11282f36536, type: 3}
   m_Name: 
@@ -330,6 +330,7 @@ GameObject:
   - component: {fileID: 2041042451}
   - component: {fileID: 2041042452}
   - component: {fileID: 2041042453}
+  - component: {fileID: 2041042454}
   m_Layer: 0
   m_Name: LevelGenerator
   m_TagString: Untagged
@@ -369,10 +370,12 @@ MonoBehaviour:
   _abort: 0
   _buildLevel: 0
   _deleteCurrentLevel: 0
-  _initialWidth: 50
-  _initialHeight: 50
+  _streamLevel: 0
+  _stopStreamingLevel: 0
+  _initialWidth: 500
+  _initialHeight: 500
   _initialCenter: {x: 0, y: 0}
-  _iterCount: 4
+  _iterCount: 15
   _cutOffSomeLeafs: 0
   _seed: 0
   _randomiseSeed: 1
@@ -383,6 +386,7 @@ MonoBehaviour:
   _drawCenterConnections: 0
   _drawRoomConnections: 1
   _levelBuilder: {fileID: 2041042453}
+  _levelStreaming: {fileID: 2041042454}
 --- !u!114 &2041042453
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -397,6 +401,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _tileRoot: {fileID: 958787346}
   _floorTile: {fileID: 4016104633805996424, guid: 2241f76a69a50d44a9020b6667d3ab80, type: 3}
+--- !u!114 &2041042454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2041042450}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c5280b4acc238e4381008eb6423c4b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _focus: {fileID: 519420032}
+  _builder: {fileID: 2041042453}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
