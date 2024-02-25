@@ -35,17 +35,22 @@ public class Weapon : MonoBehaviour
 
     [SerializeField]
     private GameObject _projectilePrefab;
+
     [SerializeField]
     private Transform _projectileSpawnPoint;
 
+    private float _timer;
+    private bool _isReadyToFire;
     public void Init()
     {
         _localScale = transform.localScale;
+        _isReadyToFire = true;
     }
     public void Enter()
     {
         Debug.Log($"Weapon {transform.name} enter.");
-        Instantiate(_projectilePrefab, _projectileSpawnPoint.position, transform.rotation);
+        Fire();
+        
     }
     public void RotateWeaponToPoint(Vector2 direction)
     {
@@ -62,4 +67,29 @@ public class Weapon : MonoBehaviour
 
         transform.rotation = Quaternion.Euler(0, 0, angle);
     }
+
+    
+    private void Fire()
+    {
+        if (_isReadyToFire)
+        {
+            Instantiate(_projectilePrefab, _projectileSpawnPoint.position, transform.rotation);
+            _isReadyToFire = false;
+            _timer = _fireRate;
+        }          
+    }
+
+    private void Update()
+    {
+        if (_timer > 0)
+        {
+            _timer -= Time.deltaTime;
+        } else
+        {
+            _isReadyToFire = true;
+            _timer = 0;
+        }
+        
+    }
+
 }
