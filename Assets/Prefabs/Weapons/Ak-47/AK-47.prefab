@@ -124,9 +124,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2955669084704952255}
-  - component: {fileID: 13005756246659159}
+  - component: {fileID: 4126202129115722283}
   m_Layer: 0
-  m_Name: Weapon
+  m_Name: AK-47
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -149,7 +149,7 @@ Transform:
   - {fileID: 7663821764631104921}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &13005756246659159
+--- !u!114 &4126202129115722283
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -158,16 +158,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 9215425247971391935}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 834685d5b04527d428ac70058cbd3b45, type: 3}
+  m_Script: {fileID: 11500000, guid: ebd7d481855fb4e4fbfd719b87629195, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _damage: 0
-  _fireRate: 0.1
-  _realoadeTime: 0
-  _ammoPerMagazine: 0
-  _accuracy: 0
-  _projectileLifeTime: 0
-  _projectileSpeed: 0
-  _projectileSize: 0
-  _projectilePrefab: {fileID: 7890867244237525666, guid: 81fc479345b423f4ab88b7b0a6477f14, type: 3}
+  Data: {fileID: 11400000, guid: 4ce1d31f7ca7d624ba7ebfb01132f5bf, type: 2}
   _projectileSpawnPoint: {fileID: 7663821764631104921}
