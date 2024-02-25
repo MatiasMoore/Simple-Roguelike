@@ -17,10 +17,10 @@ MonoBehaviour:
   weaponIcon: {fileID: 21300000, guid: c9ef79ba59db38f40bd698e29162563d, type: 3}
   weaponPrefab: {fileID: 9215425247971391935, guid: b64a22d2102abb84aa30b976c1e4c682, type: 3}
   Damage: 0
-  FireRate: 0
+  FireRate: 0.1
   RealoadeTime: 0
   AmmoPerMagazine: 0
   Accuracy: 0
-  ProjectileLifeTime: 0
-  ProjectileSpeed: 0
+  ProjectileLifeTime: 1
+  ProjectileSpeed: 25
   ProjectilePrefab: {fileID: 7890867244237525666, guid: 81fc479345b423f4ab88b7b0a6477f14, type: 3}
