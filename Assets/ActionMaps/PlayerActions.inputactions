@@ -31,6 +31,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "CursorRelease",
+                    "type": "Button",
+                    "id": "2efa2ab2-69b3-4205-a06b-8b83a580bf21",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -159,10 +168,21 @@
                     "name": "",
                     "id": "56a9dcda-1696-493b-b5ee-0bcd091c680b",
                     "path": "<Mouse>/leftButton",
-                    "interactions": "",
+                    "interactions": "Press(pressPoint=1.401298E-45)",
                     "processors": "",
                     "groups": "",
                     "action": "CursorClick",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "46d524ae-9475-47ec-80bc-60dc2cabc2ae",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "Press(pressPoint=1.401298E-45,behavior=1)",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CursorRelease",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
