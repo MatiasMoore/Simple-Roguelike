@@ -1,40 +1,53 @@
+using Codice.CM.Common;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Collider2D))]
-public class Projectile : MonoBehaviour
+public abstract class Projectile : MonoBehaviour
 {
-    [SerializeField]
-    private float _accelerationTime = 0.1f;
-    [SerializeField]
-    private float _decelerationTime = 0.1f;
-    [SerializeField]
-    private float _changeDirectionTime = 5f;
-    [SerializeField]
-    private float _maxSpeed = 5f;
+    private Collider2D _collider;
+    private Rigidbody2D _rigidbody;
 
     [SerializeField]
-    private float _aliveTime = 5f;
+    private float _damage = 1;
+    [SerializeField]
+    private LayerMask _whatDestroysMe;
 
-    private float _timer;
-
-    private ObjectMovement _objectMovement;
-
-    public void Start()
+    void Start()
     {
-        _objectMovement = new Idle(GetComponent<Rigidbody2D>(), _accelerationTime, _decelerationTime, _changeDirectionTime, _maxSpeed);
+        _collider = GetComponent<Collider2D>();
+        _rigidbody = GetComponent<Rigidbody2D>();
     }
-    
-    public void Update()
-    {  
-        _timer += Time.deltaTime;
-        _objectMovement = _objectMovement.Update(transform.right, _timer);
-        if (_timer >= _aliveTime)
+
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        IDamagable damagable = collision.GetComponent<IDamagable>();
+        if (damagable != null)
         {
-            Destroy(gameObject);
+            damagable.TakeDamage(_damage);
+        }
+        
+        if ((_whatDestroysMe.value & 1 << collision.gameObject.layer) > 0)
+        {
+            DestroyMe();
         }
     }
 
+    public virtual void DestroyMe()
+    {
+        Destroy(gameObject);
+    }
+
+    public void SetDamage(float damage)
+    {
+        _damage = damage;
+    }
+
+    public float GetDamage()
+    {
+        return _damage;
+    }
 }
