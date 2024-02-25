@@ -21,7 +21,7 @@ public class InputSystem : MonoBehaviour
 
     private InputAction _cursorClick;
 
-    public UnityEvent<Vector2> CursorClickEvent;
+    public UnityAction<Vector2> CursorClickEvent;
 
     [SerializeField]
     private bool _isDebugOn;

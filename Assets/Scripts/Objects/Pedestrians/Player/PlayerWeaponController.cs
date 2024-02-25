@@ -10,7 +10,7 @@ public class PlayerWeaponController : MonoBehaviour
 
     public void Init(InputSystem inputSystem)
     {
-        InputSystem.Instance.CursorClickEvent.AddListener(Fire);
+        InputSystem.Instance.CursorClickEvent += Fire;
         SetActiveWeapon(_weapon);
     }
 
