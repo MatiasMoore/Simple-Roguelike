@@ -981,8 +981,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3048325e33307e4db3197737984dc70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _name: wall
-  _interactWith: []
+  _id: 0
+  _interactWith: 
   _distToNeighbour: 1
   _updateOnTransformChange: 0
   _updateOnEnable: 1

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 
@@ -6,10 +7,10 @@ using UnityEngine;
 public class SpriteConfigurator : MonoBehaviour
 {
     [SerializeField]
-    private string _name;
+    private int _id = 0;
 
     [SerializeField]
-    private List<string> _interactWith;
+    private List<int> _interactWith;
 
     [SerializeField]
     private float _distToNeighbour = 1f;
@@ -78,6 +79,14 @@ public class SpriteConfigurator : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        if (!_updateOnEnable)
+            return;
+
+        UpdateSprite();
+    }
+
     private void OnEnable()
     {
         if (!_updateOnEnable) 
@@ -92,6 +101,21 @@ public class SpriteConfigurator : MonoBehaviour
             return;
 
         UpdateSprite();
+    }
+
+    public void InteractWithId(int newId)
+    {
+        _interactWith.Add(newId);
+    }
+
+    public List<int> GetInteractList()
+    {
+        return _interactWith;
+    }
+
+    public void SetId(int newId)
+    {
+        _id = newId;
     }
 
     public void UpdateSprite()
@@ -199,7 +223,7 @@ public class SpriteConfigurator : MonoBehaviour
 
     private bool ShouldInteractWith(SpriteConfigurator otherConf)
     {
-        return _name == otherConf._name || (_interactWith.Contains(otherConf._name) && otherConf._interactWith.Contains(_name));
+        return _id == otherConf._id || _interactWith.Intersect(otherConf._interactWith).Any();
     }
 }
 
