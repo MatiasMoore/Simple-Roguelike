@@ -34,4 +34,30 @@ public class Bullet : Projectile
             Destroy(gameObject);
         }
     }
+
+    public void SetAccelerationTime(float accelerationTime)
+    {
+        _accelerationTime = accelerationTime;
+    }
+
+    public void SetDecelerationTime(float decelerationTime)
+    {
+        _decelerationTime = decelerationTime;
+    }
+
+    public void SetChangeDirectionTime(float changeDirectionTime)
+    {
+        _changeDirectionTime = changeDirectionTime;
+    }
+
+    public void SetMaxSpeed(float maxSpeed)
+    {
+        _maxSpeed = maxSpeed;
+    }
+
+    public void SetAliveTime(float aliveTime)
+    {
+        _aliveTime = aliveTime;
+    }
+
 }
