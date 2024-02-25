@@ -14,7 +14,11 @@ public class Pedestrian : MonoBehaviour, IDamagable
 
     public void TakeDamage(float damage)
     {
-        _hp -= damage;
+        if (_hp > 0)
+        {
+            _hp -= damage;
+        }
+
         if (_hp <= 0)
         {
             Die();
