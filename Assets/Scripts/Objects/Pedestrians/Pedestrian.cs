@@ -10,7 +10,7 @@ public class Pedestrian : MonoBehaviour, IDamagable
     [SerializeField]
     private float _hp;
 
-    public UnityEvent OnDeath;
+    public UnityAction OnDeath;
 
     public void TakeDamage(float damage)
     {
