@@ -31,7 +31,7 @@ public class Bullet : Projectile
     public void Update()
     {
         _timer += Time.deltaTime;
-        _objectMovement = _objectMovement.Update(transform.right, _timer);
+        _objectMovement = _objectMovement.Update(transform.right, Time.deltaTime);
         if (_timer >= _aliveTime)
         {
             Destroy(gameObject);
