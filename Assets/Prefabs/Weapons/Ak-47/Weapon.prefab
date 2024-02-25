@@ -162,13 +162,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _damage: 0
-  _fireRate: 0
+  _fireRate: 0.1
   _realoadeTime: 0
   _ammoPerMagazine: 0
   _accuracy: 0
   _projectileLifeTime: 0
   _projectileSpeed: 0
   _projectileSize: 0
-  _sprite: {fileID: 5618187970105640039}
   _projectilePrefab: {fileID: 7890867244237525666, guid: 81fc479345b423f4ab88b7b0a6477f14, type: 3}
   _projectileSpawnPoint: {fileID: 7663821764631104921}
