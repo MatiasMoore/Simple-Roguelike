@@ -10,7 +10,6 @@ public class PlayerWeaponController : MonoBehaviour
 
     public void Init(InputSystem inputSystem)
     {
-        InputSystem.Instance.CursorClickEvent += Fire;
         SetActiveWeapon(_weapon);
     }
 
@@ -22,6 +21,8 @@ public class PlayerWeaponController : MonoBehaviour
 
     private void Update()
     {
+        if (InputSystem.IsCursorPressed)
+            Fire(InputSystem.CursorPosition);
         _weapon.RotateWeaponToPoint(InputSystem.CursorPosition);
     }
 
