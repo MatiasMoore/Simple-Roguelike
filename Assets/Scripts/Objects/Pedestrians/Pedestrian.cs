@@ -9,11 +9,8 @@ public class Pedestrian : MonoBehaviour, IDamagable
 {
     [SerializeField]
     private float _hp;
-    [SerializeField]
-    private float damage;
 
     public UnityEvent OnDeath;
-    //TODO: Weapon
 
     public void TakeDamage(float damage)
     {
