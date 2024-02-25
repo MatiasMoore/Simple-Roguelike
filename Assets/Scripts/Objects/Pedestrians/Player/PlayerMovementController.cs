@@ -4,7 +4,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Collider2D))]
-public class PlayerMovementController : Pedestrian
+public class PlayerMovementController : MonoBehaviour
 {
     private Rigidbody2D _rigidbody;
 
