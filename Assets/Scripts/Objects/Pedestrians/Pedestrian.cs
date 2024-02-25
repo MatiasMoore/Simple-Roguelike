@@ -4,7 +4,8 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class Pedestrian : MonoBehaviour
+[RequireComponent(typeof(BoxCollider2D))]
+public class Pedestrian : MonoBehaviour, IDamagable
 {
     [SerializeField]
     private float _hp;
@@ -36,6 +37,8 @@ public class Pedestrian : MonoBehaviour
     private void Die()
     {
         OnDeath?.Invoke();
+        Debug.Log($"Pedestrian {gameObject.name} died");
+        Destroy(gameObject);
     }
 
 }
