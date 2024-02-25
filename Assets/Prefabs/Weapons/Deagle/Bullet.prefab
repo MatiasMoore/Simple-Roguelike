@@ -174,7 +174,7 @@ MonoBehaviour:
   _damage: 1
   _whatDestroysMe:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 192
   _accelerationTime: 0
   _decelerationTime: 0
   _changeDirectionTime: 0
