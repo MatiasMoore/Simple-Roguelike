@@ -8,19 +8,30 @@ public class PlayerTestSceneEntryPoint : MonoBehaviour
     private InputSystem _inputSystem;
 
     [SerializeField]
-    private PlayerMovement _player;
+    private PlayerMovementController _movementController;
+
+    [SerializeField]
+    private PlayerWeaponController _weaponController;
 
     private void Start()
     {
         if (_inputSystem != null)
         {
             _inputSystem.Init();
-            if (_player != null)
+            if (_movementController != null)
             {
-                _player.Init(_inputSystem);
+                _movementController.Init(_inputSystem);
             } else
             {
-                Debug.LogWarning("PlayerMovement is not assigned");
+                Debug.LogWarning("PlayerMovementController is not assigned");
+            }
+
+            if (_weaponController != null)
+            {
+                _weaponController.Init(_inputSystem);
+            } else
+            {
+                Debug.LogWarning("PlayerWeaponController is not assigned");
             }
         } else
         {
