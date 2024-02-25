@@ -5,16 +5,19 @@ using UnityEngine;
 public class Bullet : Projectile
 {
     [SerializeField]
-    private float _accelerationTime = 0.1f;
-    [SerializeField]
-    private float _decelerationTime = 0.1f;
-    [SerializeField]
-    private float _changeDirectionTime = 5f;
-    [SerializeField]
-    private float _maxSpeed = 5f;
+    private float _accelerationTime;
 
     [SerializeField]
-    private float _aliveTime = 5f;
+    private float _decelerationTime;
+
+    [SerializeField]
+    private float _changeDirectionTime;
+
+    [SerializeField]
+    private float _maxSpeed;
+
+    [SerializeField]
+    private float _aliveTime;
 
     private float _timer;
 
