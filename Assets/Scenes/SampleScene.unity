@@ -372,17 +372,18 @@ MonoBehaviour:
   _deleteCurrentLevel: 0
   _streamLevel: 0
   _stopStreamingLevel: 0
-  _initialWidth: 500
-  _initialHeight: 500
+  gap: 1
+  _initialWidth: 20
+  _initialHeight: 20
   _initialCenter: {x: 0, y: 0}
-  _iterCount: 15
+  _iterCount: 5
   _cutOffSomeLeafs: 0
-  _seed: 0
+  _seed: 526868805
   _randomiseSeed: 1
   _drawRoomEdges: 1
   _drawRoomCenter: 0
-  _drawAllTiles: 0
-  _drawPerimeterTiles: 0
+  _drawAllTiles: 1
+  _drawGridPoints: 0
   _drawCenterConnections: 0
   _drawRoomConnections: 1
   _levelBuilder: {fileID: 2041042453}

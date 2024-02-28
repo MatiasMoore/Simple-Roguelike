@@ -26,6 +26,8 @@ public class LevelGeneratorMono : MonoBehaviour
 
     [Header("Generation settings")]
     [SerializeField]
+    private int gap = 1;
+    [SerializeField]
     private int _initialWidth = 50;
     [SerializeField]
     private int _initialHeight = 50;
@@ -48,14 +50,16 @@ public class LevelGeneratorMono : MonoBehaviour
     [SerializeField]
     private bool _drawAllTiles = false;
     [SerializeField]
-    private bool _drawPerimeterTiles = false;
+    private bool _drawAllGridPoints = false;
+    [SerializeField]
+    private bool _drawPerimeterGridPoints = false;
     [SerializeField]
     private bool _drawCenterConnections = false;
     [SerializeField]
     private bool _drawRoomConnections = true;
 
     private LevelGenerator _generator;
-    private Task<RoomNode> _levelTask;
+    private Task<List<RoomBlueprint>> _levelTask;
 
     [Header("Helper classes")]
     [SerializeField]
@@ -66,6 +70,12 @@ public class LevelGeneratorMono : MonoBehaviour
     private void Start()
     {
         _generator = new LevelGenerator();
+    }
+
+    private void Update()
+    {
+        if (_levelTask != null && _levelTask.IsFaulted)
+            Debug.LogError(_levelTask.Exception);
     }
 
     private void FixedUpdate()
@@ -91,7 +101,7 @@ public class LevelGeneratorMono : MonoBehaviour
         if (_buildLevel)
         {
             if (_levelTask != null && _levelTask.IsCompleted)
-                _levelBuilder.BuildLevelFromNodes(_levelTask.Result);
+                _levelBuilder.BuildLevelFromBlueprints(_levelTask.Result);
             _buildLevel = false;
         }
 
@@ -119,13 +129,12 @@ public class LevelGeneratorMono : MonoBehaviour
     {
         if (_randomiseSeed) 
             _seed = Random.Range(int.MinValue, int.MaxValue);
-
-        _levelTask = _generator.GenerateNewLevel(_initialCenter, _initialWidth, _initialHeight, _iterCount, _cutOffSomeLeafs, _seed);
+        _levelTask = _generator.GenerateNewLevel(gap * _initialCenter, gap * _initialWidth, gap * _initialHeight, new SimpleGrid(gap), _iterCount, _cutOffSomeLeafs, _seed);
     }
 
     private void OnDrawGizmosSelected()
     {
         if (_levelTask != null && _levelTask.IsCompleted)
-            LevelGenerator.DebugDrawLevel(_levelTask.Result, _drawRoomEdges, _drawRoomCenter, _drawAllTiles, _drawPerimeterTiles, _drawCenterConnections, _drawRoomConnections);
+            _generator.DebugDrawLevel(_levelTask.Result, _drawRoomEdges, _drawRoomCenter, _drawAllGridPoints, _drawPerimeterGridPoints, _drawAllTiles, _drawCenterConnections, _drawRoomConnections);
     }
 }

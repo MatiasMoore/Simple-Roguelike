@@ -13,10 +13,10 @@ public class LevelStreaming : MonoBehaviour
     [SerializeField]
     private LevelBuilder _builder;
 
-    public void StartStreamingLevel(RoomNode rootNode)
+    public void StartStreamingLevel(List<RoomBlueprint> blueprints)
     {
         StopStreaming();
-        StartCoroutine(StreamLevelCoroutine(rootNode, _focus, _builder));
+        StartCoroutine(StreamLevelCoroutine(blueprints, _focus, _builder));
     }
 
     public void StopStreaming()
@@ -24,10 +24,10 @@ public class LevelStreaming : MonoBehaviour
         StopAllCoroutines();
     }
 
-    private IEnumerator StreamLevelCoroutine(RoomNode rootNode, Transform focus, LevelBuilder builder)
+    private IEnumerator StreamLevelCoroutine(List<RoomBlueprint> blueprints, Transform focus, LevelBuilder builder)
     {
-        var rooms = rootNode.GetLeaves();
-        var sortTask = GetSortedLeavesTask(rooms, focus.position);
+        var rooms = new List<RoomBlueprint>(blueprints);
+        var sortTask = GetSortedRooms(rooms, focus.position);
         int roomsChecked = 0;
         const int maxRoomsChecked = int.MaxValue;
         while (true)
@@ -35,7 +35,7 @@ public class LevelStreaming : MonoBehaviour
             if (sortTask.IsCompleted)
             {
                 rooms = sortTask.Result;
-                sortTask = GetSortedLeavesTask(rooms, focus.position);
+                sortTask = GetSortedRooms(rooms, focus.position);
                 Debug.Log("Sorted!");
             }
             else
@@ -69,10 +69,10 @@ public class LevelStreaming : MonoBehaviour
         }
     }
 
-    private Task<List<RoomNode>> GetSortedLeavesTask(List<RoomNode> roomsOrig, Vector2 centerPos)
+    private Task<List<RoomBlueprint>> GetSortedRooms(List<RoomBlueprint> roomsOrig, Vector2 centerPos)
     {
-        var rooms = new List<RoomNode>(roomsOrig);
-        var t = new Task<List<RoomNode>>(() =>
+        var rooms = new List<RoomBlueprint>(roomsOrig);
+        var t = new Task<List<RoomBlueprint>>(() =>
         {
             rooms.Sort((a, b) =>
             {

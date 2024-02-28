@@ -10,7 +10,7 @@ public class SpriteConfigurator : MonoBehaviour
     private int _id = 0;
 
     [SerializeField]
-    private List<int> _interactWith;
+    private List<int> _interactWith = new List<int>();
 
     [SerializeField]
     private float _distToNeighbour = 1f;
