@@ -1,3 +1,4 @@
+using log4net.Util;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,9 +6,6 @@ using UnityEngine;
 public class Linear : ObjectMovementMainState
 {
     private Vector2 _directionAtStart = Vector2.zero;
-    public Linear(Rigidbody2D rigidbody, float accelerationTime, float decelerationTime, float changeDirectionTime, float maxSpeed) : base(rigidbody, accelerationTime, decelerationTime, changeDirectionTime, maxSpeed)
-    {
-    }
 
     public Linear(ObjectMovementMainState objectMovement) : base(objectMovement)
     {
@@ -36,7 +34,9 @@ public class Linear : ObjectMovementMainState
         }
 
         // Moving
-        GetRigidbody().velocity = GetMaxSpeed() * direction;
+        Vector2 velocity = GetMaxSpeed() * direction;
+        velocity = AdjustVelocityByObstacles(velocity, direction);
+        GetRigidbody().velocity = velocity;
 
         return this;
     }

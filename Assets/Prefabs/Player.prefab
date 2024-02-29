@@ -142,6 +142,9 @@ MonoBehaviour:
   _decelerationTime: 0.3
   _changeDirectionTime: 0.1
   _maxSpeed: 5
+  _layerMask:
+    serializedVersion: 2
+    m_Bits: 128
   IsDynamicUpdateData: 0
 --- !u!1 &7817182724212016421
 GameObject:

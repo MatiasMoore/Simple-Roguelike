@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(Collider2D))]
 public class ObjectMovement : MonoBehaviour
 {
     [SerializeField]
@@ -17,11 +18,16 @@ public class ObjectMovement : MonoBehaviour
     [SerializeField]
     private float _maxSpeed = 5f;
 
+    [SerializeField]
+    private LayerMask _layerMask = 128;
+
     private ObjectMovementMainState _objectMovementState;
 
     private Rigidbody2D _rigidbody;
 
     private Vector2 _direction;
+
+    private Collider2D _collider;
 
     [SerializeField]
     private bool IsDynamicUpdateData = false;
@@ -42,8 +48,9 @@ public class ObjectMovement : MonoBehaviour
 
     public void Init()
     {
+        _collider = GetComponent<Collider2D>();
         _rigidbody = GetComponent<Rigidbody2D>();
-        _objectMovementState = new Idle(_rigidbody, _accelerationTime, _decelerationTime, _changeDirectionTime, _maxSpeed);
+        _objectMovementState = new Idle(_rigidbody, _accelerationTime, _decelerationTime, _changeDirectionTime, _maxSpeed, _layerMask, _collider);
     }
 
     private void Update()

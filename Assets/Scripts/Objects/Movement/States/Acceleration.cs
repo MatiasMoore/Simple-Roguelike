@@ -13,10 +13,6 @@ public class Acceleration : ObjectMovementMainState
 
     private Vector2 _directionAtStart = Vector2.zero;
 
-    public Acceleration(Rigidbody2D rigidbody, float accelerationTime, float decelerationTime, float changeDirectionTime, float maxSpeed) : base(rigidbody, accelerationTime, decelerationTime, changeDirectionTime, maxSpeed)
-    {
-    }
-
     public Acceleration(ObjectMovementMainState objectMovement) : base(objectMovement)
     {
     }
@@ -48,7 +44,9 @@ public class Acceleration : ObjectMovementMainState
         // Moving
         if (_timer < GetAccelerationTime())
         {
-            GetRigidbody().velocity = InterpolateVector(_velocityAtStart, _targetVelocity, _timer / GetAccelerationTime());
+            Vector2 velocity = InterpolateVector(_velocityAtStart, _targetVelocity, _timer / GetAccelerationTime());
+            velocity = AdjustVelocityByObstacles(velocity, direction);
+            GetRigidbody().velocity = velocity;
             return this;
         }
                 
