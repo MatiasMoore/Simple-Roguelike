@@ -2,60 +2,37 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(Collider2D))]
+[RequireComponent(typeof(ObjectMovement))]
 public class Bullet : Projectile
 {
-    [SerializeField]
-    private float _accelerationTime;
-
-    [SerializeField]
-    private float _decelerationTime;
-
-    [SerializeField]
-    private float _changeDirectionTime;
-
-    [SerializeField]
-    private float _maxSpeed;
-
     [SerializeField]
     private float _aliveTime;
 
     private float _timer;
 
-    private ObjectMovementMainState _objectMovement;
+    private ObjectMovement _objectMovement;
 
     public void Start()
     {
-        _objectMovement = new Idle(GetComponent<Rigidbody2D>(), _accelerationTime, _decelerationTime, _changeDirectionTime, _maxSpeed);
+        _objectMovement = GetComponent<ObjectMovement>();
+        _objectMovement.Init();
     }
 
     public void Update()
     {
         _timer += Time.deltaTime;
-        _objectMovement = _objectMovement.Update(transform.right, Time.deltaTime);
+        _objectMovement.SetDirection(transform.right);
         if (_timer >= _aliveTime)
         {
             Destroy(gameObject);
         }
     }
 
-    public void SetAccelerationTime(float accelerationTime)
+    public ObjectMovement GetObjectMovement()
     {
-        _accelerationTime = accelerationTime;
-    }
-
-    public void SetDecelerationTime(float decelerationTime)
-    {
-        _decelerationTime = decelerationTime;
-    }
-
-    public void SetChangeDirectionTime(float changeDirectionTime)
-    {
-        _changeDirectionTime = changeDirectionTime;
-    }
-
-    public void SetMaxSpeed(float maxSpeed)
-    {
-        _maxSpeed = maxSpeed;
+        return _objectMovement;
     }
 
     public void SetAliveTime(float aliveTime)

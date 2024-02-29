@@ -13,26 +13,33 @@ public class Rifle : Weapon
     private Transform _projectileSpawnPoint;
 
     private float _timer;
+    
     private bool _isReadyToFire;
+
     public override void Init()
     {
+        ObjectMovement bulletObjectMovementComponent = Data.ProjectilePrefab.GetComponent<ObjectMovement>();
         Bullet bullet = Data.ProjectilePrefab.GetComponent<Bullet>();
-        bullet.SetAccelerationTime(0);
-        bullet.SetDecelerationTime(0);
-        bullet.SetChangeDirectionTime(0);
-        bullet.SetMaxSpeed(Data.ProjectileSpeed);
+
+        bulletObjectMovementComponent.SetAccelerationTime(0);
+        bulletObjectMovementComponent.SetDecelerationTime(0);
+        bulletObjectMovementComponent.SetChangeDirectionTime(0);
+        bulletObjectMovementComponent.SetMaxSpeed(Data.ProjectileSpeed);
         bullet.SetAliveTime(Data.ProjectileLifeTime);
         bullet.SetDamage(Data.Damage);
+
         gameObject.SetActive(true);
         _localScale = transform.localScale;     
         _isReadyToFire = true;
     }
+
     public override void Enter()
     {
         Debug.Log($"Weapon {transform.name} enter.");
         Fire();
 
     }
+
     public override void RotateWeaponToPoint(Vector2 direction)
     {
         Vector2 directionToCursor = (direction - (Vector2)transform.position).normalized;
@@ -49,7 +56,6 @@ public class Rifle : Weapon
 
         transform.rotation = Quaternion.Euler(0, 0, angle);
     }
-
 
     private void Fire()
     {
@@ -74,7 +80,6 @@ public class Rifle : Weapon
         }
 
     }
-
     public override void Deinit()
     {
         gameObject.SetActive(false);
