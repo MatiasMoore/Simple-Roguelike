@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class ObjectMovement
+public abstract class ObjectMovementMainState
 {
     private Rigidbody2D _rigidbody;
 
@@ -11,7 +11,7 @@ public abstract class ObjectMovement
     private float _changeDirectionTime = 0.1f;
     private float _maxSpeed = 5f;
 
-    public ObjectMovement( Rigidbody2D rigidbody, float accelerationTime, float decelerationTime, float changeDirectionTime,  float maxSpeed)
+    public ObjectMovementMainState( Rigidbody2D rigidbody, float accelerationTime, float decelerationTime, float changeDirectionTime,  float maxSpeed)
     {
         _rigidbody = rigidbody;
         _accelerationTime = accelerationTime;
@@ -20,7 +20,7 @@ public abstract class ObjectMovement
         _maxSpeed = maxSpeed;
     }
 
-    public ObjectMovement(ObjectMovement objectMovement)
+    public ObjectMovementMainState(ObjectMovementMainState objectMovement)
     {
         _rigidbody = objectMovement.GetRigidbody();
         _accelerationTime = objectMovement.GetAccelerationTime();
@@ -28,7 +28,7 @@ public abstract class ObjectMovement
         _changeDirectionTime = objectMovement.GetChangeDirectionTime();
         _maxSpeed = objectMovement.GetMaxSpeed();
     }
-    public abstract ObjectMovement Update(Vector2 direction, float deltaTime);
+    public abstract ObjectMovementMainState Update(Vector2 direction, float deltaTime);
 
     public void SetMaxSpeed(float maxSpeed)
     {

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ChangeDirection : ObjectMovement
+public class ChangeDirection : ObjectMovementMainState
 {
     private float _timer = 0f;
 
@@ -17,11 +17,11 @@ public class ChangeDirection : ObjectMovement
 
     }
 
-    public ChangeDirection(ObjectMovement objectMovement) : base(objectMovement)
+    public ChangeDirection(ObjectMovementMainState objectMovement) : base(objectMovement)
     {
 
     }
-    public override ObjectMovement Update(Vector2 direction, float deltaTime)
+    public override ObjectMovementMainState Update(Vector2 direction, float deltaTime)
     {
         _timer += deltaTime;
 

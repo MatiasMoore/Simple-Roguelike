@@ -22,7 +22,7 @@ public class PlayerMovementController : MonoBehaviour
     [SerializeField]
     private float _maxSpeed = 5f;
 
-    private ObjectMovement _objectMovement;
+    private ObjectMovementMainState _objectMovement;
 
     // START OF DEBUG FIELDS: \\
     enum MovementState

@@ -21,7 +21,7 @@ public class Bullet : Projectile
 
     private float _timer;
 
-    private ObjectMovement _objectMovement;
+    private ObjectMovementMainState _objectMovement;
 
     public void Start()
     {

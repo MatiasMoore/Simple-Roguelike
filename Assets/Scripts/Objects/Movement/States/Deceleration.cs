@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Deceleration : ObjectMovement
+public class Deceleration : ObjectMovementMainState
 {
     private float _timer = 0f;
 
@@ -15,13 +15,13 @@ public class Deceleration : ObjectMovement
 
     }
 
-    public Deceleration(ObjectMovement objectMovement) : base(objectMovement)
+    public Deceleration(ObjectMovementMainState objectMovement) : base(objectMovement)
     {
         _velocityAtStart = GetRigidbody().velocity;
         _timer = GetDecelerationTime() - _velocityAtStart.magnitude / GetMaxSpeed() * GetDecelerationTime();
     }   
 
-    public override ObjectMovement Update(Vector2 direction, float deltaTime)
+    public override ObjectMovementMainState Update(Vector2 direction, float deltaTime)
     {
         _timer += deltaTime;
 
