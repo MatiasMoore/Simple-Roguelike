@@ -112,6 +112,11 @@ public class ObjectMovement : MonoBehaviour
         return _changeDirectionTime;
     }
 
+    public float GetCurrentSpeed()
+    {
+        return _rigidbody.velocity.magnitude;
+    }
+
     public void UpdateDebug()
     {
 
