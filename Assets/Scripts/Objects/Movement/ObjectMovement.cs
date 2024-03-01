@@ -75,6 +75,10 @@ public class ObjectMovement : MonoBehaviour
     public void SetMaxSpeed(float maxSpeed)
     {
         _maxSpeed = maxSpeed;
+        if (_objectMovementState != null)
+        {
+            _objectMovementState.SetMaxSpeed(maxSpeed);
+        }
     }
 
     public float GetMaxSpeed()
@@ -85,6 +89,10 @@ public class ObjectMovement : MonoBehaviour
     public void SetAccelerationTime(float accelerationTime)
     {
         _accelerationTime = accelerationTime;
+        if (_objectMovementState != null)
+        {
+            _objectMovementState.SetAccelerationTime(accelerationTime);
+        }   
     }
 
     public float GetAccelerationTime()
@@ -95,6 +103,10 @@ public class ObjectMovement : MonoBehaviour
     public void SetDecelerationTime(float decelerationTime)
     {
         _decelerationTime = decelerationTime;
+        if (_objectMovementState != null)
+        {
+            _objectMovementState.SetDecelerationTime(decelerationTime);
+        }
     }
 
     public float GetDecelerationTime()
@@ -105,6 +117,10 @@ public class ObjectMovement : MonoBehaviour
     public void SetChangeDirectionTime(float changeDirectionTime)
     {
         _changeDirectionTime = changeDirectionTime;
+        if (_objectMovementState != null)
+        {
+            _objectMovementState.SetChangeDirectionTime(changeDirectionTime);
+        }
     }
 
     public float GetChangeDirectionTime()
