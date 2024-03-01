@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
@@ -57,40 +58,27 @@ public class LevelBuilder : MonoBehaviour
         {
             yield return StartCoroutine(BuildCorridor(corridor, parent));
         }
-        _builtRooms.Add((parent.gameObject, room));
+        _builtRooms.Add(room, parent.gameObject);
 
         yield break;
     }
 
-    private List<(GameObject, RoomBlueprint)> _builtRooms = new List<(GameObject, RoomBlueprint)>();
+    private Dictionary<RoomBlueprint, GameObject> _builtRooms = new Dictionary<RoomBlueprint, GameObject>();
+
+    public List<RoomBlueprint> GetBuiltRooms()
+    {
+        return _builtRooms.Keys.ToList();
+    }
 
     public bool IsRoomBuilt(RoomBlueprint room)
     {
-        foreach (var tuple in _builtRooms)
-        {
-            GameObject obj;
-            RoomBlueprint node;
-            (obj, node) = tuple;
-            if (node == room)
-                return true;
-        }
-        return false;
+        return _builtRooms.Keys.Contains(room);
     }
 
     public IEnumerator DestroyBuiltRoom(RoomBlueprint room)
     {
-        foreach (var tuple in _builtRooms)
-        {
-            GameObject obj;
-            RoomBlueprint node;
-            (obj, node) = tuple;
-            if (node == room)
-            {
-                _builtRooms.Remove(tuple);
-                yield return DestroyRoomObj(obj);
-                yield break;
-            }
-        }
+        yield return DestroyRoomObj(_builtRooms[room]);
+        _builtRooms.Remove(room);
     }
 
     private IEnumerator DestroyRoomObj(GameObject roomObj)
