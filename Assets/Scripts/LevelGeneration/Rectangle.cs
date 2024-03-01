@@ -52,22 +52,22 @@ public class Rectangle
     {
         var possibleValues = new List<float>();
 
-        var start = allignmentGrid.SnapToGridOnX(min);
+        var start = allignmentGrid.SnapToGrid(min);
         if (start < min)
-            start += allignmentGrid.GetXGap();
+            start += allignmentGrid.GetGap();
 
         var currentX = start;
         while (currentX <= max)
         {
             possibleValues.Add(currentX);
-            currentX += allignmentGrid.GetXGap();
+            currentX += allignmentGrid.GetGap();
         }
         return possibleValues;
     }
 
     private (List<float> possibleXValues, List<float> possibleYValues) GetPossibleXYValuesInGrid(SimpleGrid allignmentGrid)
     {
-        float tileSize = allignmentGrid.GetXGap();
+        float tileSize = allignmentGrid.GetGap();
         float maxX = _center.x + _width / 2 - tileSize / 2;
         float minX = _center.x - _width / 2 + tileSize / 2;
         float maxY = _center.y + _height / 2 - tileSize / 2;

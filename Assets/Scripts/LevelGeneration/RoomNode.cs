@@ -72,7 +72,7 @@ public class RoomNode
 
         if (direction == SliceDirection.vertical)
         {
-            float firstHalf = allignmentGrid.SnapToGridOnX(firstRatio * (_bounds.GetWidth() / (firstRatio + secondRatio)));
+            float firstHalf = allignmentGrid.SnapToGrid(firstRatio * (_bounds.GetWidth() / (firstRatio + secondRatio)));
             float secondHalf = _bounds.GetWidth() - firstHalf;
 
             if (Mathf.Min(firstHalf, secondHalf) < minSize)
@@ -86,7 +86,7 @@ public class RoomNode
         }
         else
         {
-            float firstHalf = allignmentGrid.SnapToGridOnY(firstRatio * (_bounds.GetHeight() / (firstRatio + secondRatio)));
+            float firstHalf = allignmentGrid.SnapToGrid(firstRatio * (_bounds.GetHeight() / (firstRatio + secondRatio)));
             float secondHalf = _bounds.GetHeight() - firstHalf;
 
             if (Mathf.Min(firstHalf, secondHalf) < minSize)

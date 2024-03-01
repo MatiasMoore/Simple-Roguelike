@@ -111,10 +111,10 @@ public class RoomBlueprint
         var points = new List<Vector2>();
 
         var ofs = new Vector2(.5f, .5f);
-        if (allignmentGrid.GetXGap() == 1)
+        if (allignmentGrid.GetGap() == 1)
             ofs = Vector2.zero;
 
-        var bounds = new Rectangle(ofs, allignmentGrid.GetXGap(), allignmentGrid.GetXGap());
+        var bounds = new Rectangle(ofs, allignmentGrid.GetGap(), allignmentGrid.GetGap());
         var localPoints = bounds.GetAllGridPoints(new SimpleGrid(1));
         foreach (var localPoint in localPoints)
         {

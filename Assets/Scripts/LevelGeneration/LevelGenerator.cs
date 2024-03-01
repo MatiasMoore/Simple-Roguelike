@@ -184,7 +184,7 @@ public class LevelGenerator
                 foreach (var leaf in leaves)
                 {
                     var direction = leaf._bounds.GetHeight() > leaf._bounds.GetWidth() ? RoomNode.SliceDirection.horizontal : RoomNode.SliceDirection.vertical;
-                    leaf.Slice(direction, _random.Next(1, 4), _random.Next(1, 4), _allignmentGrid, 4 * _allignmentGrid.GetXGap());
+                    leaf.Slice(direction, _random.Next(1, 4), _random.Next(1, 4), _allignmentGrid, 4 * _allignmentGrid.GetGap());
 
                     if (tokenSource.Token.IsCancellationRequested)
                         tokenSource.Token.ThrowIfCancellationRequested();
@@ -274,7 +274,7 @@ public class LevelGenerator
 
                         if (!isDiagonal)
                         {
-                            connectingGridPoints = CreatePath(firstRoomTile, secondRoomTile, _allignmentGrid.GetXGap());
+                            connectingGridPoints = CreatePath(firstRoomTile, secondRoomTile, _allignmentGrid.GetGap());
                         }
                         else
                         {
@@ -282,9 +282,9 @@ public class LevelGenerator
                             if (_random.Next(0, 2) == 1)
                                 middlePoint = new Vector2(secondRoomTile.x, firstRoomTile.y);
 
-                            connectingGridPoints = CreatePath(firstRoomTile, middlePoint, _allignmentGrid.GetXGap());
+                            connectingGridPoints = CreatePath(firstRoomTile, middlePoint, _allignmentGrid.GetGap());
                             connectingGridPoints.Remove(middlePoint);
-                            connectingGridPoints.AddRange(CreatePath(middlePoint, secondRoomTile, _allignmentGrid.GetXGap()));
+                            connectingGridPoints.AddRange(CreatePath(middlePoint, secondRoomTile, _allignmentGrid.GetGap()));
                         }
 
                         

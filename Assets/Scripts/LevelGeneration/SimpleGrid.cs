@@ -2,49 +2,31 @@ using UnityEngine;
 
 public class SimpleGrid
 {
-    private float _xGap, _yGap;
-    /*
-    public SimpleGrid(float xGap, float yGap)
-    {
-        _xGap = xGap;
-        _yGap = yGap;
-    }
-    */
+    private float _gap;
 
     public SimpleGrid(float gap)
     {
-        _xGap = gap;
-        _yGap = gap;
+        _gap = gap;
     }
 
-    public float GetXGap()
+    public float GetGap()
     {
-        return _xGap;
-    }
-
-    public float GetYGap()
-    {
-        return _yGap;
+        return _gap;
     }
 
     public Vector2 SnapToGrid(Vector2 pos)
     {
         var gridAlligned = Vector2.zero;
 
-        gridAlligned.x = SnapToGrid(pos.x, _xGap);
-        gridAlligned.y = SnapToGrid(pos.y, _yGap);
+        gridAlligned.x = SnapToGrid(pos.x, _gap);
+        gridAlligned.y = SnapToGrid(pos.y, _gap);
 
         return gridAlligned;
     }
 
-    public float SnapToGridOnX(float coord)
+    public float SnapToGrid(float coord)
     {
-        return SnapToGrid(coord, _xGap);
-    }
-
-    public float SnapToGridOnY(float coord)
-    {
-        return SnapToGrid(coord, _yGap);
+        return SnapToGrid(coord, _gap);
     }
 
     private float SnapToGrid(float coord, float gap)
@@ -54,7 +36,7 @@ public class SimpleGrid
         float coordAbs = Mathf.Abs(coord);
 
         var remainder = coordAbs / gap - Mathf.Floor(coordAbs / gap);
-        if (remainder < _xGap / 2)
+        if (remainder < gap / 2)
         {
             gridAlligned = Mathf.Floor(coordAbs / gap) * gap;
         }
