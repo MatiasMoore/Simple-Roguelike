@@ -20,16 +20,32 @@ public class Rectangle
         return new Rectangle(scale * _center, scale * _width, scale * _height);
     }
 
-    public bool IsPosWithinBounds(Vector2 pos)
+    private float GetMinX()
     {
-        const float tileSize = 1.0f;
-        float maxX = _center.x + _width / 2 - tileSize / 2;
-        float minX = _center.x - _width / 2 + tileSize / 2;
-        float maxY = _center.y + _height / 2 - tileSize / 2;
-        float minY = _center.y - _height / 2 + tileSize / 2;
+        return _center.x - _width / 2;
+    }
 
-        return pos.x <= maxX && pos.x >= minX
-                    && pos.y <= maxY && pos.y >= minY;
+    private float GetMaxX()
+    {
+        return _center.x + _width / 2;
+    }
+
+    private float GetMinY()
+    {
+        return _center.y - _height / 2;
+    }
+
+    private float GetMaxY()
+    {
+        return _center.y + _height / 2;
+    }
+
+    public bool DoesIntersect(Rectangle rect)
+    {
+        return this.GetMinX() < rect.GetMaxX()
+            && this.GetMaxX() > rect.GetMinX()
+            && this.GetMinY() < rect.GetMaxY()
+            && this.GetMaxY() > rect.GetMinY();
     }
 
     private List<float> GetGridCoordsMinMax(float min, float max, SimpleGrid allignmentGrid)
