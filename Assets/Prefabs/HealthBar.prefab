@@ -162,7 +162,7 @@ GameObject:
   - component: {fileID: 5264969304534707421}
   - component: {fileID: 4509541535486271406}
   - component: {fileID: 339105625161038859}
-  - component: {fileID: 8065132212219495288}
+  - component: {fileID: 3560671993229269482}
   m_Layer: 5
   m_Name: HealthBar
   m_TagString: Untagged
@@ -235,7 +235,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &339105625161038859
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -253,7 +253,7 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &8065132212219495288
+--- !u!114 &3560671993229269482
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -262,11 +262,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1630508536213137359}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e7b2c6e1ea7f96a4cafa6b5950c62b9c, type: 3}
+  m_Script: {fileID: 11500000, guid: bb61a4abd23ce304fb714af05e125c1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxHealth: 1
-  _currentHealth: 1
+  _maxValue: 1
+  _currenValue: 1
   _slider: {fileID: 358806317921733655}
 --- !u!1 &3949687919635720935
 GameObject:
