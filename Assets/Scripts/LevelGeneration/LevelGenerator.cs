@@ -197,6 +197,21 @@ public class LevelGenerator
         return t;
     }
 
+    static private List<Vector2> CreatePath(Vector2 start, Vector2 finish, float step)
+    {
+        var path = new List<Vector2>();
+
+        Vector2 toSecondTile = finish - start;
+        Vector2 toSecondTileDir = toSecondTile.normalized;
+        for (int j = 0; j <= toSecondTile.magnitude / step; j++)
+        {
+            Vector2 newPoint = start + j * step * toSecondTileDir;
+            path.Add(newPoint);
+        }
+
+        return path;
+    }
+
     private Task<List<RoomBlueprint>> GenerateConnectedRooms(RoomNode rootNode, CancellationTokenSource tokenSource)
     {
         var t = new Task<List<RoomBlueprint>>(() =>
@@ -255,13 +270,24 @@ public class LevelGenerator
                         //Create a tile path
                         List<Vector2> connectingGridPoints = new List<Vector2>();
 
-                        Vector2 toSecondTile = secondRoomTile - firstRoomTile;
-                        Vector2 toSecondTileDir = toSecondTile.normalized;
-                        for (int j = 0; j <= toSecondTile.magnitude / _allignmentGrid.GetXGap(); j++)
+                        bool isDiagonal = !(firstRoomTile.x == secondRoomTile.x || firstRoomTile.y == secondRoomTile.y);
+
+                        if (!isDiagonal)
                         {
-                            Vector2 newPoint = firstRoomTile + j * _allignmentGrid.GetXGap() * toSecondTileDir;
-                            connectingGridPoints.Add(newPoint);
+                            connectingGridPoints = CreatePath(firstRoomTile, secondRoomTile, _allignmentGrid.GetXGap());
                         }
+                        else
+                        {
+                            var middlePoint = new Vector2(firstRoomTile.x, secondRoomTile.y);
+                            if (_random.Next(0, 2) == 1)
+                                middlePoint = new Vector2(secondRoomTile.x, firstRoomTile.y);
+
+                            connectingGridPoints = CreatePath(firstRoomTile, middlePoint, _allignmentGrid.GetXGap());
+                            connectingGridPoints.Remove(middlePoint);
+                            connectingGridPoints.AddRange(CreatePath(middlePoint, secondRoomTile, _allignmentGrid.GetXGap()));
+                        }
+
+                        
 
                         //Create a corridor
                         RoomBlueprint.ConnectRoomsWithCorridor(firstBlueprint, secondBlueprint, connectingGridPoints);
