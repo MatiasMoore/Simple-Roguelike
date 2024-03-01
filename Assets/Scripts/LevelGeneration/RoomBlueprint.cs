@@ -102,6 +102,8 @@ public class RoomBlueprint
 
     public Vector2 GetLowerRight() => _bounds.GetLowerRight();
 
+    public bool DoesIntersect(Rectangle rect) => _bounds.DoesIntersect(rect); 
+
     public List<Vector2> GetAllGridPoints() => _bounds.GetAllGridPoints(_allignmentGrid);
 
     private static List<Vector2> GridPointToTiles(Vector2 gridPoint, SimpleGrid allignmentGrid)
