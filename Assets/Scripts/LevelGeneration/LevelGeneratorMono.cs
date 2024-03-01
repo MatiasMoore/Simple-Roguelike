@@ -26,7 +26,7 @@ public class LevelGeneratorMono : MonoBehaviour
 
     [Header("Generation settings")]
     [SerializeField]
-    private int gap = 1;
+    private int _tilesPerPoint = 1;
     [SerializeField]
     private int _initialWidth = 50;
     [SerializeField]
@@ -129,6 +129,8 @@ public class LevelGeneratorMono : MonoBehaviour
     {
         if (_randomiseSeed) 
             _seed = Random.Range(int.MinValue, int.MaxValue);
+
+        var gap = Mathf.Max(_tilesPerPoint / 2, 1);
         _levelTask = _generator.GenerateNewLevel(gap * _initialCenter, gap * _initialWidth, gap * _initialHeight, new SimpleGrid(gap), _iterCount, _cutOffSomeLeafs, _seed);
     }
 
