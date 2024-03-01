@@ -50,6 +50,8 @@ public class Rifle : Weapon
 
         _localScale = transform.localScale;
 
+        _timer = 0;
+
         _fireState = FireState.readyToFire;
     }
 
@@ -142,6 +144,12 @@ public class Rifle : Weapon
     public void SetActiveAmmoBar(bool isActive)
     {
         _ammoBar.gameObject.SetActive(isActive);
+    }
+
+    public void Reload()
+    {
+        _fireState = FireState.realoadPause;
+        _ammoBar.SetActiveReloadBar(true);
     }
 
     public override void Deinit()

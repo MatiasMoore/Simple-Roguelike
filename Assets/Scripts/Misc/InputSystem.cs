@@ -25,9 +25,13 @@ public class InputSystem : MonoBehaviour
 
     private InputAction _cursorRelease;
 
+    private InputAction _reloadAction;
+
     public UnityAction<Vector2> CursorClickEvent;
 
     public UnityAction<Vector2> CursorReleaseEvent;
+
+    public UnityAction ReloadEvent;
 
     [SerializeField]
     private bool _isDebugOn;
@@ -42,9 +46,11 @@ public class InputSystem : MonoBehaviour
         _cursorPosition = _playerInput.actions["CursorPosition"];
         _cursorClick = _playerInput.actions["CursorClick"];
         _cursorRelease = _playerInput.actions["CursorRelease"];
+        _reloadAction = _playerInput.actions["Reload"];
 
         _cursorClick.performed += (var) => OnCursorClick();
         _cursorRelease.performed += (var) => OnCursorRelease();
+        _reloadAction.performed += (var) => ReloadEvent?.Invoke();
 
         Instance = this;
     }

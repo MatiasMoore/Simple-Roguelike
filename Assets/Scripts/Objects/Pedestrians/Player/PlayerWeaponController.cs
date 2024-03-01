@@ -11,6 +11,7 @@ public class PlayerWeaponController : MonoBehaviour
     public void Init(InputSystem inputSystem)
     {
         SetActiveWeapon(_weapon);
+        inputSystem.ReloadEvent += Reload;
     }
 
     public void SetActiveWeapon(Weapon weapon)
@@ -31,6 +32,14 @@ public class PlayerWeaponController : MonoBehaviour
         Debug.Log($"{transform.name} fired to {direction}!");
         _weapon.Enter();
 
+    }
+
+    private void Reload()
+    {
+        if (_weapon is Rifle)
+        {
+            (_weapon as Rifle).Reload();
+        }        
     }
 
 }
