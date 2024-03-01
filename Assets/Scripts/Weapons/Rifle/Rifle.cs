@@ -84,14 +84,8 @@ public class Rifle : Weapon
             _currentAmmo--;
             _ammoBar.SetCurrentAmmo(_currentAmmo);
             _timer = 0;
-            if (_currentAmmo<=0)
-            {
-                _fireState = FireState.realoadPause;
-                _ammoBar.SetActiveReloadBar(true);
-            } else
-            {
-                _fireState = FireState.fireRatePause;
-            }
+            _fireState = FireState.fireRatePause;
+
         }
     }
 
@@ -120,7 +114,14 @@ public class Rifle : Weapon
         _timer += Time.deltaTime;
         if (_timer >= Data.FireRate)
         {
-            _fireState = FireState.readyToFire;
+            if (_currentAmmo <= 0)
+            {
+                _fireState = FireState.realoadPause;
+                _ammoBar.SetActiveReloadBar(true);
+            } else
+            {
+                _fireState = FireState.readyToFire;
+            }       
         }
 
     }
