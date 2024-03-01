@@ -38,8 +38,9 @@ public abstract class ObjectMovementMainState
 
     protected Vector2 AdjustVelocityByObstacles(Vector2 velocity, Vector2 direction)
     {
-        velocity.x = IsObstacleAt(new Vector2(Mathf.RoundToInt(direction.x), 0), 0.1f) ? 0 : velocity.x;
-        velocity.y = IsObstacleAt(new Vector2(0, Mathf.RoundToInt(direction.y)), 0.1f) ? 0 : velocity.y;
+        float distanceToCast = 0.05f;
+        velocity.x = IsObstacleAt(new Vector2(Mathf.RoundToInt(direction.x), 0), distanceToCast) ? 0 : velocity.x;
+        velocity.y = IsObstacleAt(new Vector2(0, Mathf.RoundToInt(direction.y)), distanceToCast) ? 0 : velocity.y;
         
         return velocity;
     }

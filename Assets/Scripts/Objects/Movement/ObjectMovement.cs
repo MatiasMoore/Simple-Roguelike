@@ -53,7 +53,7 @@ public class ObjectMovement : MonoBehaviour
         _objectMovementState = new Idle(_rigidbody, _accelerationTime, _decelerationTime, _changeDirectionTime, _maxSpeed, _layerMask, _collider);
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if(IsDynamicUpdateData)
         {
