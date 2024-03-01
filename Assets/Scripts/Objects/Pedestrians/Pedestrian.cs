@@ -10,13 +10,26 @@ public class Pedestrian : MonoBehaviour, IDamagable
     [SerializeField]
     private float _hp;
 
+    [SerializeField]
+    private float _maxHp;
+
+    [SerializeField]
+    private HealthBar _healthBar;
+
     public UnityAction OnDeath;
+
+    private void Start()
+    {
+        _hp = _maxHp;
+        _healthBar.UpdateHealth(_hp, _maxHp);
+    }
 
     public void TakeDamage(float damage)
     {
         if (_hp > 0)
         {
             _hp -= damage;
+            _healthBar.SetCurrenthealth(_hp);
         }
 
         if (_hp <= 0)
@@ -28,6 +41,13 @@ public class Pedestrian : MonoBehaviour, IDamagable
     public void SetHp(int hp)
     {
         _hp = hp;
+        _healthBar.SetCurrenthealth(_hp);
+    }
+
+    public void SetMaxHp(int maxHp)
+    {
+        _maxHp = maxHp;
+        _healthBar.SetMaxHealth(_maxHp);
     }
 
     public float GetHp()
