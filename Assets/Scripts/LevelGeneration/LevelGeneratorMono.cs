@@ -67,7 +67,21 @@ public class LevelGeneratorMono : MonoBehaviour
     [SerializeField]
     private LevelStreaming _levelStreaming;
 
-    private void Start()
+    public void GenerateAndStreamLevel()
+    {
+        GenerateNewLevel();
+        StartCoroutine(StartStreaming());
+    }
+
+    private IEnumerator StartStreaming()
+    {
+        while (!_levelTask.IsCompleted)
+            yield return null;
+
+        _levelStreaming.StartStreamingLevel(_levelTask.Result);
+    }
+
+    private void Awake()
     {
         _generator = new LevelGenerator();
     }
