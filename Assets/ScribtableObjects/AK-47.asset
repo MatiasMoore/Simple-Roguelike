@@ -18,8 +18,8 @@ MonoBehaviour:
   weaponPrefab: {fileID: 9215425247971391935, guid: b64a22d2102abb84aa30b976c1e4c682, type: 3}
   Damage: 0
   FireRate: 0.1
-  RealoadeTime: 0
-  AmmoPerMagazine: 0
+  RealoadeTime: 2
+  AmmoPerMagazine: 30
   Accuracy: 0
   ProjectileLifeTime: 1
   ProjectileSpeed: 25
