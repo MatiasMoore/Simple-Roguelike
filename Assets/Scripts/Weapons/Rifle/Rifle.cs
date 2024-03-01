@@ -7,14 +7,28 @@ public class Rifle : Weapon
     [SerializeField]
     public RifleData Data;
 
-    private Vector3 _localScale;
+    [SerializeField]
+    private GameObject _weaponHolder;
 
     [SerializeField]
     private Transform _projectileSpawnPoint;
 
+    private int _currentAmmo;
+
+    [SerializeField]
+    private AmmoBar _ammoBar;
+
     private float _timer;
-    
-    private bool _isReadyToFire;
+
+    private Vector3 _localScale;
+
+    private enum FireState
+    {
+        readyToFire,
+        fireRatePause,
+        realoadPause
+    }
+    private FireState _fireState;
 
     public override void Init()
     {
@@ -28,9 +42,15 @@ public class Rifle : Weapon
         bullet.SetAliveTime(Data.ProjectileLifeTime);
         bullet.SetDamage(Data.Damage);
 
+        _currentAmmo = Data.AmmoPerMagazine;
+
+
+        _ammoBar.UpdateAmmo(_currentAmmo, Data.AmmoPerMagazine);
         gameObject.SetActive(true);
-        _localScale = transform.localScale;     
-        _isReadyToFire = true;
+
+        _localScale = transform.localScale;
+
+        _fireState = FireState.readyToFire;
     }
 
     public override void Enter()
@@ -44,42 +64,85 @@ public class Rifle : Weapon
     {
         Vector2 directionToCursor = (direction - (Vector2)transform.position).normalized;
         float angle = Mathf.Atan2(directionToCursor.y, directionToCursor.x) * Mathf.Rad2Deg;
-
         if (angle > 90 || angle < -90)
         {
-            transform.localScale = new Vector3(_localScale.x, -_localScale.y, _localScale.z);
+            _weaponHolder.transform.localScale = new Vector3(_localScale.x, -_localScale.y, _localScale.z);
         }
         else
         {
-            transform.localScale = new Vector3(_localScale.x, _localScale.y, _localScale.z);
+            _weaponHolder.transform.localScale = new Vector3(_localScale.x, _localScale.y, _localScale.z);         
         }
 
-        transform.rotation = Quaternion.Euler(0, 0, angle);
+        _weaponHolder.transform.rotation = Quaternion.Euler(0, 0, angle);
     }
 
     private void Fire()
     {
-        if (_isReadyToFire)
+        if (_fireState == FireState.readyToFire)
         {
-            Instantiate(Data.ProjectilePrefab, _projectileSpawnPoint.position, transform.rotation);
-            _isReadyToFire = false;
-            _timer = Data.FireRate;
+            SpawnProjectile(Data.ProjectilePrefab);
+            _currentAmmo--;
+            _ammoBar.SetCurrentAmmo(_currentAmmo);
+            _timer = 0;
+            if (_currentAmmo<=0)
+            {
+                _fireState = FireState.realoadPause;
+                _ammoBar.SetActiveReloadBar(true);
+            } else
+            {
+                _fireState = FireState.fireRatePause;
+            }
         }
+    }
+
+    private void SpawnProjectile(GameObject projectile)
+    {
+        Instantiate(projectile, _projectileSpawnPoint.position, _weaponHolder.transform.rotation);
     }
 
     private void Update()
     {
-        if (_timer > 0)
+        switch (_fireState)
         {
-            _timer -= Time.deltaTime;
+            case FireState.readyToFire:
+                break;
+            case FireState.fireRatePause:
+                FireRatePause();
+                break;
+            case FireState.realoadPause:
+                RealoadPause();
+                break;
         }
-        else
+    }
+
+    public void FireRatePause()
+    {
+        _timer += Time.deltaTime;
+        if (_timer >= Data.FireRate)
         {
-            _isReadyToFire = true;
-            _timer = 0;
+            _fireState = FireState.readyToFire;
         }
 
     }
+
+    public void RealoadPause()
+    {
+        _timer += Time.deltaTime;
+        _ammoBar.UpdateReloadTime(_timer, Data.RealoadeTime);
+        if (_timer >= Data.RealoadeTime)
+        {
+            _currentAmmo = Data.AmmoPerMagazine;
+            _ammoBar.SetCurrentAmmo(_currentAmmo);
+            _ammoBar.SetActiveReloadBar(false);
+            _fireState = FireState.readyToFire;
+        }
+    }
+
+    public void SetActiveAmmoBar(bool isActive)
+    {
+        _ammoBar.gameObject.SetActive(isActive);
+    }
+
     public override void Deinit()
     {
         gameObject.SetActive(false);
