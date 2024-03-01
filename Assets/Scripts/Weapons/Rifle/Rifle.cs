@@ -97,7 +97,8 @@ public class Rifle : Weapon
 
     private void SpawnProjectile(GameObject projectile)
     {
-        Instantiate(projectile, _projectileSpawnPoint.position, _weaponHolder.transform.rotation);
+        GameObject spawnedProjectile = Instantiate(projectile, _projectileSpawnPoint.position, _weaponHolder.transform.rotation); 
+        spawnedProjectile.GetComponent<Bullet>().Fire(transform.parent.GetComponent<Rigidbody2D>().velocity);
     }
 
     private void Update()
