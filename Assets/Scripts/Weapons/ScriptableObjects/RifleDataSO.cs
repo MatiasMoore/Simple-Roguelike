@@ -13,7 +13,7 @@ public class RifleData : WeaponDataSO
     [SerializeField]
     public float RealoadeTime;
 
-    [SerializeField]
+    [Min(1),SerializeField]
     public int AmmoPerMagazine;
 
     [SerializeField]
