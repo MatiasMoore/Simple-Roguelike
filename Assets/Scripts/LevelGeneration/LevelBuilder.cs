@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.U2D;
 
 public class LevelBuilder : MonoBehaviour
 {
@@ -12,28 +14,25 @@ public class LevelBuilder : MonoBehaviour
     [SerializeField]
     private GameObject _floorTile;
 
-    private int _lastID = 0;
-
-    public void BuildLevelFromNodes(RoomNode rootNode)
+    public void BuildLevelFromBlueprints(List<RoomBlueprint> blueprints)
     {
         DeleteCurrentLevel();
-        StartCoroutine(BuildLevelCoroutine(rootNode));
+        StartCoroutine(BuildLevelCoroutine(blueprints));
     }
 
-    public IEnumerator BuildRoomCoroutine(RoomNode room)
+    public IEnumerator BuildRoomCoroutine(RoomBlueprint room)
     {
         var roomObj = new GameObject("Room");
         roomObj.transform.parent = _tileRoot;
         yield return BuildRoom(room, roomObj.transform);
     }
 
-    private IEnumerator BuildRoom(RoomNode room, Transform parent)
-    {
-        const int maxTilesPerFrame = 10;
-        const int maxCorridorsCreated = 2;
+    const int maxTilesPerFrame = 10;
 
+    private IEnumerator BuildRoom(RoomBlueprint room, Transform parent)
+    {
         //Place all tiles
-        var tilesToFill = room.GetAllGridPoints();
+        var tilesToFill = room.GetAllTiles();
         int tilesCreated = 0;
         foreach (var tilePos in tilesToFill)
         {
@@ -43,7 +42,7 @@ public class LevelBuilder : MonoBehaviour
             if (spriteConf == null)
                 throw new System.Exception("A floor tile doesn't have a sprite configurator!");
 
-            spriteConf.SetId(_lastID);
+            spriteConf.SetId(room.GetId());
 
             tilesCreated++;
             if (tilesCreated >= maxTilesPerFrame)
@@ -53,58 +52,33 @@ public class LevelBuilder : MonoBehaviour
             }
         }
 
-        _lastID++;
-
         //Place corridors
-        int corridorsCreated = 0;
-        var connections = room.GetRoomConnections();
-        for (int i = 0; i < connections.Count; i++)
+        var corridors = room.GetCorridors();
+        foreach (var corridor in corridors)
         {
-            BuildCorridor(connections[i]._startTilePos, connections[i]._endTilePos, parent, _lastID);
-            if (corridorsCreated >= maxCorridorsCreated)
-            {
-                corridorsCreated = 0;
-                yield return null;
-            }
+            yield return StartCoroutine(BuildCorridor(corridor, parent));
         }
-
-        _lastID++;
-
-        _builtRooms.Add((parent.gameObject, room));
+        _builtRooms.Add(room, parent.gameObject);
 
         yield break;
     }
-    /**/
 
-    private List<(GameObject, RoomNode)> _builtRooms = new List<(GameObject, RoomNode)>();
+    private Dictionary<RoomBlueprint, GameObject> _builtRooms = new Dictionary<RoomBlueprint, GameObject>();
 
-    public bool IsRoomBuilt(RoomNode room)
+    public List<RoomBlueprint> GetBuiltRooms()
     {
-        foreach (var tuple in _builtRooms)
-        {
-            GameObject obj;
-            RoomNode node;
-            (obj, node) = tuple;
-            if (node == room)
-                return true;
-        }
-        return false;
+        return _builtRooms.Keys.ToList();
     }
 
-    public IEnumerator DestroyBuiltRoom(RoomNode room)
+    public bool IsRoomBuilt(RoomBlueprint room)
     {
-        foreach (var tuple in _builtRooms)
-        {
-            GameObject obj;
-            RoomNode node;
-            (obj, node) = tuple;
-            if (node == room)
-            {
-                _builtRooms.Remove(tuple);
-                yield return DestroyRoomObj(obj);
-                yield break;
-            }
-        }
+        return _builtRooms.Keys.Contains(room);
+    }
+
+    public IEnumerator DestroyBuiltRoom(RoomBlueprint room)
+    {
+        yield return DestroyRoomObj(_builtRooms[room]);
+        _builtRooms.Remove(room);
     }
 
     private IEnumerator DestroyRoomObj(GameObject roomObj)
@@ -128,10 +102,9 @@ public class LevelBuilder : MonoBehaviour
         yield break;
     }
 
-    public IEnumerator BuildLevelCoroutine(RoomNode rootNode)
+    public IEnumerator BuildLevelCoroutine(List<RoomBlueprint> blueprints)
     {
-        var rooms = rootNode.GetLeaves();
-        foreach (var room in rooms)
+        foreach (var room in blueprints)
             yield return BuildRoomCoroutine(room);
 
         yield break;
@@ -147,7 +120,6 @@ public class LevelBuilder : MonoBehaviour
         }
 
         _builtRooms.Clear();
-        _lastID = 0;
     }
 
     private IEnumerator UpdateTileVisuals()
@@ -175,65 +147,51 @@ public class LevelBuilder : MonoBehaviour
         yield break;
     }
 
-    private void PlotCorridorLine(Vector2 start, Vector2 end, Transform parent, int corridorId)
+    private IEnumerator BuildCorridor(RoomBlueprint.Corridor corridor, Transform parent)
     {
-        const float step = 0.3f;
-        var toEnd = end - start;
-        var toEndDir = toEnd.normalized;
-        Vector2 lastPos = new Vector2(float.MaxValue, float.MaxValue);
-        for (int i = 0; i < toEnd.magnitude / step; i++)
+        int tilesPlaced = 0;
+        var corridorPoints = corridor.GetGridPoints();
+        for (int i = 0; i < corridorPoints.Count - 1; i++)
         {
-            var currentPos = start + i * step * toEndDir;
-            currentPos = new Vector2((int)currentPos.x, (int)currentPos.y);
-
-            if ((currentPos - end).magnitude < 0.1f)
-                break;
-
-            if (lastPos.Equals(currentPos))
-                continue;
-
-            lastPos = currentPos;
-
-            SpriteConfigurator spriteConf;
-
-            var hitCol = Physics2D.OverlapPoint(currentPos);
-
-            if (hitCol == null)
+            var tiles = corridor.GridPointToTiles(corridorPoints[i]);
+            foreach (var tile in tiles)
             {
-                var createdObj = Instantiate(_floorTile, currentPos, Quaternion.identity, parent);
-                spriteConf = createdObj.GetComponent<SpriteConfigurator>();
-            }
-            else
-            {
-                spriteConf = hitCol.GetComponent<SpriteConfigurator>();
-            }
+                var corridorId = corridor.GetId();
+                var hitCol = Physics2D.OverlapPoint(tile);
 
-            spriteConf.InteractWithId(corridorId);
-            spriteConf.UpdateSprite();
+                SpriteConfigurator spriteConf;
+
+                bool update = false;
+
+                if (hitCol != null)
+                {
+                    spriteConf = hitCol.GetComponent<SpriteConfigurator>();
+                    update = true;
+                }
+                else
+                {
+                    var createdObj = Instantiate(_floorTile, tile, Quaternion.identity, parent);
+                    spriteConf = createdObj.GetComponent<SpriteConfigurator>();
+                    tilesPlaced++;
+                }
+
+                if (spriteConf == null)
+                {
+                    Debug.Log("");
+                }
+
+                spriteConf.InteractWithId(corridorId);
+
+                if (update)
+                    spriteConf.UpdateSprite();
+
+                if (tilesPlaced >= maxTilesPerFrame)
+                {
+                    tilesPlaced = 0;
+                    yield return null;
+                }
+            }
         }
     }
 
-    private void BuildCorridor(Vector2 start, Vector2 end, Transform parent, int corridorId)
-    {
-        SpriteConfigurator endSpriteConf = null;
-        var endHit = Physics2D.OverlapPoint(end);
-        if (endHit != null)
-        {
-            endSpriteConf = endHit.GetComponent<SpriteConfigurator>();
-            corridorId = endSpriteConf.GetInteractList()[0];
-        }
-
-        var middlePoint = new Vector2(start.x, end.y);
-
-        if (endSpriteConf == null)
-            middlePoint = new Vector2(end.x, start.y);
-
-        PlotCorridorLine(start, middlePoint, parent, corridorId);
-        PlotCorridorLine(middlePoint, end, parent, corridorId);
-
-        if (endSpriteConf != null)
-        {
-            endSpriteConf.UpdateSprite();
-        }
-    }
 }

@@ -1,80 +1,45 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class RoomNode
 {
-    public class RoomConnection
-    {
-        public RoomNode _start { get; private set; }
-        public Vector2 _startTilePos { get; private set; }
-
-        public RoomNode _end { get; private set; }
-        public Vector2 _endTilePos { get; private set; }
-
-        public RoomConnection(RoomNode start, Vector2 startTilePos, RoomNode end, Vector2 endTilePos)
-        {
-            _start = start;
-            _startTilePos = startTilePos;
-
-            _end = end;
-            _endTilePos = endTilePos;
-        }
-
-        public bool Contains(RoomNode node)
-        {
-            return _start == node || _end == node;
-        }
-    }
-
-    private Vector2 _center;
-    private float _width;
-    private float _height;
+    public Rectangle _bounds { get; private set; }
 
     private RoomNode _parent;
     private List<RoomNode> _children = new List<RoomNode>();
-    private List<RoomConnection> _connections = new List<RoomConnection>();
+    private List<RoomNode> _connections = new List<RoomNode>();
 
     public RoomNode(Vector2 center, float width, float height)
     {
         _parent = null;
-        _center = center;
-        _width = width;
-        _height = height;
+        _bounds = new Rectangle(center, width, height);
     }
 
     private RoomNode(RoomNode parent, Vector2 center, float width, float height)
     {
         parent._children.Add(this);
         _parent = parent;
-        _center = center;
-        _width = width;
-        _height = height;
+        _bounds = new Rectangle(center, width, height);
     }
 
-    public bool IsConnectedTo(RoomNode node) 
+    public bool IsConnectedTo(RoomNode node)
     {
-        foreach (var connection in _connections)
-        {
-            if (connection.Contains(node))
-                return true;
-        }
-        return false;
+        return _connections.Contains(node);
     }
 
-    public List<RoomConnection> GetRoomConnections()
+    public List<RoomNode> GetRoomConnections()
     {
         return _connections;
     }
 
-    public static void ConnectNodes(RoomNode nodeA, Vector2 nodeATilePos, RoomNode nodeB, Vector2 nodeBTilePos)
+    public static void ConnectNodes(RoomNode nodeA, RoomNode nodeB)
     {
-        if (nodeA.IsConnectedTo(nodeB) || nodeB.IsConnectedTo(nodeA)) 
-            throw new System.Exception($"Node at {nodeA._center} is already connected to node at {nodeB._center}");
+        if (nodeA.IsConnectedTo(nodeB) || nodeB.IsConnectedTo(nodeA))
+            throw new System.Exception($"Node at {nodeA._bounds.GetCenter()} is already connected to node at {nodeB._bounds.GetCenter()}");
 
-        nodeA._connections.Add(new RoomConnection(nodeA, nodeATilePos, nodeB, nodeBTilePos));
-        nodeB._connections.Add(new RoomConnection(nodeB, nodeBTilePos, nodeA, nodeATilePos));
+        nodeA._connections.Add(nodeB);
+        nodeB._connections.Add(nodeA);
     }
 
     public List<RoomNode> GetChildren()
@@ -87,153 +52,9 @@ public class RoomNode
         return _children.Count;
     }
 
-    public bool IsTileWithinBounds(Vector2 tileCenter)
-    {
-        const float tileSize = 1.0f;
-        float maxX = _center.x + _width / 2 - tileSize / 2;
-        float minX = _center.x - _width / 2 + tileSize / 2;
-        float maxY = _center.y + _height / 2 - tileSize / 2;
-        float minY = _center.y - _height / 2 + tileSize / 2;
-
-        return tileCenter.x <= maxX && tileCenter.x >= minX
-                    && tileCenter.y <= maxY && tileCenter.y >= minY;
-    }
-
-    public List<Vector2> GetAllGridPoints()
-    {
-        var points = new List<Vector2>();
-
-        const float step = 0.3f;
-
-        var start = GetLowerLeft();
-
-        for (int i = 0; i <= _width / step; i++)
-        {
-            for (int j = 0; j <= _height / step; j++)
-            {
-                Vector2 newPoint = start + new Vector2(i * step, j * step);
-                newPoint = new Vector2((int)newPoint.x, (int)newPoint.y);
-
-                if (!points.Contains(newPoint) && IsTileWithinBounds(newPoint))
-                    points.Add(newPoint);
-            }
-        }
-        return points;
-    }
-
-    //This entire function is not very well written
-    //but it will be fine for now
-    //(the performance is not bad there's just way too much repetition)
-    public List<Vector2> GetPerimeterGridPoints()
-    {
-        var points = new List<Vector2>();
-        float step = 0.3f;
-
-        //Get top row
-        for (int i = 0; i <= _width / step; i++)
-        {
-            Vector2 newPoint = GetUpperLeft() + new Vector2(i * step, 0);
-            newPoint = new Vector2((int)newPoint.x, (int)newPoint.y);
-
-            if (!IsTileWithinBounds(newPoint))
-            {
-                newPoint.y -= 1;
-                newPoint = new Vector2((int)newPoint.x, (int)newPoint.y);
-            }
-
-            if (!points.Contains(newPoint) && IsTileWithinBounds(newPoint))
-                points.Add(newPoint);
-        }
-
-        //Get bottom row
-        for (int i = 0; i <= _width / step; i++)
-        {
-            Vector2 newPoint = GetLowerLeft() + new Vector2(step, step) + new Vector2(i * step, 0);
-            newPoint = new Vector2((int)newPoint.x, (int)newPoint.y);
-
-            if (!IsTileWithinBounds(newPoint))
-            {
-                newPoint.y += 1;
-                newPoint = new Vector2((int)newPoint.x, (int)newPoint.y);
-            }
-
-            if (!points.Contains(newPoint) && IsTileWithinBounds(newPoint)) 
-                points.Add(newPoint);
-        }
-
-        //Get left collumn
-        for (int i = 0; i <= _height / step; i++)
-        {
-            Vector2 newPoint = GetLowerLeft() + new Vector2(step, step) + new Vector2(0, i * step);
-            newPoint = new Vector2((int)newPoint.x, (int)newPoint.y);
-
-            if (!IsTileWithinBounds(newPoint))
-            {
-                newPoint.x += 1;
-                newPoint = new Vector2((int)newPoint.x, (int)newPoint.y);
-            }
-
-            if (!points.Contains(newPoint) && IsTileWithinBounds(newPoint)) 
-                points.Add(newPoint);
-        }
-
-        //Get right collumn
-        for (int i = 0; i <= _height / step; i++)
-        {
-            Vector2 newPoint = GetLowerRight() + new Vector2(-step, step) + new Vector2(0, i * step);
-            newPoint = new Vector2((int)newPoint.x, (int)newPoint.y);
-
-            if (!IsTileWithinBounds(newPoint))
-            {
-                newPoint.x -= 1;
-                newPoint = new Vector2((int)newPoint.x, (int)newPoint.y);
-            }
-
-            if (!points.Contains(newPoint) && IsTileWithinBounds(newPoint)) 
-                points.Add(newPoint);
-        }
-
-        return points;
-    }
-
     public RoomNode GetParent()
     {
         return _parent;
-    }
-
-    public float GetWidth()
-    {
-        return _width;
-    }
-
-    public float GetHeight()
-    {
-        return _height;
-    }
-
-    public Vector2 GetCenter()
-    {
-        return _center;
-    }
-
-    public Vector2 GetUpperLeft()
-    {
-        return _center + new Vector2(-_width / 2, _height / 2);
-    }
-
-    public Vector2 GetUpperRight()
-    {
-        return _center + new Vector2(_width / 2, _height / 2);
-    }
-
-    public Vector2 GetLowerLeft()
-    {
-        return _center + new Vector2(-_width / 2, -_height / 2);
-    }
-
-    public Vector2 GetLowerRight()
-    {
-        return _center + new Vector2(_width / 2, -_height / 2);
     }
 
     public enum SliceDirection
@@ -241,41 +62,41 @@ public class RoomNode
         vertical, horizontal
     }
 
-    public void Slice(SliceDirection direction, int firstRatio, int secondRatio)
+    public void Slice(SliceDirection direction, int firstRatio, int secondRatio, SimpleGrid allignmentGrid, float minSize)
     {
         if (firstRatio <= 0 || secondRatio <= 0)
-            throw new System.Exception($"Slicing node at {_center} failed. First and second ration must be positive numbers");
+            throw new System.Exception($"Slicing node at {_bounds.GetCenter()} failed. First and second ration must be positive numbers");
 
         if (_children.Count > 0)
-            throw new System.Exception($"Slicing node at {_center} failed. Node is already sliced");
+            throw new System.Exception($"Slicing node at {_bounds.GetCenter()} failed. Node is already sliced");
 
         if (direction == SliceDirection.vertical)
         {
-            float firstHalf = (int)(firstRatio * (_width / (firstRatio + secondRatio)));
-            float secondHalf = _width - firstHalf;
+            float firstHalf = allignmentGrid.SnapToGrid(firstRatio * (_bounds.GetWidth() / (firstRatio + secondRatio)));
+            float secondHalf = _bounds.GetWidth() - firstHalf;
 
-            if (Mathf.Min(firstHalf, secondHalf) < 4)
+            if (Mathf.Min(firstHalf, secondHalf) < minSize)
             {
-                Debug.LogWarning($"Stopped slicing node at {_center} because of size limit");
+                Debug.LogWarning($"Stopped slicing node at {_bounds.GetCenter()} because of size limit");
                 return;
             }
 
-            new RoomNode(this, GetLowerLeft() + new Vector2(firstHalf / 2, _height / 2), firstHalf, _height);
-            new RoomNode(this, GetLowerRight() + new Vector2(-secondHalf / 2, _height / 2), secondHalf, _height);
+            new RoomNode(this, _bounds.GetLowerLeft() + new Vector2(firstHalf / 2, _bounds.GetHeight() / 2), firstHalf, _bounds.GetHeight());
+            new RoomNode(this, _bounds.GetLowerRight() + new Vector2(-secondHalf / 2, _bounds.GetHeight() / 2), secondHalf, _bounds.GetHeight());
         }
         else
         {
-            float firstHalf = (int)(firstRatio * (_height / (firstRatio + secondRatio)));
-            float secondHalf = _height - firstHalf;
+            float firstHalf = allignmentGrid.SnapToGrid(firstRatio * (_bounds.GetHeight() / (firstRatio + secondRatio)));
+            float secondHalf = _bounds.GetHeight() - firstHalf;
 
-            if (Mathf.Min(firstHalf, secondHalf) < 4)
+            if (Mathf.Min(firstHalf, secondHalf) < minSize)
             {
-                Debug.LogWarning($"Stopped slicing node at {_center} because of size limit");
+                Debug.LogWarning($"Stopped slicing node at {_bounds.GetCenter()} because of size limit");
                 return;
             }
 
-            new RoomNode(this, GetUpperLeft() + new Vector2(_width / 2, -firstHalf / 2), _width, firstHalf);
-            new RoomNode(this, GetLowerLeft() + new Vector2(_width / 2, secondHalf / 2), _width, secondHalf);
+            new RoomNode(this, _bounds.GetUpperLeft() + new Vector2(_bounds.GetWidth() / 2, -firstHalf / 2), _bounds.GetWidth(), firstHalf);
+            new RoomNode(this, _bounds.GetLowerLeft() + new Vector2(_bounds.GetWidth() / 2, secondHalf / 2), _bounds.GetWidth(), secondHalf);
         }
     }
 

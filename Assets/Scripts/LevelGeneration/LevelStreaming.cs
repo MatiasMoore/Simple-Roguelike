@@ -8,15 +8,23 @@ public class LevelStreaming : MonoBehaviour
     [Header("Transform to stream a level around")]
     [SerializeField]
     private Transform _focus;
+    [SerializeField]
+    private float _buildWidth = 10;
+    [SerializeField]
+    private float _buildHeight = 10;
+    [SerializeField]
+    private float _destroyWidth = 20;
+    [SerializeField]
+    private float _destroyHeight = 20;
 
     [Header("Used to actually build the level")]
     [SerializeField]
     private LevelBuilder _builder;
 
-    public void StartStreamingLevel(RoomNode rootNode)
+    public void StartStreamingLevel(List<RoomBlueprint> blueprints)
     {
         StopStreaming();
-        StartCoroutine(StreamLevelCoroutine(rootNode, _focus, _builder));
+        StartCoroutine(StreamLevelCoroutine(blueprints, _focus, _builder));
     }
 
     public void StopStreaming()
@@ -24,66 +32,43 @@ public class LevelStreaming : MonoBehaviour
         StopAllCoroutines();
     }
 
-    private IEnumerator StreamLevelCoroutine(RoomNode rootNode, Transform focus, LevelBuilder builder)
+    private void OnDrawGizmosSelected()
     {
-        var rooms = rootNode.GetLeaves();
-        var sortTask = GetSortedLeavesTask(rooms, focus.position);
-        int roomsChecked = 0;
-        const int maxRoomsChecked = int.MaxValue;
-        while (true)
-        {
-            if (sortTask.IsCompleted)
-            {
-                rooms = sortTask.Result;
-                sortTask = GetSortedLeavesTask(rooms, focus.position);
-                Debug.Log("Sorted!");
-            }
-            else
-                Debug.Log("Waiting...");
-
-            for (int i = 0; i < rooms.Count; i++)
-            {
-                //Building rooms
-                if (i < 10)
-                {
-                    if (!builder.IsRoomBuilt(rooms[i]))
-                    {
-                        yield return StartCoroutine(builder.BuildRoomCoroutine(rooms[i]));
-                    }
-                }
-                //Removing rooms
-                else if (i > 20 && builder.IsRoomBuilt(rooms[i]))
-                {
-                    yield return builder.DestroyBuiltRoom(rooms[i]);
-                }
-
-                roomsChecked++;
-                if (roomsChecked >= maxRoomsChecked)
-                {
-                    roomsChecked = 0;
-                    yield return null;
-                }
-
-            }
-            yield return null;
-        }
+        var rect = new Rectangle(_focus.position, _buildWidth, _buildHeight);
+        DebugDraw.DrawRectangle(rect.GetUpperLeft(), rect.GetUpperRight(), rect.GetLowerRight(), rect.GetLowerLeft(), Color.green);
+        rect = new Rectangle(_focus.position, _destroyWidth, _destroyWidth);
+        DebugDraw.DrawRectangle(rect.GetUpperLeft(), rect.GetUpperRight(), rect.GetLowerRight(), rect.GetLowerLeft(), Color.red);
     }
 
-    private Task<List<RoomNode>> GetSortedLeavesTask(List<RoomNode> roomsOrig, Vector2 centerPos)
+    private IEnumerator StreamLevelCoroutine(List<RoomBlueprint> blueprints, Transform focus, LevelBuilder builder)
     {
-        var rooms = new List<RoomNode>(roomsOrig);
-        var t = new Task<List<RoomNode>>(() =>
-        {
-            rooms.Sort((a, b) =>
-            {
-                var aDist = (a.GetCenter() - centerPos).magnitude;
-                var bDist = (b.GetCenter() - centerPos).magnitude;
-                return aDist.CompareTo(bDist);
-            });
+        Rectangle buildRect, destroyRect;
 
-            return rooms;
-        });
-        t.Start();
-        return t;
+        var rooms = new List<RoomBlueprint>(blueprints);
+        while (true)
+        {
+            buildRect = new Rectangle(_focus.position, _buildWidth, _buildHeight);
+            foreach (var room in rooms)
+            {
+                //Building rooms
+                if (room.DoesIntersect(buildRect) && !builder.IsRoomBuilt(room))
+                {
+                    yield return StartCoroutine(builder.BuildRoomCoroutine(room));
+                }
+            }
+
+            destroyRect = new Rectangle(_focus.position, _destroyWidth, _destroyHeight);
+            var builtRooms = builder.GetBuiltRooms();
+            foreach (var room in builtRooms)
+            {
+                //Destroying rooms
+                if (!room.DoesIntersect(destroyRect))
+                {
+                    yield return StartCoroutine(builder.DestroyBuiltRoom(room));
+                }
+            }
+
+            yield return null;
+        }
     }
 }
