@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Idle : ObjectMovementMainState
 {
-    public Idle(Rigidbody2D rigidbody, float accelerationTime, float decelerationTime, float changeDirectionTime, float maxSpeed, LayerMask obstacleMask, Collider2D collider) : base(rigidbody, accelerationTime, decelerationTime, changeDirectionTime, maxSpeed, obstacleMask, collider)
+    public Idle(Rigidbody2D rigidbody, float accelerationTime, float decelerationTime, float changeDirectionTime, float maxSpeed) : base(rigidbody, accelerationTime, decelerationTime, changeDirectionTime, maxSpeed)
     {
     }
 

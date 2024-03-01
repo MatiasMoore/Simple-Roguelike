@@ -18,16 +18,11 @@ public class ObjectMovement : MonoBehaviour
     [SerializeField]
     private float _maxSpeed = 5f;
 
-    [SerializeField]
-    private LayerMask _layerMask = 128;
-
     private ObjectMovementMainState _objectMovementState;
 
     private Rigidbody2D _rigidbody;
 
     private Vector2 _direction;
-
-    private Collider2D _collider;
 
     [SerializeField]
     private bool IsDynamicUpdateData = false;
@@ -48,9 +43,8 @@ public class ObjectMovement : MonoBehaviour
 
     public void Init()
     {
-        _collider = GetComponent<Collider2D>();
         _rigidbody = GetComponent<Rigidbody2D>();
-        _objectMovementState = new Idle(_rigidbody, _accelerationTime, _decelerationTime, _changeDirectionTime, _maxSpeed, _layerMask, _collider);
+        _objectMovementState = new Idle(_rigidbody, _accelerationTime, _decelerationTime, _changeDirectionTime, _maxSpeed);
     }
 
     private void FixedUpdate()
@@ -63,7 +57,7 @@ public class ObjectMovement : MonoBehaviour
             _objectMovementState.SetMaxSpeed(_maxSpeed);
         }
 
-        _objectMovementState = _objectMovementState.Update(_direction, Time.deltaTime);
+        _objectMovementState = _objectMovementState.Update(_direction, Time.fixedDeltaTime);
         UpdateDebug();
     }
 

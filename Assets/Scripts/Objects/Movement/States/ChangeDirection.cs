@@ -43,8 +43,7 @@ public class ChangeDirection : ObjectMovementMainState
         if (_timer < GetChangeDirectionTime())
         {          
             Vector2 velocity = InterpolateVector(_velocityAtStart, _targetVelocity, _timer / GetChangeDirectionTime());
-            velocity = AdjustVelocityByObstacles(velocity, direction);
-            GetRigidbody().velocity = velocity;
+            GetRigidbody().AddForce((velocity - GetRigidbody().velocity) * GetRigidbody().mass / deltaTime);
             return this;
         }
 
