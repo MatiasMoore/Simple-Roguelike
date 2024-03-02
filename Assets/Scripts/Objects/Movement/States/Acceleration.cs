@@ -19,13 +19,13 @@ public class Acceleration : ObjectMovementMainState
 
     public override ObjectMovementMainState Update(Vector2 direction, float deltaTime)
     {
-        _timer += deltaTime;
-
         // Set the initial values for the acceleration
         if (_directionAtStart == Vector2.zero)
         {
             SetUpInitialValues(direction);
         }
+
+        _timer += deltaTime;
 
         // Check Deceleartion state
         if (direction == Vector2.zero)
