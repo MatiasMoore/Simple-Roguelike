@@ -36,7 +36,7 @@ public class LevelStreaming : MonoBehaviour
     {
         var rect = new Rectangle(_focus.position, _buildWidth, _buildHeight);
         DebugDraw.DrawRectangle(rect.GetUpperLeft(), rect.GetUpperRight(), rect.GetLowerRight(), rect.GetLowerLeft(), Color.green);
-        rect = new Rectangle(_focus.position, _destroyWidth, _destroyWidth);
+        rect = new Rectangle(_focus.position, _destroyWidth, _destroyHeight);
         DebugDraw.DrawRectangle(rect.GetUpperLeft(), rect.GetUpperRight(), rect.GetLowerRight(), rect.GetLowerLeft(), Color.red);
     }
 
