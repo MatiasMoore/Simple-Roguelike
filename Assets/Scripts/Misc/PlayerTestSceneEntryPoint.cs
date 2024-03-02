@@ -13,8 +13,13 @@ public class PlayerTestSceneEntryPoint : MonoBehaviour
     [SerializeField]
     private PlayerWeaponController _weaponController;
 
+    [SerializeField]
+    private ScreenShaker _screenShaker;
+
     private void Start()
     {
+        _screenShaker.Init();
+
         if (_inputSystem != null)
         {
             _inputSystem.Init();
