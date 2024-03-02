@@ -93,15 +93,15 @@ public class InputSystem : MonoBehaviour
             
     }
 
-    public void OnCursorClick()
+    private void OnCursorClick()
     {
         if (_isDebugOn)
             Debug.Log("Cursor click");
         CursorClickEvent?.Invoke(CursorPosition);
         IsCursorPressed = true;
-    }  
-    
-    public void OnCursorRelease()
+    }
+
+    private void OnCursorRelease()
     {
         if (_isDebugOn)
             Debug.Log("Cursor release");
