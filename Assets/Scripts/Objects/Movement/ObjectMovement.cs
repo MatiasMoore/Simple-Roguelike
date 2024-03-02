@@ -27,6 +27,15 @@ public class ObjectMovement : MonoBehaviour
     [SerializeField]
     private bool IsDynamicUpdateData = false;
 
+    public enum WalkType
+    {
+        ByDirection,
+        ByPoint
+    }
+
+    [SerializeField]
+    private WalkType _walkType;
+
     // START OF DEBUG FIELDS: \\
     enum MovementState
     {
@@ -61,9 +70,23 @@ public class ObjectMovement : MonoBehaviour
         UpdateDebug();
     }
 
+    public void SetWalkType(WalkType walkType)
+    {
+        _walkType = walkType;
+    }
+
+    public void WalkTo(List<Vector2> path)
+    {
+
+        _objectMovementState = new PathFolowing(_rigidbody, _accelerationTime, _decelerationTime, _changeDirectionTime, _maxSpeed, path);
+    }
+
     public void SetDirection(Vector2 direction)
     {
-        _direction = direction;
+        if (_walkType == WalkType.ByDirection)
+        {
+            _direction = direction;
+        }
     }
 
     public void SetMaxSpeed(float maxSpeed)
@@ -86,7 +109,7 @@ public class ObjectMovement : MonoBehaviour
         if (_objectMovementState != null)
         {
             _objectMovementState.SetAccelerationTime(accelerationTime);
-        }   
+        }
     }
 
     public float GetAccelerationTime()
