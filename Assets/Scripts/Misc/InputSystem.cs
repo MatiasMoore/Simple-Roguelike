@@ -25,9 +25,19 @@ public class InputSystem : MonoBehaviour
 
     private InputAction _cursorRelease;
 
+    private InputAction _reloadAction;
+
+    private InputAction _weaponNavigation;
+
     public UnityAction<Vector2> CursorClickEvent;
 
     public UnityAction<Vector2> CursorReleaseEvent;
+
+    public UnityAction ReloadEvent;
+
+    public UnityAction ChooseNextWeapon;
+
+    public UnityAction ChoosePreviousWeapon;
 
     [SerializeField]
     private bool _isDebugOn;
@@ -42,9 +52,16 @@ public class InputSystem : MonoBehaviour
         _cursorPosition = _playerInput.actions["CursorPosition"];
         _cursorClick = _playerInput.actions["CursorClick"];
         _cursorRelease = _playerInput.actions["CursorRelease"];
+        _reloadAction = _playerInput.actions["Reload"];
 
         _cursorClick.performed += (var) => OnCursorClick();
         _cursorRelease.performed += (var) => OnCursorRelease();
+        _reloadAction.performed += (var) => ReloadEvent?.Invoke();
+
+
+        _weaponNavigation = _playerInput.actions["WeaponNavigation"];
+
+        _weaponNavigation.performed += (var) => WeaponNavigation();
 
         Instance = this;
     }
@@ -60,6 +77,20 @@ public class InputSystem : MonoBehaviour
             Debug.Log($"Cursor position: {CursorPosition}");
         
 
+    }
+
+    private void WeaponNavigation()
+    {
+        if (_weaponNavigation.ReadValue<float>() > 0)
+        {
+            Debug.Log("Next weapon");
+            ChooseNextWeapon?.Invoke();
+        } else
+        {
+            Debug.Log("Previous weapon");
+            ChoosePreviousWeapon?.Invoke();
+        }
+            
     }
 
     public void OnCursorClick()

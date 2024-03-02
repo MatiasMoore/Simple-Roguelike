@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem.Utilities;
 
 public class Linear : ObjectMovementMainState
 {
@@ -34,8 +35,7 @@ public class Linear : ObjectMovementMainState
 
         // Moving
         Vector2 velocity = GetMaxSpeed() * direction;
-        velocity = AdjustVelocityByObstacles(velocity, direction);
-        GetRigidbody().velocity = velocity;
+        GetRigidbody().AddForce((velocity - GetRigidbody().velocity) * GetRigidbody().mass / deltaTime);
 
         return this;
     }

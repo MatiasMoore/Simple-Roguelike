@@ -13,8 +13,8 @@ public class RifleData : WeaponDataSO
     [SerializeField]
     public float RealoadeTime;
 
-    [SerializeField]
-    public float AmmoPerMagazine;
+    [Min(1),SerializeField]
+    public int AmmoPerMagazine;
 
     [SerializeField]
     public float Accuracy;
@@ -27,4 +27,7 @@ public class RifleData : WeaponDataSO
 
     [SerializeField]
     public GameObject ProjectilePrefab;
+
+    [SerializeField]
+    public ScreenShakeProfile ScreenShakeProfile;
 }

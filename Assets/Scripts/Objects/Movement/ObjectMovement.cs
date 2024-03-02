@@ -18,16 +18,11 @@ public class ObjectMovement : MonoBehaviour
     [SerializeField]
     private float _maxSpeed = 5f;
 
-    [SerializeField]
-    private LayerMask _layerMask = 128;
-
     private ObjectMovementMainState _objectMovementState;
 
     private Rigidbody2D _rigidbody;
 
     private Vector2 _direction;
-
-    private Collider2D _collider;
 
     [SerializeField]
     private bool IsDynamicUpdateData = false;
@@ -48,12 +43,11 @@ public class ObjectMovement : MonoBehaviour
 
     public void Init()
     {
-        _collider = GetComponent<Collider2D>();
         _rigidbody = GetComponent<Rigidbody2D>();
-        _objectMovementState = new Idle(_rigidbody, _accelerationTime, _decelerationTime, _changeDirectionTime, _maxSpeed, _layerMask, _collider);
+        _objectMovementState = new Idle(_rigidbody, _accelerationTime, _decelerationTime, _changeDirectionTime, _maxSpeed);
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if(IsDynamicUpdateData)
         {
@@ -63,7 +57,7 @@ public class ObjectMovement : MonoBehaviour
             _objectMovementState.SetMaxSpeed(_maxSpeed);
         }
 
-        _objectMovementState = _objectMovementState.Update(_direction, Time.deltaTime);
+        _objectMovementState = _objectMovementState.Update(_direction, Time.fixedDeltaTime);
         UpdateDebug();
     }
 
@@ -75,6 +69,10 @@ public class ObjectMovement : MonoBehaviour
     public void SetMaxSpeed(float maxSpeed)
     {
         _maxSpeed = maxSpeed;
+        if (_objectMovementState != null)
+        {
+            _objectMovementState.SetMaxSpeed(maxSpeed);
+        }
     }
 
     public float GetMaxSpeed()
@@ -85,6 +83,10 @@ public class ObjectMovement : MonoBehaviour
     public void SetAccelerationTime(float accelerationTime)
     {
         _accelerationTime = accelerationTime;
+        if (_objectMovementState != null)
+        {
+            _objectMovementState.SetAccelerationTime(accelerationTime);
+        }   
     }
 
     public float GetAccelerationTime()
@@ -95,6 +97,10 @@ public class ObjectMovement : MonoBehaviour
     public void SetDecelerationTime(float decelerationTime)
     {
         _decelerationTime = decelerationTime;
+        if (_objectMovementState != null)
+        {
+            _objectMovementState.SetDecelerationTime(decelerationTime);
+        }
     }
 
     public float GetDecelerationTime()
@@ -105,6 +111,10 @@ public class ObjectMovement : MonoBehaviour
     public void SetChangeDirectionTime(float changeDirectionTime)
     {
         _changeDirectionTime = changeDirectionTime;
+        if (_objectMovementState != null)
+        {
+            _objectMovementState.SetChangeDirectionTime(changeDirectionTime);
+        }
     }
 
     public float GetChangeDirectionTime()

@@ -45,8 +45,7 @@ public class Acceleration : ObjectMovementMainState
         if (_timer < GetAccelerationTime())
         {
             Vector2 velocity = InterpolateVector(_velocityAtStart, _targetVelocity, _timer / GetAccelerationTime());
-            velocity = AdjustVelocityByObstacles(velocity, direction);
-            GetRigidbody().velocity = velocity;
+            GetRigidbody().AddForce((velocity - GetRigidbody().velocity) * GetRigidbody().mass / deltaTime);
             return this;
         }
                 

@@ -29,9 +29,8 @@ public class Deceleration : ObjectMovementMainState
         // Moving
         if (_timer < GetDecelerationTime())
         {
-            Vector2 velocity = InterpolateVector(_velocityAtStart, Vector2.zero, _timer / GetDecelerationTime());
-            velocity = AdjustVelocityByObstacles(velocity, direction);
-            GetRigidbody().velocity = velocity;
+            Vector2 velocity = InterpolateVector(_velocityAtStart, Vector2.zero, _timer / GetDecelerationTime());       
+            GetRigidbody().AddForce((velocity - GetRigidbody().velocity) * GetRigidbody().mass / deltaTime);
             return this;
         }
 
