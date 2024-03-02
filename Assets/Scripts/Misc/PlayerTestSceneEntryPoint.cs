@@ -16,7 +16,7 @@ public class PlayerTestSceneEntryPoint : MonoBehaviour
     [SerializeField]
     private ScreenShaker _screenShaker;
 
-    private void Start()
+    private void Awake()
     {
         _screenShaker.Init();
 
