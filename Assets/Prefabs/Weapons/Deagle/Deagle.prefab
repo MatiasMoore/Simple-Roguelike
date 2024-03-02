@@ -26,8 +26,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.49, y: 0.49, z: 0.49}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 7534079105487214209}
   - {fileID: 7663821764631104921}
@@ -175,7 +175,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.46, y: 0.46, z: 0.46}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 8228279432169960574}
@@ -197,8 +197,6 @@ MonoBehaviour:
   Data: {fileID: 11400000, guid: b0ffe2777f604194a80c86df96b64bde, type: 2}
   _weaponHolder: {fileID: 5322181142667115622}
   _projectileSpawnPoint: {fileID: 7663821764631104921}
-  _maxAmmo: 0
-  _currentAmmo: 0
   _ammoBar: {fileID: 5258617436612923373}
 --- !u!1001 &6429102713611275548
 PrefabInstance:
@@ -278,11 +276,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6822194799820587499, guid: 35e45ac55dea6a94ab9c782cb4fb7ac6, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0.128
+      value: 0.034
       objectReference: {fileID: 0}
     - target: {fileID: 6822194799820587499, guid: 35e45ac55dea6a94ab9c782cb4fb7ac6, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.685
+      value: -0.322
       objectReference: {fileID: 0}
     - target: {fileID: 6822194799820587499, guid: 35e45ac55dea6a94ab9c782cb4fb7ac6, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
