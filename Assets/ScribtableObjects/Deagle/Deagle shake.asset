@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sourceDuration: 0.2
   impactForce: 1
-  sourceDeafaultVelocity: {x: 0, y: -1, z: 0}
-  VelocityScaler: 0.2
+  sourceDeafaultVelocity: {x: 0.8806652, y: -0.4737392, z: -0}
+  VelocityScaler: 0.4
   sourceShape:
     serializedVersion: 2
     m_Curve:
