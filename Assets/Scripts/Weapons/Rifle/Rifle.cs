@@ -84,11 +84,23 @@ public class Rifle : Weapon
         {
             SpawnProjectile(Data.ProjectilePrefab);
             _currentAmmo--;
+            RecoilShake();
             _ammoBar.SetCurrentAmmo(_currentAmmo);
             _timer = 0;
             _fireState = FireState.fireRatePause;
 
         }
+    }
+
+    private void RecoilShake()
+    {
+        if (Data.ScreenShakeProfile != null)
+        {
+            Debug.Log("Shake");
+            Data.ScreenShakeProfile.sourceDeafaultVelocity = _weaponHolder.transform.right * -1;
+            ScreenShaker.Instance.ShakeScreen(Data.ScreenShakeProfile);
+        }
+        return;
     }
 
     private void SpawnProjectile(GameObject projectile)

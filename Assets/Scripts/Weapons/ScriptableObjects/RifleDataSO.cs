@@ -27,4 +27,7 @@ public class RifleData : WeaponDataSO
 
     [SerializeField]
     public GameObject ProjectilePrefab;
+
+    [SerializeField]
+    public ScreenShakeProfile ScreenShakeProfile;
 }

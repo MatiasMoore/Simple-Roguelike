@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94547df9ad24f7c4198ec415f847818f, type: 3}
+  m_Name: AK-47 Shake
+  m_EditorClassIdentifier: 
+  sourceDuration: 0.1
+  impactForce: 0.01
+  sourceDeafaultVelocity: {x: 0.9783782, y: -0.20682451, z: -0}
+  VelocityScaler: 0.1
+  sourceShape:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: -1.8453075
+      outSlope: -1.8453075
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.07916762
+      value: 0.8539114
+      inSlope: -0.49842578
+      outSlope: -0.49842578
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.20310451
+      value: 0.9590664
+      inSlope: 0.44991112
+      outSlope: 0.44991112
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0.051366344
+      outSlope: 0.051366344
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  listenerAmplitude: 0.01
+  listenerFrequency: 0.01
+  listenerDuration: 0.1

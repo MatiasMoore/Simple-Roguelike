@@ -16,11 +16,12 @@ MonoBehaviour:
   weaponDescription: 321
   weaponIcon: {fileID: 21300000, guid: be0bad5390709e8448cf566da354017a, type: 3}
   weaponPrefab: {fileID: 9215425247971391935, guid: efc9538f48a21a448bf2cf4c7dd2c4eb, type: 3}
-  Damage: 100
-  FireRate: 1
-  RealoadeTime: 0
-  AmmoPerMagazine: 0
+  Damage: 15
+  FireRate: 1.2
+  RealoadeTime: 3
+  AmmoPerMagazine: 7
   Accuracy: 0
-  ProjectileLifeTime: 5
+  ProjectileLifeTime: 7
   ProjectileSpeed: 10
   ProjectilePrefab: {fileID: 7890867244237525666, guid: d6a3f22d0a2bebe458f5a8bda9170ea4, type: 3}
+  ScreenShakeProfile: {fileID: 11400000, guid: 727f596369ffc7f4f850c1f46264e514, type: 2}
