@@ -14,10 +14,13 @@ public class LevelBuilder : MonoBehaviour
     [SerializeField]
     private GameObject _floorTile;
 
-    public void BuildLevelFromBlueprints(List<RoomBlueprint> blueprints)
+
+    private Dictionary<RoomBlueprint, GameObject> _builtRooms = new Dictionary<RoomBlueprint, GameObject>();
+
+    public void BuildLevelFromBlueprints(Level level)
     {
         DeleteCurrentLevel();
-        StartCoroutine(BuildLevelCoroutine(blueprints));
+        StartCoroutine(BuildLevelCoroutine(level));
     }
 
     public IEnumerator BuildRoomCoroutine(RoomBlueprint room)
@@ -25,6 +28,24 @@ public class LevelBuilder : MonoBehaviour
         var roomObj = new GameObject("Room");
         roomObj.transform.parent = _tileRoot;
         yield return BuildRoom(room, roomObj.transform);
+    }
+
+    private void AddBuiltRoom(RoomBlueprint room, GameObject obj)
+    {
+        _builtRooms.Add(room, obj);
+        RebuildNavMesh();
+    }
+
+    private void RemoveBuiltRoom(RoomBlueprint room)
+    {
+        _builtRooms.Remove(room);
+        RebuildNavMesh();
+    }
+
+    private void ClearBuiltRooms()
+    {
+        _builtRooms.Clear();
+        RebuildNavMesh();
     }
 
     const int maxTilesPerFrame = 10;
@@ -58,12 +79,11 @@ public class LevelBuilder : MonoBehaviour
         {
             yield return StartCoroutine(BuildCorridor(corridor, parent));
         }
-        _builtRooms.Add(room, parent.gameObject);
+
+        AddBuiltRoom(room, parent.gameObject);
 
         yield break;
     }
-
-    private Dictionary<RoomBlueprint, GameObject> _builtRooms = new Dictionary<RoomBlueprint, GameObject>();
 
     public List<RoomBlueprint> GetBuiltRooms()
     {
@@ -78,7 +98,7 @@ public class LevelBuilder : MonoBehaviour
     public IEnumerator DestroyBuiltRoom(RoomBlueprint room)
     {
         yield return DestroyRoomObj(_builtRooms[room]);
-        _builtRooms.Remove(room);
+        RemoveBuiltRoom(room);
     }
 
     private IEnumerator DestroyRoomObj(GameObject roomObj)
@@ -102,9 +122,9 @@ public class LevelBuilder : MonoBehaviour
         yield break;
     }
 
-    public IEnumerator BuildLevelCoroutine(List<RoomBlueprint> blueprints)
+    public IEnumerator BuildLevelCoroutine(Level level)
     {
-        foreach (var room in blueprints)
+        foreach (var room in level.GetRooms())
             yield return BuildRoomCoroutine(room);
 
         yield break;
@@ -119,7 +139,7 @@ public class LevelBuilder : MonoBehaviour
             Destroy(currentChild);
         }
 
-        _builtRooms.Clear();
+        ClearBuiltRooms();
     }
 
     private IEnumerator UpdateTileVisuals()

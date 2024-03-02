@@ -59,7 +59,7 @@ public class LevelGeneratorMono : MonoBehaviour
     private bool _drawRoomConnections = true;
 
     private LevelGenerator _generator;
-    private Task<List<RoomBlueprint>> _levelTask;
+    private Task<Level> _levelTask;
 
     [Header("Helper classes")]
     [SerializeField]

@@ -21,10 +21,10 @@ public class LevelStreaming : MonoBehaviour
     [SerializeField]
     private LevelBuilder _builder;
 
-    public void StartStreamingLevel(List<RoomBlueprint> blueprints)
+    public void StartStreamingLevel(Level level)
     {
         StopStreaming();
-        StartCoroutine(StreamLevelCoroutine(blueprints, _focus, _builder));
+        StartCoroutine(StreamLevelCoroutine(level, _focus, _builder));
     }
 
     public void StopStreaming()
@@ -40,11 +40,11 @@ public class LevelStreaming : MonoBehaviour
         DebugDraw.DrawRectangle(rect.GetUpperLeft(), rect.GetUpperRight(), rect.GetLowerRight(), rect.GetLowerLeft(), Color.red);
     }
 
-    private IEnumerator StreamLevelCoroutine(List<RoomBlueprint> blueprints, Transform focus, LevelBuilder builder)
+    private IEnumerator StreamLevelCoroutine(Level level, Transform focus, LevelBuilder builder)
     {
         Rectangle buildRect, destroyRect;
 
-        var rooms = new List<RoomBlueprint>(blueprints);
+        var rooms = new List<RoomBlueprint>(level.GetRooms());
         while (true)
         {
             buildRect = new Rectangle(_focus.position, _buildWidth, _buildHeight);

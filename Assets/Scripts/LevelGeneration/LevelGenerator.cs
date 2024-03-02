@@ -18,7 +18,7 @@ public class LevelGenerator
 
     private CancellationTokenSource _tokenSource = new CancellationTokenSource();
 
-    private Task<List<RoomBlueprint>> _mainTask;
+    private Task<Level> _mainTask;
 
     private string _currentStatus;
     private bool _isStatusUpdated = false;
@@ -50,7 +50,7 @@ public class LevelGenerator
         return _isStatusUpdated;
     }
 
-    public Task<List<RoomBlueprint>> GenerateNewLevel(Vector2 centerOffset, int width, int height, SimpleGrid allignmentGrid, int iterCount, bool cutoffSomeLeaves, int seed)
+    public Task<Level> GenerateNewLevel(Vector2 centerOffset, int width, int height, SimpleGrid allignmentGrid, int iterCount, bool cutoffSomeLeaves, int seed)
     {
         _centerOffset = centerOffset;
         _width = width;
@@ -75,10 +75,10 @@ public class LevelGenerator
         _tokenSource = new CancellationTokenSource();
     }
 
-    private Task<List<RoomBlueprint>> GenerateNewLevelTask(int newSeed, CancellationTokenSource tokenSource)
+    private Task<Level> GenerateNewLevelTask(int newSeed, CancellationTokenSource tokenSource)
     {
         SetStatusString("Initialising generation");
-        var t = new Task<List<RoomBlueprint>>(() =>
+        var t = new Task<Level>(() =>
         {
             SetNewSeed(newSeed);
 
@@ -105,14 +105,16 @@ public class LevelGenerator
 
             SetStatusString("Finished generating!");
 
-            return roomsTask.Result;
+            return new Level(roomsTask.Result, _root._bounds.GetCenter(), _root._bounds.GetWidth(), _root._bounds.GetHeight());
         }, tokenSource.Token);
         t.Start();
         return t;
     }
     
-    public void DebugDrawLevel(List<RoomBlueprint> rooms, bool drawNodeEdges, bool drawNodeCenters, bool drawAllGridPoints, bool drawPerimeterGridPoints, bool drawAllRoomTiles, bool drawCenterConnections, bool drawConnections)
+    public void DebugDrawLevel(Level level, bool drawNodeEdges, bool drawNodeCenters, bool drawAllGridPoints, bool drawPerimeterGridPoints, bool drawAllRoomTiles, bool drawCenterConnections, bool drawConnections)
     {
+        var rooms = level.GetRooms();
+
         if (rooms == null)
             throw new System.Exception("Critical error! The level's root node is null! Something went very wrong!!!");
 
