@@ -30,6 +30,11 @@ public class Rifle : Weapon
     }
     private FireState _fireState;
 
+    private void Start()
+    {
+        _currentAmmo = Data.AmmoPerMagazine;
+    }
+
     public override void Init()
     {
         ObjectMovement bulletObjectMovementComponent = Data.ProjectilePrefab.GetComponent<ObjectMovement>();
@@ -42,13 +47,11 @@ public class Rifle : Weapon
         bullet.SetAliveTime(Data.ProjectileLifeTime);
         bullet.SetDamage(Data.Damage);
 
-        _currentAmmo = Data.AmmoPerMagazine;
-
 
         _ammoBar.UpdateAmmo(_currentAmmo, Data.AmmoPerMagazine);
         gameObject.SetActive(true);
 
-        _localScale = transform.localScale;
+        _localScale = _weaponHolder.transform.localScale;
 
         _timer = 0;
 
@@ -108,7 +111,7 @@ public class Rifle : Weapon
         Instantiate(projectile, _projectileSpawnPoint.position, _weaponHolder.transform.rotation);
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         switch (_fireState)
         {
@@ -142,6 +145,7 @@ public class Rifle : Weapon
 
     public void RealoadPause()
     {
+        _ammoBar.SetActiveReloadBar(true);
         _timer += Time.deltaTime;
         _ammoBar.UpdateReloadTime(_timer, Data.RealoadeTime);
         if (_timer >= Data.RealoadeTime)
@@ -161,11 +165,12 @@ public class Rifle : Weapon
     public void Reload()
     {
         _fireState = FireState.realoadPause;
-        _ammoBar.SetActiveReloadBar(true);
     }
 
     public override void Deinit()
     {
+        _ammoBar.SetActiveReloadBar(false);
+        _weaponHolder.transform.localScale = _localScale;
         gameObject.SetActive(false);
     }
 }
