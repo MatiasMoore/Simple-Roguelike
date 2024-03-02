@@ -1,21 +1,34 @@
+using NavMeshPlus.Components;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.U2D;
 
 public class LevelBuilder : MonoBehaviour
 {
+    [SerializeField]
+    private NavMeshPlus.Components.NavMeshSurface _navMesh;
+
     [SerializeField]
     private Transform _tileRoot;
 
     [SerializeField]
     private GameObject _floorTile;
 
+    [SerializeField]
+    private GameObject _navMeshWalkable;
 
     private Dictionary<RoomBlueprint, GameObject> _builtRooms = new Dictionary<RoomBlueprint, GameObject>();
+
+    public void SetNavMeshWalkable(Vector2 center, float width, float height)
+    {
+        _navMeshWalkable.transform.localScale = new Vector2(width, height);
+        _navMeshWalkable.transform.position = center;
+    }
 
     public void BuildLevelFromBlueprints(Level level)
     {
@@ -46,6 +59,24 @@ public class LevelBuilder : MonoBehaviour
     {
         _builtRooms.Clear();
         RebuildNavMesh();
+    }
+
+    private AsyncOperation _buildNavMesh;
+    private AsyncOperation _updateNavMesh;
+
+    private void RebuildNavMesh()
+    {
+        if (_buildNavMesh == null)
+        {
+            Debug.Log("Rebuilding mesh!");
+            _buildNavMesh = _navMesh.BuildNavMeshAsync();
+        }
+        else if ((_buildNavMesh != null && _buildNavMesh.isDone) && (_updateNavMesh == null || _updateNavMesh.isDone))
+        {
+            Debug.Log("Updating mesh!");
+            _updateNavMesh = _navMesh.UpdateNavMesh(_navMesh.navMeshData);
+        }
+        
     }
 
     const int maxTilesPerFrame = 10;

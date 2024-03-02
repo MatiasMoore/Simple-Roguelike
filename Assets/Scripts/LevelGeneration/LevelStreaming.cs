@@ -42,6 +42,8 @@ public class LevelStreaming : MonoBehaviour
 
     private IEnumerator StreamLevelCoroutine(Level level, Transform focus, LevelBuilder builder)
     {
+        builder.SetNavMeshWalkable(level.GetCenter(), level.GetWidth(), level.GetHeight());
+
         Rectangle buildRect, destroyRect;
 
         var rooms = new List<RoomBlueprint>(level.GetRooms());
