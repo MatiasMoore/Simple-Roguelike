@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Unity.Collections;
 using UnityEngine;
 
-public class LevelGeneratorMono : MonoBehaviour
+public class LevelCreator : MonoBehaviour
 {
     [Header("Press this to generate a level blueprint!")]
     [SerializeField]

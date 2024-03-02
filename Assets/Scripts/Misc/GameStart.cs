@@ -5,7 +5,7 @@ using UnityEngine;
 public class GameStart : MonoBehaviour
 {
     [SerializeField]
-    LevelGeneratorMono _levelGenerator;
+    LevelCreator _levelGenerator;
 
     // Start is called before the first frame update
     void Start()
