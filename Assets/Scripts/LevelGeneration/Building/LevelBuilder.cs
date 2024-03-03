@@ -224,7 +224,7 @@ public class LevelBuilder : MonoBehaviour
             foreach (var tile in tiles)
             {
                 var corridorId = corridor.GetId();
-                var hitCol = Physics2D.OverlapPoint(tile);
+                var hitCol = Physics2D.OverlapPoint(tile, 1 << LayerMask.NameToLayer("Floor"));
 
                 SpriteConfigurator spriteConf;
 
