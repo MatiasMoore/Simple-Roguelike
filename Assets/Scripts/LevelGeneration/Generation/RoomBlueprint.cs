@@ -69,6 +69,8 @@ public class RoomBlueprint
     private List<Corridor> _corridors = new List<Corridor>();
     private Rectangle _bounds;// { get; private set; }
     private SimpleGrid _allignmentGrid;
+    private List<RoomObject> _enemies = new List<RoomObject>();
+    private List<RoomObject> _roomObjects = new List<RoomObject>();
 
     public RoomBlueprint(Vector2 center, float width, float height, SimpleGrid allignmentGrid)
     {
@@ -76,6 +78,16 @@ public class RoomBlueprint
         _lastUsedId += 1;
         _bounds = new Rectangle(center, width, height);
         _allignmentGrid = allignmentGrid;
+    }
+
+    public void AddRoomObject(RoomObject roomObject)
+    {
+        _roomObjects.Add(roomObject);
+    }
+
+    public List<RoomObject> GetRoomObjects()
+    {
+        return _roomObjects;
     }
 
     public int GetId()
@@ -106,7 +118,7 @@ public class RoomBlueprint
 
     public List<Vector2> GetAllGridPoints() => _bounds.GetAllGridPoints(_allignmentGrid);
 
-    private static List<Vector2> GridPointToTiles(Vector2 gridPoint, SimpleGrid allignmentGrid)
+    public static List<Vector2> GridPointToTiles(Vector2 gridPoint, SimpleGrid allignmentGrid)
     {
         var points = new List<Vector2>();
 

@@ -133,13 +133,52 @@ public class LevelGenerator
 
             _levelData.rooms = roomsTask.Result;
             _levelData.bounds = _root._bounds;
+            _levelData.spawnRoom = startRoom;
+            _levelData.endRoom = endRoom;
+            _levelData.playerSpawn = RoomBlueprint.GridPointToTiles(spawnOnGrid, _data.allignmentGrid).First();
+            _levelData.levelEnd = RoomBlueprint.GridPointToTiles(endOnGrid, _data.allignmentGrid).First();
 
             return new Level(_levelData);
         }, tokenSource.Token);
         t.Start();
         return t;
     }
-    
+
+    public Task<(RoomBlueprint, RoomBlueprint)> FindTwoFurthestRooms(List<RoomBlueprint> rooms, CancellationTokenSource tokenSource)
+    {
+        var t = new Task<(RoomBlueprint, RoomBlueprint)>(() =>
+        {
+            float maxDist = float.MinValue;
+            RoomBlueprint roomA = null;
+            RoomBlueprint roomB = null;
+            foreach(var room1 in rooms)
+            {
+                foreach(var room2 in rooms)
+                {
+                    if (tokenSource.Token.IsCancellationRequested)
+                        tokenSource.Token.ThrowIfCancellationRequested();
+
+                    var currentDist = Vector2.Distance(room1.GetCenter(), room2.GetCenter());
+                    if (currentDist > maxDist)
+                    {
+                        maxDist = currentDist;
+                        roomA = room1;
+                        roomB = room2;
+                    }
+                }
+            }
+
+
+            if (roomA == null || roomB == null)
+                throw new System.Exception("Couldn't find two furthest rooms!");
+
+            return (roomA, roomB);
+
+        }, tokenSource.Token);
+        t.Start();
+        return t;
+    }
+
     public void DebugDrawLevel(Level level, bool drawNodeEdges, bool drawNodeCenters, bool drawAllGridPoints, bool drawPerimeterGridPoints, bool drawAllRoomTiles, bool drawCenterConnections, bool drawConnections)
     {
         var rooms = level.GetRooms();

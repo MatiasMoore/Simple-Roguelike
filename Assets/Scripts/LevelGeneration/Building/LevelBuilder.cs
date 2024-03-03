@@ -111,6 +111,13 @@ public class LevelBuilder : MonoBehaviour
             yield return StartCoroutine(BuildCorridor(corridor, parent));
         }
 
+        //Build all objects
+        var objs = room.GetRoomObjects();
+        foreach (var obj in objs)
+        {
+            obj.Build(parent);
+        }
+
         AddBuiltRoom(room, parent.gameObject);
 
         yield break;

@@ -8,6 +8,7 @@ public class Level
     {
         public List<RoomBlueprint> rooms;
         public Rectangle bounds;
+        public RoomBlueprint spawnRoom, endRoom;
         public Vector2 playerSpawn;
         public Vector2 levelEnd;
     }
