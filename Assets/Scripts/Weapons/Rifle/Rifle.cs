@@ -34,6 +34,7 @@ public class Rifle : Weapon
     private void Start()
     {
         _currentAmmo = Data.AmmoPerMagazine;
+        _ammoBar.UpdateAmmo(_currentAmmo, Data.AmmoPerMagazine);
     }
 
     public override void Init()
