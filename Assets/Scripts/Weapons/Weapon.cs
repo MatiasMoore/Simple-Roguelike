@@ -13,7 +13,7 @@ public abstract class Weapon : MonoBehaviour
 
     public abstract void Deinit();
 
-    public abstract void RotateWeaponToPoint(Vector2 direction);
+    public abstract void RotateWeaponToPoint(Vector2 position);
 
 
 }
