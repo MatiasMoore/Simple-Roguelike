@@ -13,7 +13,7 @@ public class AttackAIStateManager : MonoBehaviour
     private float _attackDistance = 10f;
 
     [Header("Configuration")]
-    private Transform _player;
+    private static Transform _player;
 
     [SerializeField]
     CollisionListener _aggroCollider;
@@ -49,17 +49,19 @@ public class AttackAIStateManager : MonoBehaviour
     }
 
     private void OnEnable()
-    {
-        if (_player == null)
-        {
-            _aggroCollider.gameObject.SetActive(true);
-        }
-        
+    {  
         _aggroCollider.OnTriggerEnter += OnAggroTriggerEnter;
 
         InitStates();
-
-        _currentState = _states[AttackState.Sleep];
+        
+        if (_player == null)
+        {
+            _aggroCollider.gameObject.SetActive(true);
+            _currentState = _states[AttackState.Sleep];
+        } else
+        {
+            _currentState = _states[AttackState.Idle];
+        }
     }
 
     private void InitStates()

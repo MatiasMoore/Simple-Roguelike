@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
+using static AttackAIStateManager;
 
 public class MovementAIStateManager : MonoBehaviour
 {
@@ -20,7 +21,7 @@ public class MovementAIStateManager : MonoBehaviour
 
     [Header("Configuration")]
 
-    private Transform _player;
+    private static Transform _player;
 
     [SerializeField]
     private CollisionListener _aggroCollider;
@@ -68,6 +69,16 @@ public class MovementAIStateManager : MonoBehaviour
         _objectMovement.SetWalkType(ObjectMovement.WalkType.ByPoint);
         InitStates();
         _currentState = _states[MovementState.Sleep];
+
+        if (_player == null)
+        {
+            _aggroCollider.gameObject.SetActive(true);
+            _currentState = _states[MovementState.Sleep];
+        }
+        else
+        {
+            _currentState = _states[MovementState.Calm];
+        }
     }
 
     private void InitStates()
@@ -124,8 +135,8 @@ public class MovementAIStateManager : MonoBehaviour
         {
             _player = other.transform;
             InitStates();
-            SwitchToState(MovementState.Idle);
-            Debug.Log($"{gameObject.name} noticed player!");
+            SwitchToState(MovementState.Calm);
+            Debug.Log($"AImanager: {gameObject.name} noticed player! {_player.position}");
             _aggroCollider.gameObject.SetActive(false);
         }
 
