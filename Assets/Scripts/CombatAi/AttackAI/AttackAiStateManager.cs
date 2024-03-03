@@ -14,8 +14,10 @@ public class AttackAIStateManager : MonoBehaviour
     private float _attackDistance = 10f;
 
     [Header("Configuration")]
-    [SerializeField]
     private Transform _player;
+
+    [SerializeField]
+    CollisionListener _aggroCollider;
 
     [SerializeField]
     private Weapon _weapon;
@@ -24,7 +26,7 @@ public class AttackAIStateManager : MonoBehaviour
 
     public enum AttackState
     {
-        Idle, Attack
+        Sleep, Idle, Attack
     }
 
     private AttackState _currentStateEnum;
@@ -49,7 +51,11 @@ public class AttackAIStateManager : MonoBehaviour
 
     private void Start()
     {
+        _aggroCollider.OnTriggerEnter += OnAggroTriggerEnter;
+
         InitStates();
+
+        _currentState = _states[AttackState.Sleep];
     }
 
     private void InitStates()
@@ -61,10 +67,9 @@ public class AttackAIStateManager : MonoBehaviour
 
         _states.Clear();
 
+        _states.Add(AttackState.Sleep, new SleepAttackAI(this));
         _states.Add(AttackState.Idle, new IdleAttackAI(this, _player, transform, _attackDistance));
         _states.Add(AttackState.Attack, new RifleAttackAI(this, _player, transform, _attackDistance, _weapon));
-        
-        _currentState = _states[AttackState.Idle];
     }
 
     private void Update()
@@ -85,12 +90,26 @@ public class AttackAIStateManager : MonoBehaviour
     {
         if (Application.isPlaying)
         {
-            _currentState.DebugDrawGizmos();
+            if (_currentState != null)
+            {
+                _currentState.DebugDrawGizmos();
+            }
+            
         }
         else
         {
             // Draw all distances
             DebugDraw.DrawSphere(transform.position, _attackDistance, Color.red);
+        }
+    }
+
+   private void OnAggroTriggerEnter(Collider2D other)
+    {
+        if (other.CompareTag("Player") && _currentState is SleepAttackAI)
+        {
+            _player = other.transform;
+            InitStates();
+            SwitchToState(AttackState.Idle);
         }
     }
 }

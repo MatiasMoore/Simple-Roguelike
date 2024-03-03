@@ -10,8 +10,6 @@ public class MovementAIStateManager : MonoBehaviour
     [SerializeField]
     private bool _reload = false;
 
-    private Collider2D _aggroCollider;
-
     [SerializeField]
     private float _lostAggroDistance = 10f;
 
@@ -24,6 +22,9 @@ public class MovementAIStateManager : MonoBehaviour
     [Header("Configuration")]
 
     private Transform _player;
+
+    [SerializeField]
+    private CollisionListener _aggroCollider;
 
     [SerializeField]
     private ObjectMovement _objectMovement;
@@ -57,13 +58,8 @@ public class MovementAIStateManager : MonoBehaviour
 
     private void Start()
     {
-        // instantiate  aggro collider
-        GameObject aggroColliderGO = Instantiate(new GameObject(), transform.position, Quaternion.identity, transform);
-        aggroColliderGO.name = "AggroCollider";
-        CollisionListener aggroCollider = aggroColliderGO.AddComponent<CollisionListener>();
-        aggroCollider.OnTriggerEnter += OnAggroTriggerEnter;
-        aggroCollider.OnTriggerExit += OnAggroTriggerExit;
-        aggroCollider.SetRadius(_lostAggroDistance * 3);
+        _aggroCollider.OnTriggerEnter += OnAggroTriggerEnter;
+        _aggroCollider.OnTriggerExit += OnAggroTriggerExit;
 
         _objectMovement.Init();
         _objectMovement.SetWalkType(ObjectMovement.WalkType.ByPoint);
@@ -104,7 +100,11 @@ public class MovementAIStateManager : MonoBehaviour
     {
         if (Application.isPlaying)
         {
-            _currentState.DebugDrawGizmos();
+            if (_currentState != null)
+            {
+                _currentState.DebugDrawGizmos();
+            }
+            
         } else
         {
             // Draw all distances
