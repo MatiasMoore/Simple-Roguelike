@@ -172,6 +172,9 @@ public class ObjectMovement : MonoBehaviour
         else if (_objectMovementState is ChangeDirection)
         {
             _debugStates = MovementState.ChangeDirection;
+        } else if (_objectMovementState is PathFolowing)
+        {
+            _debugStates = MovementState.Linear;
         }
 
         _velocity = _rigidbody.velocity;
