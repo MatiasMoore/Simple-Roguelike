@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69de05249cddbc54cb1762d6f43991b4, type: 3}
+  m_Name: Enemy AK-47
+  m_EditorClassIdentifier: 
+  weaponName: AK-47
+  weaponDescription: 123
+  weaponIcon: {fileID: 21300000, guid: c9ef79ba59db38f40bd698e29162563d, type: 3}
+  weaponPrefab: {fileID: 9215425247971391935, guid: b64a22d2102abb84aa30b976c1e4c682, type: 3}
+  Damage: 0
+  FireRate: 0.1
+  RealoadeTime: 2
+  AmmoPerMagazine: 30
+  Accuracy: 0
+  ProjectileLifeTime: 1
+  ProjectileSpeed: 25
+  ProjectilePrefab: {fileID: 7890867244237525666, guid: 81fc479345b423f4ab88b7b0a6477f14, type: 3}
+  ScreenShakeProfile: {fileID: 11400000, guid: 9cc62971d3758f443b362a689519e8ed, type: 2}
