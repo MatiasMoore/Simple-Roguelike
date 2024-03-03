@@ -4,23 +4,35 @@ using UnityEngine;
 
 public class Level
 {
-    private List<RoomBlueprint> _rooms;
-    private Rectangle _bounds;
-
-    public Level(List<RoomBlueprint> rooms, Vector2 totalCenter, float totalWidth, float totalHeight)
+    public struct LevelData
     {
-        _rooms = new List<RoomBlueprint>(rooms);
-        _bounds = new Rectangle(totalCenter, totalWidth, totalHeight);
+        public List<RoomBlueprint> rooms;
+        public Rectangle bounds;
+        public RoomBlueprint spawnRoom, endRoom;
+        public Vector2 playerSpawn;
+        public Vector2 levelEnd;
+    }
+
+    private LevelData _data;
+
+    public Level(LevelData data)
+    {
+        _data = data;
+    }
+
+    public Vector2 GetPlayerSpawn()
+    {
+        return _data.playerSpawn;
     }
 
     public List<RoomBlueprint> GetRooms()
     {
-        return _rooms;
+        return _data.rooms;
     }
 
-    public Vector2 GetCenter() => _bounds.GetCenter();
+    public Vector2 GetCenter() => _data.bounds.GetCenter();
 
-    public float GetWidth() => _bounds.GetWidth();
+    public float GetWidth() => _data.bounds.GetWidth();
 
-    public float GetHeight() => _bounds.GetHeight();
+    public float GetHeight() => _data.bounds.GetHeight();
 }
