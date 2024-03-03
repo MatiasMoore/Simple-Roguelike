@@ -5,8 +5,6 @@ using UnityEngine;
 [RequireComponent(typeof(ObjectMovement))]
 public class PlayerMovementController : MonoBehaviour
 {
-    private InputSystem _inputSystem;
-
     [SerializeField]
     private Animator _animator;
 
@@ -26,12 +24,11 @@ public class PlayerMovementController : MonoBehaviour
     { 
         _objectMovement = GetComponent<ObjectMovement>();
         _objectMovement.Init();
-        _inputSystem = inputSystem;
     }
 
     private void Update()
     {
-        if (_inputSystem != null)
+        if (InputSystem.Instance != null)
         {
             _animator.SetFloat(_moveSpeed, _objectMovement.GetCurrentSpeed() / _objectMovement.GetMaxSpeed());          
 
