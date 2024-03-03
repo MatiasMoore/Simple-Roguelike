@@ -19,12 +19,16 @@ public class RoomObject
         _buildOnce = buildOnce;
     }
 
-    public GameObject Build(Transform parent)
+    public GameObject Build(Transform temporary, Transform permanent)
     {
         if (_buildOnce && _wasBuilt)
             return null;
 
-        return UnityEngine.Object.Instantiate(_prefab, _position, Quaternion.identity, parent);
+        _wasBuilt = true;
+        if (_buildOnce)
+            return UnityEngine.Object.Instantiate(_prefab, _position, Quaternion.identity, permanent);
+        else
+            return UnityEngine.Object.Instantiate(_prefab, _position, Quaternion.identity, temporary);
     }
 
 }
