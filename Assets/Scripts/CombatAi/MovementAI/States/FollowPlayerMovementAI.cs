@@ -9,6 +9,7 @@ public class FollowPlayerMovementAI : MovementAIStatePrimitive
     private ObjectMovement _movement;
     private float _maxDistance;
     private float _minDistance;
+    private Vector2 _lastSeenPlayerPosition;
 
     public FollowPlayerMovementAI(MovementAIStateManager stateManager, 
         Transform player, Transform self, 
@@ -29,6 +30,11 @@ public class FollowPlayerMovementAI : MovementAIStatePrimitive
 
     public override void Start()
     {
+        if (CanSeeObject(_self, _player))
+        {
+            _lastSeenPlayerPosition = _player.position;
+        }
+        
         Debug.Log("State: Follow state started");
     }
 
@@ -45,20 +51,34 @@ public class FollowPlayerMovementAI : MovementAIStatePrimitive
         {
             _stateManager.SwitchToState(MovementAIStateManager.MovementState.Idle);
             return;
+        }      
+
+        if (distToPlayer > _maxDistance)
+        {
+            MoveToLastSeenPlayerPosition();
+            return;
         }
 
         if (!CanSeeObject(_self, _player))
         {
-            _stateManager.SwitchToState(MovementAIStateManager.MovementState.Calm);
-            return;
+            MoveToLastSeenPlayerPosition();
+        }
+        else
+        {
+            _lastSeenPlayerPosition = _player.position;
+            _movement.GoToPointOnNavMesh(_player.position);
         }
 
-        if (distToPlayer > _maxDistance)
+    }
+
+    private void MoveToLastSeenPlayerPosition()
+    {
+        _movement.GoToPointOnNavMesh(_lastSeenPlayerPosition);
+
+        if (Vector2.Distance(_lastSeenPlayerPosition, _self.position) < 1f)
         {
             _stateManager.SwitchToState(MovementAIStateManager.MovementState.Calm);
             return;
         }
-
-        _movement.GoToPointOnNavMesh(_player.position);
     }
 }
