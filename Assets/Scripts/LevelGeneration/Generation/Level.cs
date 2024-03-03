@@ -20,6 +20,11 @@ public class Level
         _data = data;
     }
 
+    public Vector2 GetPlayerSpawn()
+    {
+        return _data.playerSpawn;
+    }
+
     public List<RoomBlueprint> GetRooms()
     {
         return _data.rooms;

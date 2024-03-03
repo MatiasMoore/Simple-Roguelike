@@ -5,17 +5,26 @@ using UnityEngine;
 public class GameStart : MonoBehaviour
 {
     [SerializeField]
-    LevelCreator _levelGenerator;
+    private LevelCreator _levelCreator;
+
+    [SerializeField] 
+    private GameObject _player;
 
     // Start is called before the first frame update
     void Start()
     {
-        _levelGenerator.GenerateAndStreamLevel();
+        StartCoroutine(StartLevel());
     }
 
-    // Update is called once per frame
-    void Update()
+    private IEnumerator StartLevel()
     {
-        
+        var levelTask = _levelCreator.GenerateNewLevel();
+
+        if (!levelTask.IsCompleted)
+            yield return null;
+
+        _levelCreator.StartStreamingLevel(levelTask.Result);
+
+        _player.transform.position = levelTask.Result.GetPlayerSpawn();
     }
 }

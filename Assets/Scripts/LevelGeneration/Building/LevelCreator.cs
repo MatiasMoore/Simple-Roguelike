@@ -55,20 +55,6 @@ public class LevelCreator : MonoBehaviour
     [SerializeField]
     private LevelStreaming _levelStreaming;
 
-    public void GenerateAndStreamLevel()
-    {
-        GenerateNewLevel();
-        StartCoroutine(StartStreaming());
-    }
-
-    private IEnumerator StartStreaming()
-    {
-        while (!_levelTask.IsCompleted)
-            yield return null;
-
-        _levelStreaming.StartStreamingLevel(_levelTask.Result);
-    }
-
     private void Awake()
     {
         _generator = new LevelGenerator();
@@ -127,7 +113,7 @@ public class LevelCreator : MonoBehaviour
         }
     }
 
-    private void GenerateNewLevel()
+    public Task<Level> GenerateNewLevel()
     {
         if (_randomiseSeed) 
             _generationData.seed = Random.Range(int.MinValue, int.MaxValue);
@@ -139,6 +125,12 @@ public class LevelCreator : MonoBehaviour
             gap * _generationData.startingArea.GetHeight());
         
         _levelTask = _generator.GenerateNewLevel(genData);
+        return _levelTask;
+    }
+
+    public void StartStreamingLevel(Level level)
+    {
+        _levelStreaming.StartStreamingLevel(level);
     }
 
     private void OnDrawGizmosSelected()
