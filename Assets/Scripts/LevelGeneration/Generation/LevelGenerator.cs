@@ -22,7 +22,7 @@ public class LevelGenerator
         public int seed;
 
         [SerializeField]
-        public GameObject playerObj, enemyObj;
+        public SpawnableObject enemyObj, finishObj;
     }
 
     LevelGenerationData _data;
@@ -126,6 +126,12 @@ public class LevelGenerator
             RoomBlueprint startRoom, endRoom;
             (startRoom, endRoom) = furthestRoomsTask.Result;
 
+            var roomsToPopulate = new List<RoomBlueprint>(roomsTask.Result);
+            roomsToPopulate.Remove(startRoom);
+
+            var populateRoomsTask = PopulateRoomsWithEnemies(roomsToPopulate, tokenSource);
+            populateRoomsTask.Wait();
+
             SetStatusString("Finished generating!");
 
             var spawnOnGrid = _data.allignmentGrid.SnapToGrid(startRoom.GetCenter());
@@ -137,6 +143,7 @@ public class LevelGenerator
             _levelData.endRoom = endRoom;
             _levelData.playerSpawn = RoomBlueprint.GridPointToTiles(spawnOnGrid, _data.allignmentGrid).First();
             _levelData.levelEnd = RoomBlueprint.GridPointToTiles(endOnGrid, _data.allignmentGrid).First();
+            _levelData.endRoom.AddRoomObject(new RoomObject(_data.finishObj._spawnObject, _levelData.levelEnd, false));
 
             return new Level(_levelData);
         }, tokenSource.Token);
@@ -144,7 +151,36 @@ public class LevelGenerator
         return t;
     }
 
-    public Task<(RoomBlueprint, RoomBlueprint)> FindTwoFurthestRooms(List<RoomBlueprint> rooms, CancellationTokenSource tokenSource)
+    private Task PopulateRoomsWithEnemies(List<RoomBlueprint> rooms, CancellationTokenSource tokenSource)
+    {
+        var t = new Task(() =>
+        {
+            var enemyGrid = new SimpleGrid(4);
+
+            foreach (var room in rooms)
+            {
+                var tiles = room.GetAllTiles();
+                var usedTiles = new List<Vector2>();
+
+                foreach (var tile in tiles)
+                {
+                    var onGrid = enemyGrid.SnapToGrid(tile);
+                    var randBool = _random.Next(0, 2) == 1;
+                    if (room.IsPosWithinBounds(onGrid, 1) && !usedTiles.Contains(onGrid))
+                    {
+                        usedTiles.Add(onGrid);
+                        if (randBool)
+                            room.AddRoomObject(new RoomObject(_data.enemyObj._spawnObject, _data.enemyObj._offset + (Vector3)onGrid, true));
+                    }
+                }
+            }
+
+        }, tokenSource.Token);
+        t.Start();
+        return t;
+    }
+
+    private Task<(RoomBlueprint, RoomBlueprint)> FindTwoFurthestRooms(List<RoomBlueprint> rooms, CancellationTokenSource tokenSource)
     {
         var t = new Task<(RoomBlueprint, RoomBlueprint)>(() =>
         {
