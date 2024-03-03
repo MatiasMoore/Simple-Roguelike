@@ -26,21 +26,9 @@ public class LevelCreator : MonoBehaviour
 
     [Header("Generation settings")]
     [SerializeField]
-    private int _tilesPerPoint = 1;
+    private bool _randomiseSeed = true;
     [SerializeField]
-    private int _initialWidth = 50;
-    [SerializeField]
-    private int _initialHeight = 50;
-    [SerializeField]
-    private Vector2 _initialCenter = new Vector2(0, 0);
-    [SerializeField]
-    private int _iterCount = 4;
-    [SerializeField]
-    private bool _cutOffSomeLeafs = false;
-    [SerializeField]
-    private int _seed = 0;
-    [SerializeField]
-    private bool _randomiseSeed = false;
+    private LevelGenerator.LevelGenerationData _generationData;
 
     [Header("Debug draw settings")]
     [SerializeField]
@@ -142,10 +130,15 @@ public class LevelCreator : MonoBehaviour
     private void GenerateNewLevel()
     {
         if (_randomiseSeed) 
-            _seed = Random.Range(int.MinValue, int.MaxValue);
+            _generationData.seed = Random.Range(int.MinValue, int.MaxValue);
 
-        var gap = Mathf.Max(_tilesPerPoint / 2, 1);
-        _levelTask = _generator.GenerateNewLevel(gap * _initialCenter, gap * _initialWidth, gap * _initialHeight, new SimpleGrid(gap), _iterCount, _cutOffSomeLeafs, _seed);
+        var gap = _generationData.allignmentGrid.GetGap();
+        LevelGenerator.LevelGenerationData genData = _generationData;
+        genData.startingArea = new Rectangle(gap * _generationData.startingArea.GetCenter(), 
+            gap * _generationData.startingArea.GetWidth(), 
+            gap * _generationData.startingArea.GetHeight());
+        
+        _levelTask = _generator.GenerateNewLevel(genData);
     }
 
     private void OnDrawGizmosSelected()

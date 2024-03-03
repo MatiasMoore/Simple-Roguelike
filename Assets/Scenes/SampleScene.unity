@@ -131,6 +131,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1556232412110472830, guid: 25453989806c7cd488f86d78925433b6, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1556232412110472830, guid: 25453989806c7cd488f86d78925433b6, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2569351959815006725, guid: 25453989806c7cd488f86d78925433b6, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3.0765917
@@ -1137,14 +1145,19 @@ MonoBehaviour:
   _deleteCurrentLevel: 0
   _streamLevel: 0
   _stopStreamingLevel: 0
-  _tilesPerPoint: 4
-  _initialWidth: 200
-  _initialHeight: 200
-  _initialCenter: {x: 0.5, y: 0.5}
-  _iterCount: 15
-  _cutOffSomeLeafs: 0
-  _seed: 526868805
   _randomiseSeed: 1
+  _generationData:
+    iterCount: 8
+    cutoffSomeLeaves: 0
+    startingArea:
+      _width: 20
+      _height: 20
+      _center: {x: 0.5, y: 0.5}
+    allignmentGrid:
+      _gap: 1
+    seed: 0
+    playerObj: {fileID: 0}
+    enemyObj: {fileID: 5823166219215228363, guid: bb955203f42b3ff44b5c9c2260f14e16, type: 3}
   _drawRoomEdges: 1
   _drawRoomCenter: 0
   _drawAllTiles: 0
