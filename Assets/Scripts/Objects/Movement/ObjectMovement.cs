@@ -75,7 +75,7 @@ public class ObjectMovement : MonoBehaviour
         _walkType = walkType;
     }
 
-    public void WalkTo(List<Vector2> path)
+    public void WalkTo(List<Vector3> path)
     {
 
         _objectMovementState = new PathFolowing(_rigidbody, _accelerationTime, _decelerationTime, _changeDirectionTime, _maxSpeed, path);

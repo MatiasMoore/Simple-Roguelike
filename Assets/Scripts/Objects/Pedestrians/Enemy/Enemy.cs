@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -33,31 +34,15 @@ public class Enemy : MonoBehaviour
     [ContextMenu("Go to player")]
     private void GoToPlayer()
     {
-        Vector3 playerPos = _player.transform.position;
-        playerPos.z = 0;
         NavMeshPath path = new NavMeshPath();
-        _agent.CalculatePath(playerPos, path);
-        
-        Vector3[] pathvec = path.corners;
-        List<Vector2> pathVec2d = new List<Vector2>();
-        foreach (var vec in pathvec)
-        {
-            pathVec2d.Add((Vector2) vec);
-        }
-        _objectMovement.WalkTo(pathVec2d);
+        _agent.CalculatePath(_player.transform.position, path);
+        _objectMovement.WalkTo(path.corners.ToList());
     }
 
     private void GoToPoint(Vector2 point)
     {
         NavMeshPath path = new NavMeshPath();
         _agent.CalculatePath(point, path);
-
-        Vector3[] pathvec = path.corners;
-        List<Vector2> pathVec2d = new List<Vector2>();
-        foreach (var vec in pathvec)
-        {
-            pathVec2d.Add((Vector2)vec);
-        }
-        _objectMovement.WalkTo(pathVec2d);
+        _objectMovement.WalkTo(path.corners.ToList());
     }
 }
