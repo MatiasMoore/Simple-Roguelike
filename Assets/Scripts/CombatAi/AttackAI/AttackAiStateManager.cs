@@ -3,7 +3,6 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
-[RequireComponent(typeof(ObjectMovement))]
 public class AttackAIStateManager : MonoBehaviour
 {
     [Header("Settings")]
