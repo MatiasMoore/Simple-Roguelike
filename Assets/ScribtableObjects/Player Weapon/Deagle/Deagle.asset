@@ -21,7 +21,13 @@ MonoBehaviour:
   RealoadeTime: 3
   AmmoPerMagazine: 7
   Accuracy: 0
+  RecoilShake: {fileID: 0}
   ProjectileLifeTime: 7
   ProjectileSpeed: 10
   ProjectilePrefab: {fileID: 7890867244237525666, guid: d6a3f22d0a2bebe458f5a8bda9170ea4, type: 3}
-  ScreenShakeProfile: {fileID: 11400000, guid: 727f596369ffc7f4f850c1f46264e514, type: 2}
+  WhatDamage:
+    serializedVersion: 2
+    m_Bits: 64
+  ByWhatDestroys:
+    serializedVersion: 2
+    m_Bits: 192
