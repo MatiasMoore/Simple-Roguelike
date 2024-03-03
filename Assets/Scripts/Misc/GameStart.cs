@@ -23,8 +23,8 @@ public class GameStart : MonoBehaviour
         if (!levelTask.IsCompleted)
             yield return null;
 
-        _levelCreator.StartStreamingLevel(levelTask.Result);
-
         _player.transform.position = levelTask.Result.GetPlayerSpawn();
+
+        _levelCreator.StartStreamingLevel(levelTask.Result);
     }
 }
