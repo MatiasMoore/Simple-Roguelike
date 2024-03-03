@@ -1185,17 +1185,17 @@ MonoBehaviour:
   _stopStreamingLevel: 0
   _randomiseSeed: 1
   _generationData:
-    iterCount: 8
+    iterCount: 15
     cutoffSomeLeaves: 0
     startingArea:
-      _width: 20
-      _height: 20
+      _width: 200
+      _height: 200
       _center: {x: 0.5, y: 0.5}
     allignmentGrid:
       _gap: 2
     seed: 0
     enemyObj:
-      _spawnObject: {fileID: 5823166219215228363, guid: bb955203f42b3ff44b5c9c2260f14e16, type: 3}
+      _spawnObject: {fileID: 8440544541125941398, guid: 0e3dc0fa7375f1d41917dda508b4d933, type: 3}
       _offset: {x: 0, y: 0, z: -1}
     finishObj:
       _spawnObject: {fileID: 3578741514648601537, guid: 6186fb6cfbd2cde479dddd91d7ee12d7, type: 3}
