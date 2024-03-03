@@ -7,6 +7,7 @@ using UnityEngine;
 [Serializable]
 public class RifleData : WeaponDataSO
 {
+    [Header("Rifle Data")]
     [SerializeField]
     public float FireRate;
 
@@ -20,6 +21,10 @@ public class RifleData : WeaponDataSO
     public float Accuracy;
 
     [SerializeField]
+    public ScreenShakeProfile RecoilShake;
+
+    [Header("Projectile Data")]
+    [SerializeField]
     public float ProjectileLifeTime;
 
     [SerializeField]
@@ -29,5 +34,9 @@ public class RifleData : WeaponDataSO
     public GameObject ProjectilePrefab;
 
     [SerializeField]
-    public ScreenShakeProfile ScreenShakeProfile;
+    public LayerMask WhatDamage;
+
+    [SerializeField]
+    public LayerMask ByWhatDestroys;
+
 }

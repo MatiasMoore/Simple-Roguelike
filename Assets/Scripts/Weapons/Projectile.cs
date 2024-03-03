@@ -13,6 +13,8 @@ public abstract class Projectile : MonoBehaviour
     private float _damage = 1;
     [SerializeField]
     private LayerMask _whatDestroysMe;
+    [SerializeField]
+    private LayerMask _whatIDamage;
 
     void Start()
     {
@@ -23,11 +25,15 @@ public abstract class Projectile : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        IDamagable damagable = collision.GetComponent<IDamagable>();
-        if (damagable != null)
+        if ((_whatIDamage.value & 1 << collision.gameObject.layer) > 0)
         {
-            damagable.TakeDamage(_damage);
+            IDamagable damagable = collision.GetComponent<IDamagable>();
+            if (damagable != null)
+            {
+                damagable.TakeDamage(_damage);
+            }
         }
+        
         
         if ((_whatDestroysMe.value & 1 << collision.gameObject.layer) > 0)
         {
@@ -48,5 +54,25 @@ public abstract class Projectile : MonoBehaviour
     public float GetDamage()
     {
         return _damage;
+    }
+
+    public void SetWhatIDamage(LayerMask whatIDamage)
+    {
+        _whatIDamage = whatIDamage;
+    }
+
+    public void SetWhatDestroysMe(LayerMask whatDestroysMe)
+    {
+        _whatDestroysMe = whatDestroysMe;
+    }
+
+    public LayerMask GetWhatIDamage()
+    {
+        return _whatIDamage;
+    }
+
+    public LayerMask GetWhatDestroysMe()
+    {
+        return _whatDestroysMe;
     }
 }
