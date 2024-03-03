@@ -19,6 +19,7 @@ public class LevelGenerator
     private CancellationTokenSource _tokenSource = new CancellationTokenSource();
 
     private Task<Level> _mainTask;
+    private Level.LevelData _levelData;
 
     private string _currentStatus;
     private bool _isStatusUpdated = false;
@@ -80,6 +81,8 @@ public class LevelGenerator
         SetStatusString("Initialising generation");
         var t = new Task<Level>(() =>
         {
+            _levelData = new Level.LevelData();
+
             SetNewSeed(newSeed);
 
             var sliceTask = SliceLeavesTask(_root, _iterCount, tokenSource);
@@ -105,7 +108,10 @@ public class LevelGenerator
 
             SetStatusString("Finished generating!");
 
-            return new Level(roomsTask.Result, _root._bounds.GetCenter(), _root._bounds.GetWidth(), _root._bounds.GetHeight());
+            _levelData.rooms = roomsTask.Result;
+            _levelData.bounds = _root._bounds;
+
+            return new Level(_levelData);
         }, tokenSource.Token);
         t.Start();
         return t;
