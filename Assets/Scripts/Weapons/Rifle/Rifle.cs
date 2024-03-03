@@ -24,11 +24,12 @@ public class Rifle : Weapon
 
     private enum FireState
     {
+        inactive,
         readyToFire,
         fireRatePause,
         realoadPause
     }
-    private FireState _fireState;
+    private FireState _fireState = FireState.inactive;
 
     private void Start()
     {
@@ -46,7 +47,8 @@ public class Rifle : Weapon
         bulletObjectMovementComponent.SetMaxSpeed(Data.ProjectileSpeed);
         bullet.SetAliveTime(Data.ProjectileLifeTime);
         bullet.SetDamage(Data.Damage);
-
+        bullet.SetWhatIDamage(Data.WhatDamage);
+        bullet.SetWhatDestroysMe(Data.ByWhatDestroys);
 
         _ammoBar.UpdateAmmo(_currentAmmo, Data.AmmoPerMagazine);
         gameObject.SetActive(true);
@@ -60,9 +62,13 @@ public class Rifle : Weapon
 
     public override void Enter()
     {
-        Debug.Log($"Weapon {transform.name} enter.");
-        Fire();
+        if (_fireState == FireState.inactive)
+        {
+            Debug.LogError($"Weapon {gameObject.name} is inactive");
+            return;
+        }
 
+        Fire();
     }
 
     public override void RotateWeaponToPoint(Vector2 direction)
@@ -97,11 +103,11 @@ public class Rifle : Weapon
 
     private void RecoilShake()
     {
-        if (Data.ScreenShakeProfile != null)
+        if (Data.RecoilShake != null)
         {
             Debug.Log("Shake");
-            Data.ScreenShakeProfile.sourceDeafaultVelocity = _weaponHolder.transform.right * -1;
-            ScreenShaker.Instance.ShakeScreen(Data.ScreenShakeProfile);
+            Data.RecoilShake.sourceDeafaultVelocity = _weaponHolder.transform.right * -1;
+            ScreenShaker.Instance.ShakeScreen(Data.RecoilShake);
         }
         return;
     }
@@ -171,6 +177,7 @@ public class Rifle : Weapon
     {
         _ammoBar.SetActiveReloadBar(false);
         _weaponHolder.transform.localScale = _localScale;
+        _fireState = FireState.inactive;
         gameObject.SetActive(false);
     }
 }
