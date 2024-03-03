@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7290827980805396775}
   - component: {fileID: 7570565206398688884}
   - component: {fileID: 9004936037304516144}
+  - component: {fileID: 1789475544921460557}
   m_Layer: 0
   m_Name: Bullet
   m_TagString: Untagged
@@ -175,8 +176,25 @@ MonoBehaviour:
   _whatDestroysMe:
     serializedVersion: 2
     m_Bits: 192
-  _accelerationTime: 0
-  _decelerationTime: 0
-  _changeDirectionTime: 0
-  _maxSpeed: 25
+  _whatIDamage:
+    serializedVersion: 2
+    m_Bits: 0
   _aliveTime: 2
+--- !u!114 &1789475544921460557
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7890867244237525666}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73fd0b50bbc00f742a539280d636ef85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _accelerationTime: 0.3
+  _decelerationTime: 0.3
+  _changeDirectionTime: 0.15
+  _maxSpeed: 5
+  IsDynamicUpdateData: 0
+  _walkType: 0
