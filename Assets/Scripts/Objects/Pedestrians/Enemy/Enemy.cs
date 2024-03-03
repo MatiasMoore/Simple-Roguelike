@@ -77,6 +77,7 @@ public class CombatStateManager : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        _currentState.DebugDrawGizmos();
+        if (_currentState != null)
+            _currentState.DebugDrawGizmos();
     }
 }
