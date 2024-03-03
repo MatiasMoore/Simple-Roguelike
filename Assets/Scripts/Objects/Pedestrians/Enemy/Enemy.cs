@@ -4,38 +4,79 @@ using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(ObjectMovement))]
-public class Enemy : MonoBehaviour
+public class CombatStateManager : MonoBehaviour
 {
+    [Header("Settings")]
     [SerializeField]
-    private GameObject _player;
+    private bool _reload = false;
+    [SerializeField]
+    private float _preferedDistance = 5f;
+    [SerializeField]
+    private float _distanceToChase = 5f;
+
+    [Header("Configuration")]
+    [SerializeField]
+    private Transform _player;
 
     [SerializeField]
     private ObjectMovement _objectMovement;
+
+    private CombatStatePrimitive _currentState;
+
+    public enum CombatState
+    {
+        Idle, Follow
+    }
+
+    private Dictionary<CombatState, CombatStatePrimitive> _states = new Dictionary<CombatState, CombatStatePrimitive>();
+
+    public void SwitchToState(CombatState stateEnum)
+    {
+        if (_states.TryGetValue(stateEnum, out CombatStatePrimitive state))
+        {
+            _currentState.Stop();
+            _currentState = state;
+            _currentState.Start();
+        }
+        else
+            throw new System.Exception("No state could be found for the given state enum!");
+    }
 
     private void Start()
     {
         _objectMovement.Init();
         _objectMovement.SetWalkType(ObjectMovement.WalkType.ByPoint);
-        InputSystem.Instance.CursorClickEvent += GoToPoint;
+        InitStates();
     }
 
-    private List<Vector3> _debugPath = new List<Vector3>();
-
-    private void GoToPoint(Vector2 point)
+    private void InitStates()
     {
-        NavMeshPath path = new NavMeshPath();
-        if (NavMesh.CalculatePath((Vector2)transform.position, point, NavMesh.AllAreas, path))
+        if (_currentState != null)
+            _currentState.Stop();
+
+        _states.Clear();
+        _states.Add(CombatState.Idle, new IdleState(this, _player, this.transform, _distanceToChase));
+        _states.Add(CombatState.Follow, new FollowPlayerState(this, _player, this.transform, _objectMovement, _preferedDistance));
+
+        _currentState = _states[CombatState.Idle];
+    }
+
+    private void Update()
+    {
+        _currentState.Update();
+    }
+
+    private void OnValidate()
+    {
+        if (_reload)
         {
-            _objectMovement.WalkTo(path.corners.ToList());
-            _debugPath = path.corners.ToList();
+            _reload = false;
+            InitStates();
         }
     }
 
     private void OnDrawGizmos()
     {
-        foreach (var pos in _debugPath)
-        {
-            DebugDraw.DrawCross(pos, 0.2f, Color.green);
-        }
+        _currentState.DebugDrawGizmos();
     }
 }
