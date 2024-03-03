@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.AI;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Collider2D))]
@@ -68,6 +70,16 @@ public class ObjectMovement : MonoBehaviour
 
         _objectMovementState = _objectMovementState.Update(_direction, Time.fixedDeltaTime);
         UpdateDebug();
+    }
+
+    public void GoToPointOnNavMesh(Vector2 point)
+    {
+        NavMeshPath path = new NavMeshPath();
+        if (NavMesh.CalculatePath((Vector2)transform.position, point, NavMesh.AllAreas, path))
+        {
+            WalkTo(path.corners.ToList());
+            _debugPath = path.corners.ToList();
+        }
     }
 
     public void SetWalkType(WalkType walkType)
@@ -148,6 +160,15 @@ public class ObjectMovement : MonoBehaviour
     public float GetCurrentSpeed()
     {
         return _rigidbody.velocity.magnitude;
+    }
+
+    private List<Vector3> _debugPath = new List<Vector3>();
+    private void OnDrawGizmos()
+    {
+        foreach (var pos in _debugPath)
+        {
+            DebugDraw.DrawCross(pos, 0.2f, Color.green);
+        }
     }
 
     public void UpdateDebug()
