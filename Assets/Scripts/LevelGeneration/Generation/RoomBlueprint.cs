@@ -56,12 +56,6 @@ public class RoomBlueprint
             return points;
         }
 
-        /*
-        public List<Vector2> GetTiles()
-        {
-            return _tiles;
-        }
-        */
     }
     
     private static int _lastUsedId = 0;
@@ -99,6 +93,8 @@ public class RoomBlueprint
     {
         return _corridors;
     }
+
+    public bool IsPosWithinBounds(Vector2 pos, float tileSize) => _bounds.IsPosWithinBounds(pos, tileSize);
 
     public float GetWidth() => _bounds.GetWidth();
 
