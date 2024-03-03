@@ -213,7 +213,7 @@ GameObject:
   - component: {fileID: 4348999125784493489}
   - component: {fileID: 6391593537009662241}
   - component: {fileID: 2117697201538292416}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: EnemyWithDeagle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
