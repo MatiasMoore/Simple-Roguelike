@@ -28,4 +28,10 @@ public static class DebugDraw
         Gizmos.color = color;
         Gizmos.DrawLine(start, end);
     }
+
+    public static void DrawSphere(Vector2 pos, float radius, Color color)
+    {
+        Gizmos.color = color;
+        Gizmos.DrawWireSphere(pos, radius);
+    }
 }
