@@ -4,8 +4,6 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
-[RequireComponent(typeof(Rigidbody2D))]
-[RequireComponent(typeof(Collider2D))]
 public class ObjectMovement : MonoBehaviour
 {
     [SerializeField]
@@ -22,6 +20,7 @@ public class ObjectMovement : MonoBehaviour
 
     private ObjectMovementMainState _objectMovementState;
 
+    [SerializeField]
     private Rigidbody2D _rigidbody;
 
     private Vector2 _direction;
@@ -49,12 +48,17 @@ public class ObjectMovement : MonoBehaviour
     }
 
     private MovementState _debugStates = MovementState.Idle;
+
     private Vector2 _velocity;
     // END OF DEBUG FIELDS \\
 
     public void Init()
     {
-        _rigidbody = GetComponent<Rigidbody2D>();
+        if (_rigidbody == null)
+        {
+            _rigidbody = GetComponent<Rigidbody2D>();
+        }
+            
         _objectMovementState = new Idle(_rigidbody, _accelerationTime, _decelerationTime, _changeDirectionTime, _maxSpeed);
     }
 

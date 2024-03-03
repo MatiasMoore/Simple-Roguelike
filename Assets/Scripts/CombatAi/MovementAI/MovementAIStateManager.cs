@@ -3,7 +3,6 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
-[RequireComponent(typeof(ObjectMovement))]
 public class MovementAIStateManager : MonoBehaviour
 {
     [Header("Settings")]
