@@ -14,7 +14,10 @@ public class LevelBuilder : MonoBehaviour
     private NavMeshPlus.Components.NavMeshSurface _navMesh;
 
     [SerializeField]
-    private Transform _tileRoot;
+    private Transform _roomRoot;
+
+    [SerializeField]
+    private Transform _permanentObjects;
 
     [SerializeField]
     private GameObject _floorTile;
@@ -39,7 +42,7 @@ public class LevelBuilder : MonoBehaviour
     public IEnumerator BuildRoomCoroutine(RoomBlueprint room)
     {
         var roomObj = new GameObject("Room");
-        roomObj.transform.parent = _tileRoot;
+        roomObj.transform.parent = _roomRoot;
         yield return BuildRoom(room, roomObj.transform);
     }
 
@@ -111,6 +114,13 @@ public class LevelBuilder : MonoBehaviour
             yield return StartCoroutine(BuildCorridor(corridor, parent));
         }
 
+        //Build all objects
+        var objs = room.GetRoomObjects();
+        foreach (var obj in objs)
+        {
+            obj.Build(parent, _permanentObjects);
+        }
+
         AddBuiltRoom(room, parent.gameObject);
 
         yield break;
@@ -164,9 +174,15 @@ public class LevelBuilder : MonoBehaviour
     public void DeleteCurrentLevel()
     {
         StopAllCoroutines();
-        for (int i = 0; i < _tileRoot.childCount; i++)
+        for (int i = 0; i < _roomRoot.childCount; i++)
         {
-            var currentChild = _tileRoot.GetChild(i).gameObject;
+            var currentChild = _roomRoot.GetChild(i).gameObject;
+            Destroy(currentChild);
+        }
+
+        for (int i = 0; i < _permanentObjects.childCount; i++)
+        {
+            var currentChild = _permanentObjects.GetChild(i).gameObject;
             Destroy(currentChild);
         }
 
@@ -178,9 +194,9 @@ public class LevelBuilder : MonoBehaviour
         const int maxTilesPerFrame = 20;
 
         int tilesUpdated = 0;
-        for (int i = 0; i < _tileRoot.childCount; i++)
+        for (int i = 0; i < _roomRoot.childCount; i++)
         {
-            var currentChild = _tileRoot.GetChild(i).gameObject;
+            var currentChild = _roomRoot.GetChild(i).gameObject;
             var spriteConf = currentChild.GetComponent<SpriteConfigurator>();
             if (spriteConf == null)
                 throw new System.Exception("A floor tile doesn't have a sprite configurator!");

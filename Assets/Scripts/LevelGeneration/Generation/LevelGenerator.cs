@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -6,19 +7,34 @@ using UnityEngine;
 
 public class LevelGenerator
 {
-    private RoomNode _root;
-    private int _iterCount;
-    private bool _cutoffSomeLeaves;
-    private Vector2 _centerOffset;
-    private int _width, _height;
-    SimpleGrid _allignmentGrid;
+    [Serializable]
+    public struct LevelGenerationData
+    {
+        [SerializeField]
+        public int iterCount;
+        [SerializeField]
+        public bool cutoffSomeLeaves;
+        [SerializeField]
+        public Rectangle startingArea;
+        [SerializeField]
+        public SimpleGrid allignmentGrid;
+        [SerializeField]
+        public int seed;
 
-    private int _seed;
+        [SerializeField]
+        public SpawnableObject enemyObj, finishObj;
+    }
+
+    LevelGenerationData _data;
+
+    private RoomNode _root;
+    
     private System.Random _random;
 
     private CancellationTokenSource _tokenSource = new CancellationTokenSource();
 
     private Task<Level> _mainTask;
+    private Level.LevelData _levelData;
 
     private string _currentStatus;
     private bool _isStatusUpdated = false;
@@ -50,21 +66,20 @@ public class LevelGenerator
         return _isStatusUpdated;
     }
 
-    public Task<Level> GenerateNewLevel(Vector2 centerOffset, int width, int height, SimpleGrid allignmentGrid, int iterCount, bool cutoffSomeLeaves, int seed)
+    public Task<Level> GenerateNewLevel(LevelGenerationData data)
     {
-        _centerOffset = centerOffset;
-        _width = width;
-        _height = height;
-        _allignmentGrid = allignmentGrid;
-        _root = new RoomNode(_centerOffset, _width, _height);
-        _iterCount = iterCount;
-        _cutoffSomeLeaves = cutoffSomeLeaves;
-        SetNewSeed(seed);
+        _data = data;
+        _root = new RoomNode(
+            _data.startingArea.GetCenter(), 
+            _data.startingArea.GetWidth(), 
+            _data.startingArea.GetHeight());
+
+        SetNewSeed(_data.seed);
 
         if (_mainTask != null && !_mainTask.IsCompleted)
             AbortTasks();
 
-        _mainTask = GenerateNewLevelTask(_seed, _tokenSource);
+        _mainTask = GenerateNewLevelTask(_data.seed, _tokenSource);
         return _mainTask;
     }
 
@@ -80,15 +95,17 @@ public class LevelGenerator
         SetStatusString("Initialising generation");
         var t = new Task<Level>(() =>
         {
+            _levelData = new Level.LevelData();
+
             SetNewSeed(newSeed);
 
-            var sliceTask = SliceLeavesTask(_root, _iterCount, tokenSource);
+            var sliceTask = SliceLeavesTask(_root, _data.iterCount, tokenSource);
             sliceTask.Wait();
 
             if (tokenSource.Token.IsCancellationRequested)
                 tokenSource.Token.ThrowIfCancellationRequested();
 
-            if (_cutoffSomeLeaves)
+            if (_data.cutoffSomeLeaves)
             {
                 foreach (var leaf in _root.GetLeaves())
                 {
@@ -103,14 +120,101 @@ public class LevelGenerator
             if (tokenSource.Token.IsCancellationRequested)
                 tokenSource.Token.ThrowIfCancellationRequested();
 
+            var furthestRoomsTask = FindTwoFurthestRooms(roomsTask.Result, tokenSource);
+            furthestRoomsTask.Wait();
+
+            RoomBlueprint startRoom, endRoom;
+            (startRoom, endRoom) = furthestRoomsTask.Result;
+
+            var roomsToPopulate = new List<RoomBlueprint>(roomsTask.Result);
+            roomsToPopulate.Remove(startRoom);
+
+            var populateRoomsTask = PopulateRoomsWithEnemies(roomsToPopulate, tokenSource);
+            populateRoomsTask.Wait();
+
             SetStatusString("Finished generating!");
 
-            return new Level(roomsTask.Result, _root._bounds.GetCenter(), _root._bounds.GetWidth(), _root._bounds.GetHeight());
+            var spawnOnGrid = _data.allignmentGrid.SnapToGrid(startRoom.GetCenter());
+            var endOnGrid = _data.allignmentGrid.SnapToGrid(endRoom.GetCenter());
+
+            _levelData.rooms = roomsTask.Result;
+            _levelData.bounds = _root._bounds;
+            _levelData.spawnRoom = startRoom;
+            _levelData.endRoom = endRoom;
+            _levelData.playerSpawn = RoomBlueprint.GridPointToTiles(spawnOnGrid, _data.allignmentGrid).First();
+            _levelData.levelEnd = RoomBlueprint.GridPointToTiles(endOnGrid, _data.allignmentGrid).First();
+            _levelData.endRoom.AddRoomObject(new RoomObject(_data.finishObj._spawnObject, _levelData.levelEnd, false));
+
+            return new Level(_levelData);
         }, tokenSource.Token);
         t.Start();
         return t;
     }
-    
+
+    private Task PopulateRoomsWithEnemies(List<RoomBlueprint> rooms, CancellationTokenSource tokenSource)
+    {
+        var t = new Task(() =>
+        {
+            var enemyGrid = new SimpleGrid(4);
+
+            foreach (var room in rooms)
+            {
+                var tiles = room.GetAllTiles();
+                var usedTiles = new List<Vector2>();
+
+                foreach (var tile in tiles)
+                {
+                    var onGrid = enemyGrid.SnapToGrid(tile);
+                    var randBool = _random.Next(0, 2) == 1;
+                    if (room.IsPosWithinBounds(onGrid, 1) && !usedTiles.Contains(onGrid))
+                    {
+                        usedTiles.Add(onGrid);
+                        if (randBool)
+                            room.AddRoomObject(new RoomObject(_data.enemyObj._spawnObject, _data.enemyObj._offset + (Vector3)onGrid, true));
+                    }
+                }
+            }
+
+        }, tokenSource.Token);
+        t.Start();
+        return t;
+    }
+
+    private Task<(RoomBlueprint, RoomBlueprint)> FindTwoFurthestRooms(List<RoomBlueprint> rooms, CancellationTokenSource tokenSource)
+    {
+        var t = new Task<(RoomBlueprint, RoomBlueprint)>(() =>
+        {
+            float maxDist = float.MinValue;
+            RoomBlueprint roomA = null;
+            RoomBlueprint roomB = null;
+            foreach(var room1 in rooms)
+            {
+                foreach(var room2 in rooms)
+                {
+                    if (tokenSource.Token.IsCancellationRequested)
+                        tokenSource.Token.ThrowIfCancellationRequested();
+
+                    var currentDist = Vector2.Distance(room1.GetCenter(), room2.GetCenter());
+                    if (currentDist > maxDist)
+                    {
+                        maxDist = currentDist;
+                        roomA = room1;
+                        roomB = room2;
+                    }
+                }
+            }
+
+
+            if (roomA == null || roomB == null)
+                throw new System.Exception("Couldn't find two furthest rooms!");
+
+            return (roomA, roomB);
+
+        }, tokenSource.Token);
+        t.Start();
+        return t;
+    }
+
     public void DebugDrawLevel(Level level, bool drawNodeEdges, bool drawNodeCenters, bool drawAllGridPoints, bool drawPerimeterGridPoints, bool drawAllRoomTiles, bool drawCenterConnections, bool drawConnections)
     {
         var rooms = level.GetRooms();
@@ -186,7 +290,7 @@ public class LevelGenerator
                 foreach (var leaf in leaves)
                 {
                     var direction = leaf._bounds.GetHeight() > leaf._bounds.GetWidth() ? RoomNode.SliceDirection.horizontal : RoomNode.SliceDirection.vertical;
-                    leaf.Slice(direction, _random.Next(1, 4), _random.Next(1, 4), _allignmentGrid, 4 * _allignmentGrid.GetGap());
+                    leaf.Slice(direction, _random.Next(1, 4), _random.Next(1, 4), _data.allignmentGrid, 4 * _data.allignmentGrid.GetGap());
 
                     if (tokenSource.Token.IsCancellationRequested)
                         tokenSource.Token.ThrowIfCancellationRequested();
@@ -229,7 +333,7 @@ public class LevelGenerator
                 leaf._bounds.GetCenter(),
                 leaf._bounds.GetWidth(),
                 leaf._bounds.GetHeight(),
-                _allignmentGrid);
+                _data.allignmentGrid);
                 roomBlueprints.Add(leaf, newBlueprint);
             }
 
@@ -276,7 +380,7 @@ public class LevelGenerator
 
                         if (!isDiagonal)
                         {
-                            connectingGridPoints = CreatePath(firstRoomTile, secondRoomTile, _allignmentGrid.GetGap());
+                            connectingGridPoints = CreatePath(firstRoomTile, secondRoomTile, _data.allignmentGrid.GetGap());
                         }
                         else
                         {
@@ -284,9 +388,9 @@ public class LevelGenerator
                             if (_random.Next(0, 2) == 1)
                                 middlePoint = new Vector2(secondRoomTile.x, firstRoomTile.y);
 
-                            connectingGridPoints = CreatePath(firstRoomTile, middlePoint, _allignmentGrid.GetGap());
+                            connectingGridPoints = CreatePath(firstRoomTile, middlePoint, _data.allignmentGrid.GetGap());
                             connectingGridPoints.Remove(middlePoint);
-                            connectingGridPoints.AddRange(CreatePath(middlePoint, secondRoomTile, _allignmentGrid.GetGap()));
+                            connectingGridPoints.AddRange(CreatePath(middlePoint, secondRoomTile, _data.allignmentGrid.GetGap()));
                         }
 
                         
@@ -397,7 +501,7 @@ public class LevelGenerator
 
     private void SetNewSeed(int newSeed)
     {
-        _seed = newSeed;
-        _random = new System.Random(_seed);
+        _data.seed = newSeed;
+        _random = new System.Random(_data.seed);
     }
 }

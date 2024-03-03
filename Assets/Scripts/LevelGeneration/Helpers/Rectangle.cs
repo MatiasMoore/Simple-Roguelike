@@ -1,12 +1,18 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+[Serializable]
 public class Rectangle 
 {
-    private readonly float _width, _height;
-    private readonly Vector2 _center;
+    [SerializeField]
+    private float _width;
+    [SerializeField]
+    private float _height;
+    [SerializeField]
+    private Vector2 _center;
 
     public Rectangle(Vector2 center, float width, float height)
     {
@@ -125,6 +131,17 @@ public class Rectangle
         }
 
         return points;
+    }
+
+    public bool IsPosWithinBounds(Vector2 pos, float tileSize)
+    {
+        float maxX = _center.x + _width / 2 - tileSize / 2;
+        float minX = _center.x - _width / 2 + tileSize / 2;
+        float maxY = _center.y + _height / 2 - tileSize / 2;
+        float minY = _center.y - _height / 2 + tileSize / 2;
+
+        return pos.x <= maxX && pos.x >= minX
+                    && pos.y <= maxY && pos.y >= minY;
     }
 
     public float GetWidth()
