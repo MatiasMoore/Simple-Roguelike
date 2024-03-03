@@ -1,7 +1,10 @@
+using System;
 using UnityEngine;
 
+[Serializable]
 public class SimpleGrid
 {
+    [SerializeField]
     private float _gap;
 
     public SimpleGrid(float gap)

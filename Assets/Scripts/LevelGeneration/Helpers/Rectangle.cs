@@ -1,12 +1,18 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+[Serializable]
 public class Rectangle 
 {
-    private readonly float _width, _height;
-    private readonly Vector2 _center;
+    [SerializeField]
+    private float _width;
+    [SerializeField]
+    private float _height;
+    [SerializeField]
+    private Vector2 _center;
 
     public Rectangle(Vector2 center, float width, float height)
     {
