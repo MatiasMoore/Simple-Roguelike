@@ -68,7 +68,7 @@ public class MovementAIStateManager : MonoBehaviour
         }
             
         _states.Clear();
-        _states.Add(MovementState.Idle, new IdleMovementAI(this, _player, transform, _startAggroDistance));
+        _states.Add(MovementState.Idle, new IdleMovementAI(this, _player, transform, _preferredDistance));
         _states.Add(MovementState.Follow, new FollowPlayerMovementAI(this, _player, transform, _objectMovement, _lostAggroDistance, _preferredDistance));
         _states.Add(MovementState.Calm, new CalmMovementAI(this, _player, transform, _startAggroDistance));
 
