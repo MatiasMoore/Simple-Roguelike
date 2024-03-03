@@ -10,6 +10,8 @@ public class MovementAIStateManager : MonoBehaviour
     [SerializeField]
     private bool _reload = false;
 
+    private Collider2D _aggroCollider;
+
     [SerializeField]
     private float _lostAggroDistance = 10f;
 
@@ -20,7 +22,7 @@ public class MovementAIStateManager : MonoBehaviour
     private float _preferredDistance = 3f; 
 
     [Header("Configuration")]
-    [SerializeField]
+
     private Transform _player;
 
     [SerializeField]
@@ -30,7 +32,7 @@ public class MovementAIStateManager : MonoBehaviour
 
     public enum MovementState
     {
-        Calm, Follow, Idle
+        Sleep, Calm, Follow, Idle
     }
 
     private MovementState _currentStateEnum;
@@ -55,9 +57,18 @@ public class MovementAIStateManager : MonoBehaviour
 
     private void Start()
     {
+        // instantiate  aggro collider
+        GameObject aggroColliderGO = Instantiate(new GameObject(), transform.position, Quaternion.identity, transform);
+        aggroColliderGO.name = "AggroCollider";
+        CollisionListener aggroCollider = aggroColliderGO.AddComponent<CollisionListener>();
+        aggroCollider.OnTriggerEnter += OnAggroTriggerEnter;
+        aggroCollider.OnTriggerExit += OnAggroTriggerExit;
+        aggroCollider.SetRadius(_lostAggroDistance * 3);
+
         _objectMovement.Init();
         _objectMovement.SetWalkType(ObjectMovement.WalkType.ByPoint);
         InitStates();
+        _currentState = _states[MovementState.Sleep];
     }
 
     private void InitStates()
@@ -68,11 +79,11 @@ public class MovementAIStateManager : MonoBehaviour
         }
             
         _states.Clear();
+
+        _states.Add(MovementState.Sleep, new SleepMovementAI(this));
         _states.Add(MovementState.Idle, new IdleMovementAI(this, _player, transform, _preferredDistance));
         _states.Add(MovementState.Follow, new FollowPlayerMovementAI(this, _player, transform, _objectMovement, _lostAggroDistance, _preferredDistance));
         _states.Add(MovementState.Calm, new CalmMovementAI(this, _player, transform, _startAggroDistance));
-
-        _currentState = _states[MovementState.Idle];
     }
 
     private void Update()
@@ -102,5 +113,24 @@ public class MovementAIStateManager : MonoBehaviour
             DebugDraw.DrawSphere(transform.position, _preferredDistance, Color.yellow);
 
         }
+    }
+
+    private void OnAggroTriggerEnter(Collider2D other)
+    {
+        if (other.CompareTag("Player") && _currentState is SleepMovementAI)
+        {
+            _player = other.transform;
+            InitStates();
+            SwitchToState(MovementState.Idle);
+            Debug.Log($"{gameObject.name} noticed player!");
+        }
+
+    }
+
+    private void OnAggroTriggerExit(Collider2D other)
+    {
+        if (other.CompareTag("Player"))
+        {
+        }   
     }
 }
