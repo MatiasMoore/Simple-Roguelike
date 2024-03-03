@@ -72,6 +72,13 @@ public class ObjectMovement : MonoBehaviour
         UpdateDebug();
     }
 
+    public void Stop()
+    {
+        //destroy current state
+        _objectMovementState = new Idle(_rigidbody, _accelerationTime, _decelerationTime, _changeDirectionTime, _maxSpeed);
+        _direction = Vector2.zero;
+    }
+
     public void GoToPointOnNavMesh(Vector2 point)
     {
         NavMeshPath path = new NavMeshPath();

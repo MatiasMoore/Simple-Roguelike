@@ -9,10 +9,18 @@ public class CombatStateManager : MonoBehaviour
     [Header("Settings")]
     [SerializeField]
     private bool _reload = false;
+
     [SerializeField]
-    private float _preferedDistance = 5f;
+    private float _lostAggroDistance = 10f;
+
     [SerializeField]
-    private float _distanceToChase = 5f;
+    private float _startAggroDistance = 8f;
+
+    [SerializeField]
+    private float _attackDistance = 6f;
+
+    [SerializeField]
+    private float _preferredDistance = 3f; 
 
     [Header("Configuration")]
     [SerializeField]
@@ -21,12 +29,17 @@ public class CombatStateManager : MonoBehaviour
     [SerializeField]
     private ObjectMovement _objectMovement;
 
+    [SerializeField]
+    private Weapon _weapon;
+
     private CombatStatePrimitive _currentState;
 
     public enum CombatState
     {
-        Idle, Follow
+        Idle, Follow, FollowAndAttack, IdleAndAttack
     }
+
+    private CombatState _currentStateEnum;
 
     private Dictionary<CombatState, CombatStatePrimitive> _states = new Dictionary<CombatState, CombatStatePrimitive>();
 
@@ -34,29 +47,38 @@ public class CombatStateManager : MonoBehaviour
     {
         if (_states.TryGetValue(stateEnum, out CombatStatePrimitive state))
         {
+            _currentStateEnum = stateEnum;
             _currentState.Stop();
             _currentState = state;
-            _currentState.Start();
+            _currentState.Start();    
         }
         else
+        {
             throw new System.Exception("No state could be found for the given state enum!");
+        }
+            
     }
 
     private void Start()
     {
         _objectMovement.Init();
         _objectMovement.SetWalkType(ObjectMovement.WalkType.ByPoint);
+        _weapon.Init();
         InitStates();
     }
 
     private void InitStates()
     {
         if (_currentState != null)
+        {
             _currentState.Stop();
-
+        }
+            
         _states.Clear();
-        _states.Add(CombatState.Idle, new IdleState(this, _player, this.transform, _distanceToChase));
-        _states.Add(CombatState.Follow, new FollowPlayerState(this, _player, this.transform, _objectMovement, _preferedDistance));
+        _states.Add(CombatState.Idle, new IdleState(this, _player, transform, _startAggroDistance));
+        _states.Add(CombatState.Follow, new FollowPlayerState(this, _player, transform, _objectMovement, _lostAggroDistance, _attackDistance));
+        _states.Add(CombatState.FollowAndAttack, new FollowAndAttackPlayer(this, _player, transform, _objectMovement, _weapon, _attackDistance, _preferredDistance));
+        _states.Add(CombatState.IdleAndAttack, new IdleAndAttack(this, _player, transform, _weapon, _attackDistance));
 
         _currentState = _states[CombatState.Idle];
     }
@@ -77,6 +99,17 @@ public class CombatStateManager : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        _currentState.DebugDrawGizmos();
+        if (Application.isPlaying)
+        {
+            _currentState.DebugDrawGizmos();
+        } else
+        {
+            // Draw all distances
+            DebugDraw.DrawSphere(transform.position, _lostAggroDistance, Color.blue);
+            DebugDraw.DrawSphere(transform.position, _startAggroDistance, Color.green);
+            DebugDraw.DrawSphere(transform.position, _attackDistance, Color.red);
+            DebugDraw.DrawSphere(transform.position, _preferredDistance, Color.yellow);
+
+        }
     }
 }

@@ -6,22 +6,23 @@ public class IdleState : CombatStatePrimitive
 {
     private Transform _player;
     private Transform _self;
-    private float _distToChase;
+    private float _aggroDistance;
 
-    public IdleState(CombatStateManager stateManager, Transform player, Transform self, float distToChase) : base(stateManager)
+    public IdleState(CombatStateManager stateManager, Transform player, Transform self, float aggroDistance) : base(stateManager)
     {
         _player = player;
         _self = self;
-        _distToChase = distToChase;
+        _aggroDistance = aggroDistance;
     }
 
     public override void DebugDrawGizmos()
     {
-        DebugDraw.DrawSphere(_self.position, _distToChase, Color.green);
+        DebugDraw.DrawSphere(_self.position, _aggroDistance, Color.green);
     }
 
     public override void Start()
     {
+        Debug.Log("State: Idle state started");
     }
 
     public override void Stop()
@@ -32,9 +33,10 @@ public class IdleState : CombatStatePrimitive
     {
         var distToPlayer = Vector2.Distance(_player.position, _self.position);
 
-        if (distToPlayer > _distToChase)
+        if (distToPlayer < _aggroDistance)
         {
             _stateManager.SwitchToState(CombatStateManager.CombatState.Follow);
+            return;
         }
         
     }
