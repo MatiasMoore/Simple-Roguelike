@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-abstract public class CombatStatePrimitive 
+abstract public class MovementAIStatePrimitive 
 {
-    protected CombatStateManager _stateManager;
+    protected MovementAIStateManager _stateManager;
 
-    public CombatStatePrimitive(CombatStateManager stateManager)
+    public MovementAIStatePrimitive(MovementAIStateManager stateManager)
     {
         _stateManager = stateManager;
     }

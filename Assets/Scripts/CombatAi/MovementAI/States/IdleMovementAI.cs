@@ -2,17 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IdleState : CombatStatePrimitive
+public class IdleMovementAI : MovementAIStatePrimitive
 {
     private Transform _player;
     private Transform _self;
     private float _aggroDistance;
 
-    public IdleState(CombatStateManager stateManager, Transform player, Transform self, float aggroDistance) : base(stateManager)
+    public IdleMovementAI(MovementAIStateManager stateManager, Transform player, Transform self, float aggroDistance) : base(stateManager)
     {
+        _aggroDistance = aggroDistance;
         _player = player;
         _self = self;
-        _aggroDistance = aggroDistance;
     }
 
     public override void DebugDrawGizmos()
@@ -33,11 +33,11 @@ public class IdleState : CombatStatePrimitive
     {
         var distToPlayer = Vector2.Distance(_player.position, _self.position);
 
-        if (distToPlayer < _aggroDistance)
+        if (distToPlayer > _aggroDistance)
         {
-            _stateManager.SwitchToState(CombatStateManager.CombatState.Follow);
+            _stateManager.SwitchToState(MovementAIStateManager.MovementState.Follow);
             return;
         }
-        
+
     }
 }

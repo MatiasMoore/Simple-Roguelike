@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(ObjectMovement))]
-public class CombatStateManager : MonoBehaviour
+public class MovementAIStateManager : MonoBehaviour
 {
     [Header("Settings")]
     [SerializeField]
@@ -15,9 +15,6 @@ public class CombatStateManager : MonoBehaviour
 
     [SerializeField]
     private float _startAggroDistance = 8f;
-
-    [SerializeField]
-    private float _attackDistance = 6f;
 
     [SerializeField]
     private float _preferredDistance = 3f; 
@@ -32,20 +29,20 @@ public class CombatStateManager : MonoBehaviour
     [SerializeField]
     private Weapon _weapon;
 
-    private CombatStatePrimitive _currentState;
+    private MovementAIStatePrimitive _currentState;
 
-    public enum CombatState
+    public enum MovementState
     {
-        Idle, Follow, FollowAndAttack, IdleAndAttack
+        Calm, Follow, Idle
     }
 
-    private CombatState _currentStateEnum;
+    private MovementState _currentStateEnum;
 
-    private Dictionary<CombatState, CombatStatePrimitive> _states = new Dictionary<CombatState, CombatStatePrimitive>();
+    private Dictionary<MovementState, MovementAIStatePrimitive> _states = new Dictionary<MovementState, MovementAIStatePrimitive>();
 
-    public void SwitchToState(CombatState stateEnum)
+    public void SwitchToState(MovementState stateEnum)
     {
-        if (_states.TryGetValue(stateEnum, out CombatStatePrimitive state))
+        if (_states.TryGetValue(stateEnum, out MovementAIStatePrimitive state))
         {
             _currentStateEnum = stateEnum;
             _currentState.Stop();
@@ -75,12 +72,11 @@ public class CombatStateManager : MonoBehaviour
         }
             
         _states.Clear();
-        _states.Add(CombatState.Idle, new IdleState(this, _player, transform, _startAggroDistance));
-        _states.Add(CombatState.Follow, new FollowPlayerState(this, _player, transform, _objectMovement, _lostAggroDistance, _attackDistance));
-        _states.Add(CombatState.FollowAndAttack, new FollowAndAttackPlayer(this, _player, transform, _objectMovement, _weapon, _attackDistance, _preferredDistance));
-        _states.Add(CombatState.IdleAndAttack, new IdleAndAttack(this, _player, transform, _weapon, _attackDistance));
+        _states.Add(MovementState.Idle, new IdleMovementAI(this, _player, transform, _startAggroDistance));
+        _states.Add(MovementState.Follow, new FollowPlayerMovementAI(this, _player, transform, _objectMovement, _lostAggroDistance, _preferredDistance));
+        _states.Add(MovementState.Calm, new CalmMovementAI(this, _player, transform, _startAggroDistance));
 
-        _currentState = _states[CombatState.Idle];
+        _currentState = _states[MovementState.Idle];
     }
 
     private void Update()
@@ -107,7 +103,6 @@ public class CombatStateManager : MonoBehaviour
             // Draw all distances
             DebugDraw.DrawSphere(transform.position, _lostAggroDistance, Color.blue);
             DebugDraw.DrawSphere(transform.position, _startAggroDistance, Color.green);
-            DebugDraw.DrawSphere(transform.position, _attackDistance, Color.red);
             DebugDraw.DrawSphere(transform.position, _preferredDistance, Color.yellow);
 
         }

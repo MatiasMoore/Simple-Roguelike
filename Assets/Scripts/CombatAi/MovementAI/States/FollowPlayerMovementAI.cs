@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FollowPlayerState : CombatStatePrimitive
+public class FollowPlayerMovementAI : MovementAIStatePrimitive
 {
     private Transform _player;
     private Transform _self;
@@ -10,7 +10,7 @@ public class FollowPlayerState : CombatStatePrimitive
     private float _maxDistance;
     private float _minDistance;
 
-    public FollowPlayerState(CombatStateManager stateManager, 
+    public FollowPlayerMovementAI(MovementAIStateManager stateManager, 
         Transform player, Transform self, 
         ObjectMovement movement,float maxDistance, float minDistance) : base(stateManager)
     {
@@ -43,13 +43,13 @@ public class FollowPlayerState : CombatStatePrimitive
 
         if (distToPlayer < _minDistance)
         {
-            _stateManager.SwitchToState(CombatStateManager.CombatState.FollowAndAttack);
+            _stateManager.SwitchToState(MovementAIStateManager.MovementState.Idle);
             return;
         }
 
         if (distToPlayer > _maxDistance)
         {
-            _stateManager.SwitchToState(CombatStateManager.CombatState.Idle);
+            _stateManager.SwitchToState(MovementAIStateManager.MovementState.Calm);
             return;
         }
 
