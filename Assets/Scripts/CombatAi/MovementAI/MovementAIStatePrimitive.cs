@@ -18,4 +18,10 @@ abstract public class MovementAIStatePrimitive
     abstract public void Update();
 
     abstract public void DebugDrawGizmos();
+
+    protected bool CanSeeObject(Transform self, Transform obj)
+    {
+        var hit = Physics2D.Raycast(self.position, obj.position - self.position, Vector2.Distance(self.position, obj.position), LayerMask.GetMask("Wall"));
+        return hit.collider == null;
+    }
 }

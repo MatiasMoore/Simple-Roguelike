@@ -47,6 +47,12 @@ public class FollowPlayerMovementAI : MovementAIStatePrimitive
             return;
         }
 
+        if (!CanSeeObject(_self, _player))
+        {
+            _stateManager.SwitchToState(MovementAIStateManager.MovementState.Calm);
+            return;
+        }
+
         if (distToPlayer > _maxDistance)
         {
             _stateManager.SwitchToState(MovementAIStateManager.MovementState.Calm);

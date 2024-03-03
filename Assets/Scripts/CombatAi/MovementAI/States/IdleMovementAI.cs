@@ -39,5 +39,10 @@ public class IdleMovementAI : MovementAIStatePrimitive
             return;
         }
 
+        if (!CanSeeObject(_self, _player))
+        {
+            _stateManager.SwitchToState(MovementAIStateManager.MovementState.Follow);
+            return;
+        }
     }
 }

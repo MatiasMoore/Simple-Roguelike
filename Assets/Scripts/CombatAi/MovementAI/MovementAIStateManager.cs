@@ -26,9 +26,6 @@ public class MovementAIStateManager : MonoBehaviour
     [SerializeField]
     private ObjectMovement _objectMovement;
 
-    [SerializeField]
-    private Weapon _weapon;
-
     private MovementAIStatePrimitive _currentState;
 
     public enum MovementState
@@ -60,7 +57,6 @@ public class MovementAIStateManager : MonoBehaviour
     {
         _objectMovement.Init();
         _objectMovement.SetWalkType(ObjectMovement.WalkType.ByPoint);
-        _weapon.Init();
         InitStates();
     }
 
