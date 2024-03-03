@@ -38,18 +38,6 @@ public class Rifle : Weapon
 
     public override void Init()
     {
-        ObjectMovement bulletObjectMovementComponent = Data.ProjectilePrefab.GetComponent<ObjectMovement>();
-        Bullet bullet = Data.ProjectilePrefab.GetComponent<Bullet>();
-
-        bulletObjectMovementComponent.SetAccelerationTime(0);
-        bulletObjectMovementComponent.SetDecelerationTime(0);
-        bulletObjectMovementComponent.SetChangeDirectionTime(0);
-        bulletObjectMovementComponent.SetMaxSpeed(Data.ProjectileSpeed);
-        bullet.SetAliveTime(Data.ProjectileLifeTime);
-        bullet.SetDamage(Data.Damage);
-        bullet.SetWhatIDamage(Data.WhatDamage);
-        bullet.SetWhatDestroysMe(Data.ByWhatDestroys);
-
         _ammoBar.UpdateAmmo(_currentAmmo, Data.AmmoPerMagazine);
         gameObject.SetActive(true);
 
@@ -114,6 +102,18 @@ public class Rifle : Weapon
 
     private void SpawnProjectile(GameObject projectile)
     {
+        ObjectMovement bulletObjectMovementComponent = Data.ProjectilePrefab.GetComponent<ObjectMovement>();
+        Bullet bullet = Data.ProjectilePrefab.GetComponent<Bullet>();
+
+        bulletObjectMovementComponent.SetAccelerationTime(0);
+        bulletObjectMovementComponent.SetDecelerationTime(0);
+        bulletObjectMovementComponent.SetChangeDirectionTime(0);
+        bulletObjectMovementComponent.SetMaxSpeed(Data.ProjectileSpeed);
+        bullet.SetAliveTime(Data.ProjectileLifeTime);
+        bullet.SetDamage(Data.Damage);
+        bullet.SetWhatIDamage(Data.WhatDamage);
+        bullet.SetWhatDestroysMe(Data.ByWhatDestroys);
+
         Instantiate(projectile, _projectileSpawnPoint.position, _weaponHolder.transform.rotation);
     }
 
