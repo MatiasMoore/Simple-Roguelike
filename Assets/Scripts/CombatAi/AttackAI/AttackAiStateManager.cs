@@ -48,8 +48,13 @@ public class AttackAIStateManager : MonoBehaviour
 
     }
 
-    private void Start()
+    private void OnEnable()
     {
+        if (_player == null)
+        {
+            _aggroCollider.gameObject.SetActive(true);
+        }
+        
         _aggroCollider.OnTriggerEnter += OnAggroTriggerEnter;
 
         InitStates();
@@ -109,6 +114,12 @@ public class AttackAIStateManager : MonoBehaviour
             _player = other.transform;
             InitStates();
             SwitchToState(AttackState.Idle);
+            _aggroCollider.gameObject.SetActive(false);
         }
+   }
+
+    private void OnDisable()
+    {
+        _aggroCollider.OnTriggerEnter -= OnAggroTriggerEnter;
     }
 }

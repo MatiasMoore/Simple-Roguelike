@@ -55,10 +55,14 @@ public class MovementAIStateManager : MonoBehaviour
             
     }
 
-    private void Start()
+    private void OnEnable()
     {
+        if (_player == null)
+        {
+            _aggroCollider.gameObject.SetActive(true);
+        }
+
         _aggroCollider.OnTriggerEnter += OnAggroTriggerEnter;
-        _aggroCollider.OnTriggerExit += OnAggroTriggerExit;
 
         _objectMovement.Init();
         _objectMovement.SetWalkType(ObjectMovement.WalkType.ByPoint);
@@ -122,14 +126,13 @@ public class MovementAIStateManager : MonoBehaviour
             InitStates();
             SwitchToState(MovementState.Idle);
             Debug.Log($"{gameObject.name} noticed player!");
+            _aggroCollider.gameObject.SetActive(false);
         }
 
     }
 
-    private void OnAggroTriggerExit(Collider2D other)
+    private void OnDisable()
     {
-        if (other.CompareTag("Player"))
-        {
-        }   
+        _aggroCollider.OnTriggerEnter -= OnAggroTriggerEnter;
     }
 }
