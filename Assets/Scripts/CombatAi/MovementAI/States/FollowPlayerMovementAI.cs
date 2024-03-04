@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class FollowPlayerMovementAI : MovementAIStatePrimitive
 {
@@ -26,6 +27,7 @@ public class FollowPlayerMovementAI : MovementAIStatePrimitive
     {
         DebugDraw.DrawSphere(_self.position, _minDistance, Color.red);
         DebugDraw.DrawSphere(_self.position, _maxDistance, Color.green);
+        DebugDraw.DrawCross(_lastSeenPlayerPosition, 2f, Color.magenta);
     }
 
     public override void Start()
@@ -33,6 +35,9 @@ public class FollowPlayerMovementAI : MovementAIStatePrimitive
         if (CanSeeObject(_self, _player))
         {
             _lastSeenPlayerPosition = _player.position;
+        } else
+        {
+            _stateManager.SwitchToState(MovementAIStateManager.MovementState.Calm);
         }
         
         Debug.Log("State: Follow state started");
@@ -73,12 +78,23 @@ public class FollowPlayerMovementAI : MovementAIStatePrimitive
 
     private void MoveToLastSeenPlayerPosition()
     {
-        _movement.GoToPointOnNavMesh(_lastSeenPlayerPosition);
+        NavMeshHit hit = new();
+        if (NavMesh.SamplePosition(_lastSeenPlayerPosition, out hit, 99999, NavMesh.AllAreas))
+        {
+            _movement.GoToPointOnNavMesh(hit.position);
 
-        if (Vector2.Distance(_lastSeenPlayerPosition, _self.position) < 1f)
+            if (Vector2.Distance(hit.position, _self.position) < 0.01f)
+            {
+                _stateManager.SwitchToState(MovementAIStateManager.MovementState.Calm);
+                return;
+            }
+
+        } else
         {
             _stateManager.SwitchToState(MovementAIStateManager.MovementState.Calm);
             return;
         }
+       
+        
     }
 }
