@@ -122,7 +122,8 @@ public class LevelBuilder : MonoBehaviour
         foreach (var obj in objs)
         {
             var createdObj = obj.Build(parent, _permanentObjects);
-            OnRoomObjectCreated?.Invoke(createdObj);
+            if (createdObj != null)
+                OnRoomObjectCreated?.Invoke(createdObj);
         }
 
         AddBuiltRoom(room, parent.gameObject);
