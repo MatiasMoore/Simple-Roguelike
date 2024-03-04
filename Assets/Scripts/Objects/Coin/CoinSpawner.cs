@@ -24,9 +24,6 @@ public class CoinSpawner : MonoBehaviour
     [SerializeField]
     private List<CoinToSpawn> _coints = new List<CoinToSpawn>();
 
-    [SerializeField]
-    private Transform parentsChild;
-
     private void Awake()
     {
         _ped.OnDeath += SpawnCoins;
@@ -39,7 +36,7 @@ public class CoinSpawner : MonoBehaviour
             for (int i = 0; i < coin._count; i++)
             {
                 var spawnPos = _spawnRadius * UnityEngine.Random.insideUnitSphere;
-                var obj = Instantiate(coin._coinObj, parentsChild.position + spawnPos, Quaternion.identity, parentsChild.parent);
+                var obj = Instantiate(coin._coinObj, transform.position + spawnPos, Quaternion.identity, transform.parent);
                 var rb = obj.GetComponent<Rigidbody2D>();
                 if (rb != null)
                 {
