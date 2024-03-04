@@ -272,7 +272,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _reload: 0
   _attackDistance: 4
-  _expansionAngle: 0
+  _expansionAngle: 24.5
   _aggroCollider: {fileID: 8995555181452372175}
   _weapon: {fileID: 1916841723901665093}
 --- !u!114 &8188777887700907913
@@ -294,7 +294,7 @@ MonoBehaviour:
   _dangerousVision: {fileID: 6976634535666535727}
   _evasionSphereRadius: 0.5
   _minEvasionCorrelationAngle: 25
-  _maxEvasionCorrelationAngle: 6
+  _maxEvasionCorrelationAngle: 68
   _aggroCollider: {fileID: 8995555181452372175}
   _objectMovement: {fileID: 5698952618890738734}
 --- !u!50 &576232400006552703
@@ -373,6 +373,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _hp: 100
   _maxHp: 100
+  _type: 1
   _healthBar: {fileID: 7700764480309047469}
   _destroyOnDeath: 1
 --- !u!114 &7145388457352221550

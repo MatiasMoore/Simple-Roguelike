@@ -395,6 +395,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _hp: 100
   _maxHp: 100
+  _type: 1
   _healthBar: {fileID: 4083534213156907830}
   _destroyOnDeath: 1
 --- !u!114 &4348999125784493489
@@ -430,7 +431,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _reload: 0
   _attackDistance: 3
-  _expansionAngle: 0
+  _expansionAngle: 26.6
   _aggroCollider: {fileID: 4246815523961606100}
   _weapon: {fileID: 3976884599212736331}
 --- !u!114 &2117697201538292416
