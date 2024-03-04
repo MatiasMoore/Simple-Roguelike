@@ -17,7 +17,13 @@ public class MovementAIStateManager : MonoBehaviour
     private float _startAggroDistance = 8f;
 
     [SerializeField]
-    private float _preferredDistance = 3f; 
+    private float _preferredDistance = 3f;
+
+    [SerializeField]
+    private CollisionListener _dangerousVision;
+
+    [SerializeField]
+    private float _evasionSphereRadius;
 
     [Header("Configuration")]
 
@@ -33,10 +39,18 @@ public class MovementAIStateManager : MonoBehaviour
 
     public enum MovementState
     {
-        Sleep, Calm, Follow, Idle
+        Sleep, Calm, Follow, Idle, Evading
     }
 
     private MovementState _currentStateEnum;
+    public struct StateData
+    {
+        public Collider2D DangerousObject;
+        public MovementState LastState;
+    }
+
+    public StateData stateData;
+
 
     private Dictionary<MovementState, MovementAIStatePrimitive> _states = new Dictionary<MovementState, MovementAIStatePrimitive>();
 
@@ -63,6 +77,7 @@ public class MovementAIStateManager : MonoBehaviour
             _aggroCollider.gameObject.SetActive(true);
         }
 
+        _dangerousVision.OnTriggerEnter += EvasionCheck;
         _aggroCollider.OnTriggerEnter += OnAggroTriggerEnter;
 
         _objectMovement.Init();
@@ -94,6 +109,11 @@ public class MovementAIStateManager : MonoBehaviour
         _states.Add(MovementState.Idle, new IdleMovementAI(this, _player, transform, _preferredDistance));
         _states.Add(MovementState.Follow, new FollowPlayerMovementAI(this, _player, transform, _objectMovement, _lostAggroDistance, _preferredDistance));
         _states.Add(MovementState.Calm, new CalmMovementAI(this, _player, transform, _startAggroDistance));
+        if (stateData.DangerousObject != null)
+        {
+            _states.Add(MovementState.Evading, new EvadingMovementAI(this, transform, stateData.DangerousObject, _objectMovement, _evasionSphereRadius));
+        }
+            
     }
 
     private void Update()
@@ -110,7 +130,7 @@ public class MovementAIStateManager : MonoBehaviour
         }
     }
 
-    private void OnDrawGizmos()
+    private void OnDrawGizmosSelected()
     {
         if (Application.isPlaying)
         {
@@ -125,6 +145,8 @@ public class MovementAIStateManager : MonoBehaviour
             DebugDraw.DrawSphere(transform.position, _lostAggroDistance, Color.blue);
             DebugDraw.DrawSphere(transform.position, _startAggroDistance, Color.green);
             DebugDraw.DrawSphere(transform.position, _preferredDistance, Color.yellow);
+            DebugDraw.DrawSphere(transform.position, _evasionSphereRadius, Color.magenta);
+            DebugDraw.DrawSphere(transform.position, _dangerousVision.GetRadius(), Color.cyan);
 
         }
     }
@@ -145,5 +167,28 @@ public class MovementAIStateManager : MonoBehaviour
     private void OnDisable()
     {
         _aggroCollider.OnTriggerEnter -= OnAggroTriggerEnter;
+    }
+
+    private void EvasionCheck(Collider2D other)
+    {
+        if (other.CompareTag("Projectile"))
+        {
+            // if other damage enemy
+            Projectile projectile = other.GetComponent<Projectile>();
+            LayerMask whatIDamage = projectile.GetWhatIDamage();
+            if((whatIDamage.value & 1 << gameObject.layer) == 0)
+            {
+                return;
+            }
+            Debug.Log("AI: EVADE!!!!!");
+            if (_currentStateEnum != MovementState.Evading)
+            {
+                stateData.LastState = _currentStateEnum;
+            }
+            
+            stateData.DangerousObject = other;
+            InitStates();
+            SwitchToState(MovementState.Evading);
+        }
     }
 }

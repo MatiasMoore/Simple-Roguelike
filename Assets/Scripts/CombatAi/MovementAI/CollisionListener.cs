@@ -33,4 +33,9 @@ public class CollisionListener : MonoBehaviour
     {
         return GetComponent<CircleCollider2D>().radius;
     }
+
+    public void SetColliderActive(bool active)
+    {
+        GetComponent<CircleCollider2D>().enabled = active;
+    }
 }
