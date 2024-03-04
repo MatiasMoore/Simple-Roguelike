@@ -60,20 +60,16 @@ public class Rifle : Weapon
         Fire();
     }
 
-    public override void RotateWeaponToPoint(Vector2 direction)
+    public override void RotateWeaponToPoint(Vector2 pos)
     {
-        Vector2 directionToCursor = (direction - (Vector2)transform.position).normalized;
-        float angle = Mathf.Atan2(directionToCursor.y, directionToCursor.x) * Mathf.Rad2Deg;
-        if (angle > 90 || angle < -90)
-        {
-            _weaponHolder.transform.localScale = new Vector3(_localScale.x, -_localScale.y, _localScale.z);
-        }
-        else
-        {
-            _weaponHolder.transform.localScale = new Vector3(_localScale.x, _localScale.y, _localScale.z);         
-        }
+        Vector2 toPos = pos - (Vector2)transform.position;
 
-        _weaponHolder.transform.rotation = Quaternion.Euler(0, 0, angle);
+        var desiredQuat = Quaternion.LookRotation(toPos);
+
+        desiredQuat *= Quaternion.AngleAxis(-90, Vector3.up);
+        
+        _weaponHolder.transform.rotation = desiredQuat;
+
     }
 
     private void Fire()
@@ -115,7 +111,11 @@ public class Rifle : Weapon
         bullet.SetWhatIDamage(Data.WhatDamage);
         bullet.SetWhatDestroysMe(Data.ByWhatDestroys);
 
-        Instantiate(projectile, _projectileSpawnPoint.position, _weaponHolder.transform.rotation);
+        var angle = _weaponHolder.transform.rotation * Quaternion.AngleAxis(Random.Range(-Data.Accuracy, Data.Accuracy), new Vector3(0, 0, 1));
+        var position = _projectileSpawnPoint.position;
+        position.z = -1;
+
+        Instantiate(projectile, position, angle);
     }
 
     private void FixedUpdate()
