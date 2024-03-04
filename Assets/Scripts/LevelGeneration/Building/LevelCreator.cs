@@ -28,7 +28,7 @@ public class LevelCreator : MonoBehaviour
     [SerializeField]
     private bool _randomiseSeed = true;
     [SerializeField]
-    private LevelGenerator.LevelGenerationData _generationData;
+    public LevelGenerator.LevelGenerationData _generationData;
 
     [Header("Debug draw settings")]
     [SerializeField]
@@ -51,9 +51,9 @@ public class LevelCreator : MonoBehaviour
 
     [Header("Helper classes")]
     [SerializeField]
-    private LevelBuilder _levelBuilder;
+    public LevelBuilder _levelBuilder;
     [SerializeField]
-    private LevelStreaming _levelStreaming;
+    public LevelStreaming _levelStreaming;
 
     private void Awake()
     {
@@ -131,6 +131,16 @@ public class LevelCreator : MonoBehaviour
     public void StartStreamingLevel(Level level)
     {
         _levelStreaming.StartStreamingLevel(level);
+    }
+
+    public void StopStreamingLevel()
+    {
+        _levelStreaming.StopStreaming();
+    }
+
+    public void DeleteCurrentLevel()
+    {
+        _levelBuilder.DeleteCurrentLevel();
     }
 
     private void OnDrawGizmosSelected()
