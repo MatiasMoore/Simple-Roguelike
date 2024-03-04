@@ -84,6 +84,14 @@ public class GameStart : MonoBehaviour
 
     private void EndGame()
     {
+        _playerPed.OnDeath -= EndGame;
+        StartCoroutine(EndGameCoroutine());
+    }
+
+    private IEnumerator EndGameCoroutine()
+    {
+        _transition.FadeOut(1f);
+        yield return new WaitForSecondsRealtime(2);
         SceneManager.LoadSceneAsync(0, LoadSceneMode.Single);
     }
 }
