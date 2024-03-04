@@ -13,6 +13,9 @@ public class Pedestrian : MonoBehaviour, IDamagable
     [SerializeField]
     private SliderManager _healthBar;
 
+    [SerializeField]
+    private bool _destroyOnDeath = true;
+
     public UnityAction OnDeath;
 
     private void Start()
@@ -56,7 +59,8 @@ public class Pedestrian : MonoBehaviour, IDamagable
     {
         OnDeath?.Invoke();
         Debug.Log($"Pedestrian {gameObject.name} died");
-        Destroy(gameObject);
+        if (_destroyOnDeath)
+            Destroy(gameObject);
     }
 
 }

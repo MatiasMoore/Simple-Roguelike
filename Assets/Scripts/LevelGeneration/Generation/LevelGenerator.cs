@@ -22,7 +22,10 @@ public class LevelGenerator
         public int seed;
 
         [SerializeField]
-        public SpawnableObject enemyObj, finishObj;
+        public List<SpawnableObject> enemies;
+
+        [SerializeField]
+        public List<SpawnableObject> bosses;
     }
 
     LevelGenerationData _data;
@@ -128,9 +131,12 @@ public class LevelGenerator
 
             var roomsToPopulate = new List<RoomBlueprint>(roomsTask.Result);
             roomsToPopulate.Remove(startRoom);
+            roomsToPopulate.Remove(endRoom);
 
             var populateRoomsTask = PopulateRoomsWithEnemies(roomsToPopulate, tokenSource);
             populateRoomsTask.Wait();
+
+            AddBossToRoom(endRoom);
 
             SetStatusString("Finished generating!");
 
@@ -143,12 +149,19 @@ public class LevelGenerator
             _levelData.endRoom = endRoom;
             _levelData.playerSpawn = RoomBlueprint.GridPointToTiles(spawnOnGrid, _data.allignmentGrid).First();
             _levelData.levelEnd = RoomBlueprint.GridPointToTiles(endOnGrid, _data.allignmentGrid).First();
-            _levelData.endRoom.AddRoomObject(new RoomObject(_data.finishObj._spawnObject, _levelData.levelEnd, false));
 
             return new Level(_levelData);
         }, tokenSource.Token);
         t.Start();
         return t;
+    }
+
+    private void AddBossToRoom(RoomBlueprint room)
+    {
+        var enemy = _data.bosses[_random.Next(0, _data.bosses.Count)];
+        var onGrid = _data.allignmentGrid.SnapToGrid(room.GetCenter());
+        var tile = RoomBlueprint.GridPointToTiles(onGrid, _data.allignmentGrid).First();
+        room.AddRoomObject(new RoomObject(enemy._spawnObject, enemy._offset + (Vector3)tile, true));
     }
 
     private Task PopulateRoomsWithEnemies(List<RoomBlueprint> rooms, CancellationTokenSource tokenSource)
@@ -170,7 +183,10 @@ public class LevelGenerator
                     {
                         usedTiles.Add(onGrid);
                         if (randBool)
-                            room.AddRoomObject(new RoomObject(_data.enemyObj._spawnObject, _data.enemyObj._offset + (Vector3)onGrid, true));
+                        {
+                            var enemy = _data.enemies[_random.Next(0, _data.enemies.Count)];
+                            room.AddRoomObject(new RoomObject(enemy._spawnObject, enemy._offset + (Vector3)onGrid, true));
+                        }
                     }
                 }
             }
