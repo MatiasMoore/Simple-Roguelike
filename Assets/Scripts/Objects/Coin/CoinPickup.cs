@@ -13,5 +13,6 @@ public class CoinPickup : PickupItem
 
     public override void OnPickup()
     {
+        AudioController.Instance.PlaySFX(AudioController.SFX.CoinPickup);
     }
 }
