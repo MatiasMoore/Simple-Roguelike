@@ -12,12 +12,15 @@ public class RifleAttackAI : AttackAIStatePrimitive
 
     private Weapon _weapon;
 
-    public RifleAttackAI(AttackAIStateManager stateManager, Transform player, Transform self, float attackDistance, Weapon weapon) : base(stateManager)
+    private float _expansionAngle;
+
+    public RifleAttackAI(AttackAIStateManager stateManager, Transform player, Transform self, float attackDistance, Weapon weapon, float expansionAngle) : base(stateManager)
     {
         _self = self;
         _player = player;
         _attackDistance = attackDistance;
         _weapon = weapon;
+        _expansionAngle = expansionAngle;
     }
 
     public override void DebugDrawGizmos()
@@ -43,12 +46,17 @@ public class RifleAttackAI : AttackAIStatePrimitive
             return;
         }
 
-        // Calculate direction where to rotate weapon to point where player will be in the future
         RifleData weaponData = ((Rifle)_weapon).Data;
         float bulletMaxSpeed = weaponData.ProjectileSpeed;
         float bulletTimeToTarget = Vector2.Distance(_self.position, _player.position) / bulletMaxSpeed;
         Vector2 futurePlayerPosition =(Vector2)_player.position + _player.GetComponent<Rigidbody2D>().velocity * bulletTimeToTarget;
         _weapon.RotateWeaponToPoint(futurePlayerPosition);
-        _weapon.Enter(); 
+        Shoot();  
+    }
+
+    private void Shoot()
+    {
+        ((Rifle)_weapon).Data.Accuracy = _expansionAngle;
+        _weapon.Enter();
     }
 }

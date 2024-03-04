@@ -12,6 +12,9 @@ public class AttackAIStateManager : MonoBehaviour
     [SerializeField]
     private float _attackDistance = 10f;
 
+    [Range(0.0f, 60.0f), SerializeField]
+    private float _expansionAngle;
+
     [Header("Configuration")]
     private static Transform _player;
 
@@ -75,7 +78,7 @@ public class AttackAIStateManager : MonoBehaviour
 
         _states.Add(AttackState.Sleep, new SleepAttackAI(this));
         _states.Add(AttackState.Idle, new IdleAttackAI(this, _player, transform, _attackDistance));
-        _states.Add(AttackState.Attack, new RifleAttackAI(this, _player, transform, _attackDistance, _weapon));
+        _states.Add(AttackState.Attack, new RifleAttackAI(this, _player, transform, _attackDistance, _weapon, _expansionAngle));
     }
 
     private void Update()
