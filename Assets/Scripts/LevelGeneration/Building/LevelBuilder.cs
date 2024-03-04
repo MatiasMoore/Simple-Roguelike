@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Events;
 using UnityEngine.U2D;
 
 public class LevelBuilder : MonoBehaviour
@@ -24,6 +25,8 @@ public class LevelBuilder : MonoBehaviour
 
     [SerializeField]
     private GameObject _navMeshWalkable;
+
+    public UnityAction<GameObject> OnRoomObjectCreated;
 
     private Dictionary<RoomBlueprint, GameObject> _builtRooms = new Dictionary<RoomBlueprint, GameObject>();
 
@@ -118,7 +121,8 @@ public class LevelBuilder : MonoBehaviour
         var objs = room.GetRoomObjects();
         foreach (var obj in objs)
         {
-            obj.Build(parent, _permanentObjects);
+            var createdObj = obj.Build(parent, _permanentObjects);
+            OnRoomObjectCreated?.Invoke(createdObj);
         }
 
         AddBuiltRoom(room, parent.gameObject);

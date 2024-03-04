@@ -133,7 +133,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 253627723172501665, guid: 25453989806c7cd488f86d78925433b6, type: 3}
       propertyPath: _hp
-      value: 200
+      value: 1e+12
+      objectReference: {fileID: 0}
+    - target: {fileID: 253627723172501665, guid: 25453989806c7cd488f86d78925433b6, type: 3}
+      propertyPath: _type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 253627723172501665, guid: 25453989806c7cd488f86d78925433b6, type: 3}
+      propertyPath: _maxHp
+      value: 1e+13
+      objectReference: {fileID: 0}
+    - target: {fileID: 253627723172501665, guid: 25453989806c7cd488f86d78925433b6, type: 3}
+      propertyPath: _destroyOnDeath
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1556232412110472830, guid: 25453989806c7cd488f86d78925433b6, type: 3}
       propertyPath: m_AnchorMax.x
@@ -219,6 +231,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2569351959815006725, guid: 25453989806c7cd488f86d78925433b6, type: 3}
   m_PrefabInstance: {fileID: 19876435}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &19876439 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 253627723172501665, guid: 25453989806c7cd488f86d78925433b6, type: 3}
+  m_PrefabInstance: {fileID: 19876435}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 615052862}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11a5c34fb8694524488fcf1b8e1bd864, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &313601660
 GameObject:
   m_ObjectHideFlags: 0
@@ -1177,6 +1200,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _levelCreator: {fileID: 2041042452}
   _player: {fileID: 615052862}
+  _playerPed: {fileID: 19876439}
 --- !u!4 &1508753012
 Transform:
   m_ObjectHideFlags: 0
@@ -1643,22 +1667,19 @@ MonoBehaviour:
     iterCount: 15
     cutoffSomeLeaves: 0
     startingArea:
-      _width: 20
-      _height: 20
+      _width: 10
+      _height: 10
       _center: {x: 0.5, y: 0.5}
     allignmentGrid:
       _gap: 2
     seed: 0
-    finishObj:
-      _spawnObject: {fileID: 3578741514648601537, guid: 6186fb6cfbd2cde479dddd91d7ee12d7, type: 3}
-      _offset: {x: 0, y: 0, z: -1}
     enemies:
     - _spawnObject: {fileID: 8440544541125941398, guid: 0e3dc0fa7375f1d41917dda508b4d933, type: 3}
       _offset: {x: 0, y: 0, z: -1}
     - _spawnObject: {fileID: 8992007138256043857, guid: e443141770073004fa4d39ac0077f7d9, type: 3}
       _offset: {x: 0, y: 0, z: -1}
     bosses:
-    - _spawnObject: {fileID: 4143514878052646430, guid: 47ca81598036c3440a0c8cf1477b9736, type: 3}
+    - _spawnObject: {fileID: 8992007138256043857, guid: 85640f9c11899e64587f86ac7b426fbf, type: 3}
       _offset: {x: 0, y: 0, z: -1}
   _drawRoomEdges: 1
   _drawRoomCenter: 0
