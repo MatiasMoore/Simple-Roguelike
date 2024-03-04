@@ -16,7 +16,7 @@ MonoBehaviour:
   weaponDescription: 123
   weaponIcon: {fileID: 21300000, guid: c9ef79ba59db38f40bd698e29162563d, type: 3}
   weaponPrefab: {fileID: 9215425247971391935, guid: b64a22d2102abb84aa30b976c1e4c682, type: 3}
-  Damage: 0
+  Damage: 3
   FireRate: 0.3
   RealoadeTime: 2
   AmmoPerMagazine: 30
