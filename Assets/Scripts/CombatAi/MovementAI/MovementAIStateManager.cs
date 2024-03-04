@@ -25,6 +25,12 @@ public class MovementAIStateManager : MonoBehaviour
     [SerializeField]
     private float _evasionSphereRadius;
 
+    [Range(0f, 360f), SerializeField]
+    private float _minEvasionCorrelationAngle;
+
+    [Range(0f, 360f), SerializeField]
+    private float _maxEvasionCorrelationAngle;
+
     [Header("Configuration")]
 
     private static Transform _player;
@@ -109,10 +115,7 @@ public class MovementAIStateManager : MonoBehaviour
         _states.Add(MovementState.Idle, new IdleMovementAI(this, _player, transform, _preferredDistance));
         _states.Add(MovementState.Follow, new FollowPlayerMovementAI(this, _player, transform, _objectMovement, _lostAggroDistance, _preferredDistance));
         _states.Add(MovementState.Calm, new CalmMovementAI(this, _player, transform, _startAggroDistance));
-        if (stateData.DangerousObject != null)
-        {
-            _states.Add(MovementState.Evading, new EvadingMovementAI(this, transform, stateData.DangerousObject, _objectMovement, _evasionSphereRadius));
-        }
+        _states.Add(MovementState.Evading, new EvadingMovementAI(this, transform, _objectMovement, _evasionSphereRadius, _minEvasionCorrelationAngle, _maxEvasionCorrelationAngle));
             
     }
 
@@ -187,7 +190,6 @@ public class MovementAIStateManager : MonoBehaviour
             }
             
             stateData.DangerousObject = other;
-            InitStates();
             SwitchToState(MovementState.Evading);
         }
     }

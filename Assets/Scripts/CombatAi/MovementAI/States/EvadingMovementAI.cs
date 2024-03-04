@@ -12,16 +12,21 @@ public class EvadingMovementAI : MovementAIStatePrimitive
 
     private float _radius;
 
-    private bool _isDirectionChosen = false;
+    private float _minEvadingCorrelationAngle;
+
+    private float _maxEvadingCorrelationAngle;
+
+    private bool _isDirectionChosen;
     private Vector2 _evasionVector;
     private Vector2 _intersection;
 
-    public EvadingMovementAI(MovementAIStateManager stateManager, Transform self, Collider2D dangerousObject, ObjectMovement objectMovement, float sphereRadius) : base(stateManager)
+    public EvadingMovementAI(MovementAIStateManager stateManager, Transform self, ObjectMovement objectMovement, float sphereRadius, float maxEvadingCorrelationAngle, float minEvadingCorrelationAngle) : base(stateManager)
     {
         _self = self;
-        _dangerousObject = dangerousObject;
         _movement = objectMovement;
         _radius = sphereRadius;
+        _minEvadingCorrelationAngle = minEvadingCorrelationAngle;
+        _maxEvadingCorrelationAngle = maxEvadingCorrelationAngle;
     }
 
     public override void DebugDrawGizmos()
@@ -32,7 +37,8 @@ public class EvadingMovementAI : MovementAIStatePrimitive
 
     public override void Start()
     {
-  
+        _dangerousObject = _stateManager.stateData.DangerousObject;
+        _isDirectionChosen = false;
     }
 
     public override void Stop()
@@ -60,11 +66,16 @@ public class EvadingMovementAI : MovementAIStatePrimitive
             if (!_isDirectionChosen || _evasionVector == Vector2.zero)
             {
                 _evasionVector = Vector2.Perpendicular(dangerousVelocity.normalized);
+                
                 if (Vector2.Distance(_evasionVector, _intersection) < Vector2.Distance(-_evasionVector, _intersection))
                 {
                     _evasionVector = -_evasionVector;
-                }
-
+                    _evasionVector = Quaternion.AngleAxis(-Random.Range(_minEvadingCorrelationAngle, _maxEvadingCorrelationAngle), Vector3.forward) * _evasionVector;
+                } else
+                {
+                    _evasionVector = Quaternion.AngleAxis(Random.Range(_minEvadingCorrelationAngle, _maxEvadingCorrelationAngle), Vector3.forward) * _evasionVector;
+                }           
+                
                 Debug.Log($"AI: Evasion vector: {_evasionVector}");
                 _isDirectionChosen = true;
             }
