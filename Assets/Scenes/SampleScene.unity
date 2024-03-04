@@ -1922,12 +1922,12 @@ MonoBehaviour:
       _gap: 2
     seed: -1274148004
     enemies:
-    - _spawnObject: {fileID: 8440544541125941398, guid: 0e3dc0fa7375f1d41917dda508b4d933, type: 3}
+    - _spawnObject: {fileID: 8992007138256043857, guid: 5453b9397e30f174d9f950e0b85d516a, type: 3}
       _offset: {x: 0, y: 0, z: -1}
-    - _spawnObject: {fileID: 8992007138256043857, guid: e443141770073004fa4d39ac0077f7d9, type: 3}
+    - _spawnObject: {fileID: 8440544541125941398, guid: 938cef5fc06c66f4c9e34ae024d8d9a7, type: 3}
       _offset: {x: 0, y: 0, z: -1}
     bosses:
-    - _spawnObject: {fileID: 8992007138256043857, guid: 85640f9c11899e64587f86ac7b426fbf, type: 3}
+    - _spawnObject: {fileID: 8992007138256043857, guid: 92cdbd53b6786144cba4ecff679a4670, type: 3}
       _offset: {x: 0, y: 0, z: -1}
   _drawRoomEdges: 1
   _drawRoomCenter: 0
