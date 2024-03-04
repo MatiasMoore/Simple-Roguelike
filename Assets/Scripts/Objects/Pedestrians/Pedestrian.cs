@@ -4,11 +4,19 @@ using UnityEngine;
 using UnityEngine.Events;
 public class Pedestrian : MonoBehaviour, IDamagable
 {
+    public enum PedType
+    {
+        player, simpleEnemy, boss
+    }
+
     [SerializeField]
     private float _hp;
 
     [SerializeField]
     private float _maxHp;
+
+    [SerializeField]
+    private PedType _type = PedType.simpleEnemy;
 
     [SerializeField]
     private SliderManager _healthBar;
@@ -22,6 +30,11 @@ public class Pedestrian : MonoBehaviour, IDamagable
     {
         _hp = _maxHp;
         _healthBar.UpdateValues(_hp, _maxHp);
+    }
+
+    public PedType GetPedType()
+    {
+        return _type;
     }
 
     public void TakeDamage(float damage)

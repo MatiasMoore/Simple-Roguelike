@@ -395,7 +395,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _hp: 100
   _maxHp: 100
+  _type: 1
   _healthBar: {fileID: 4083534213156907830}
+  _destroyOnDeath: 1
 --- !u!114 &4348999125784493489
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -429,6 +431,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _reload: 0
   _attackDistance: 3
+  _expansionAngle: 0
   _aggroCollider: {fileID: 4246815523961606100}
   _weapon: {fileID: 4893703854371372998}
 --- !u!114 &2117697201538292416
@@ -468,6 +471,7 @@ MonoBehaviour:
   _coints:
   - _coinObj: {fileID: 4143514878052646430, guid: 47ca81598036c3440a0c8cf1477b9736, type: 3}
     _count: 2
+  parentsChild: {fileID: 6172725099122787905}
 --- !u!1001 &703033143191663324
 PrefabInstance:
   m_ObjectHideFlags: 0
