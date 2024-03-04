@@ -28,4 +28,9 @@ public class CollisionListener : MonoBehaviour
     {
         GetComponent<CircleCollider2D>().radius = radius;
     }
+
+    public float GetRadius()
+    {
+        return GetComponent<CircleCollider2D>().radius;
+    }
 }
