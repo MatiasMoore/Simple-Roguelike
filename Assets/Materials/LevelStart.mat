@@ -57,5 +57,6 @@ Material:
     - _CircleSize: 1.5
     - _QueueControl: 0
     - _QueueOffset: 0
-    m_Colors: []
+    m_Colors:
+    - _BackgroundColor: {r: 0.682353, g: 0.5137254, b: 1, a: 0}
   m_BuildTextureStacks: []

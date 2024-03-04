@@ -42,6 +42,7 @@ public class GameStart : MonoBehaviour
         _transition.FadeIn(1f);
     }
 
+    [ContextMenu("Next Level")]
     private void NextLevel()
     {
         Debug.Log("Starting next level!");
@@ -54,6 +55,21 @@ public class GameStart : MonoBehaviour
         yield return new WaitForSecondsRealtime(2);
         _levelCreator.StopStreamingLevel();
         _levelCreator.DeleteCurrentLevel();
+
+        bool randBool1 = UnityEngine.Random.Range(0, 2) == 0;
+        var newCenter = new Vector2(0, 0);
+        if (randBool1)
+            newCenter = new Vector2(0.5f, 0.5f);
+
+        var oldArea = _levelCreator._generationData.startingArea;
+        _levelCreator._generationData.startingArea = new Rectangle(newCenter, oldArea.GetWidth() + 20, oldArea.GetHeight() + 20);
+
+        bool randBool2 = UnityEngine.Random.Range(0, 2) == 0;
+        _levelCreator._generationData.cutoffSomeLeaves = randBool2;
+
+        
+        
+
         StartCoroutine(StartLevel());
     }
 

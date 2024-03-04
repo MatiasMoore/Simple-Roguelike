@@ -1773,12 +1773,12 @@ MonoBehaviour:
     iterCount: 15
     cutoffSomeLeaves: 0
     startingArea:
-      _width: 10
-      _height: 10
-      _center: {x: 0.5, y: 0.5}
+      _width: 20
+      _height: 20
+      _center: {x: 0, y: 0}
     allignmentGrid:
       _gap: 2
-    seed: 0
+    seed: -1274148004
     enemies:
     - _spawnObject: {fileID: 8440544541125941398, guid: 0e3dc0fa7375f1d41917dda508b4d933, type: 3}
       _offset: {x: 0, y: 0, z: -1}

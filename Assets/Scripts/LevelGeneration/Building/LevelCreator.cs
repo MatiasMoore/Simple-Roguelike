@@ -28,7 +28,7 @@ public class LevelCreator : MonoBehaviour
     [SerializeField]
     private bool _randomiseSeed = true;
     [SerializeField]
-    private LevelGenerator.LevelGenerationData _generationData;
+    public LevelGenerator.LevelGenerationData _generationData;
 
     [Header("Debug draw settings")]
     [SerializeField]
