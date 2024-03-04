@@ -168,8 +168,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11a5c34fb8694524488fcf1b8e1bd864, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _hp: 200
-  _maxHp: 200
+  _hp: 400
+  _maxHp: 400
   _type: 1
   _healthBar: {fileID: 1165649268123869309}
   _destroyOnDeath: 1
