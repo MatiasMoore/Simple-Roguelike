@@ -133,6 +133,7 @@ GameObject:
   - component: {fileID: 576232400006552703}
   - component: {fileID: 5183391012936557210}
   - component: {fileID: 5075649718026766746}
+  - component: {fileID: 7145388457352221550}
   m_Layer: 6
   m_Name: EnemyWithAK
   m_TagString: Untagged
@@ -287,6 +288,22 @@ MonoBehaviour:
   _hp: 100
   _maxHp: 100
   _healthBar: {fileID: 7700764480309047469}
+--- !u!114 &7145388457352221550
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8440544541125941398}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1ac38df630205048a44194c514a1423, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _ped: {fileID: 5075649718026766746}
+  _coints:
+  - _coinObj: {fileID: 4143514878052646430, guid: 47ca81598036c3440a0c8cf1477b9736, type: 3}
+    _count: 5
 --- !u!1 &8733252701774047915
 GameObject:
   m_ObjectHideFlags: 0

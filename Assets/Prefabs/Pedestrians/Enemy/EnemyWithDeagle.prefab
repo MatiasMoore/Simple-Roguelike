@@ -213,6 +213,7 @@ GameObject:
   - component: {fileID: 4348999125784493489}
   - component: {fileID: 6391593537009662241}
   - component: {fileID: 2117697201538292416}
+  - component: {fileID: 1896521537471999811}
   m_Layer: 6
   m_Name: EnemyWithDeagle
   m_TagString: Untagged
@@ -367,6 +368,22 @@ MonoBehaviour:
   _preferredDistance: 2
   _aggroCollider: {fileID: 4246815523961606100}
   _objectMovement: {fileID: 4348999125784493489}
+--- !u!114 &1896521537471999811
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8992007138256043857}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1ac38df630205048a44194c514a1423, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _ped: {fileID: 1158359757890961630}
+  _coints:
+  - _coinObj: {fileID: 4143514878052646430, guid: 47ca81598036c3440a0c8cf1477b9736, type: 3}
+    _count: 2
 --- !u!1001 &703033143191663324
 PrefabInstance:
   m_ObjectHideFlags: 0
