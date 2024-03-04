@@ -90,6 +90,19 @@ public class ObjectMovement : MonoBehaviour
         {
             WalkTo(path.corners.ToList());
             _debugPath = path.corners.ToList();
+        } else
+        {
+            NavMeshHit hit = new NavMeshHit();
+            NavMesh.SamplePosition((Vector2)transform.position, out hit, 9999, NavMesh.AllAreas);
+            if (NavMesh.CalculatePath(hit.position, point, NavMesh.AllAreas, path))
+            {
+                List<Vector3> pathList = new List<Vector3>();
+                pathList.Add(Vector3.zero);
+                pathList.AddRange(path.corners.ToList());
+                WalkTo(pathList);
+                _debugPath = pathList;
+            }
+
         }
     }
 
