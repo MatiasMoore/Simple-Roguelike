@@ -8,6 +8,9 @@ public class GameStart : MonoBehaviour
     [SerializeField]
     private LevelCreator _levelCreator;
 
+    [SerializeField]
+    private ScreenTransitionController _transition;
+
     [SerializeField] 
     private GameObject _player;
 
@@ -19,6 +22,7 @@ public class GameStart : MonoBehaviour
     {
         _playerPed.OnDeath += EndGame;
         _levelCreator._levelBuilder.OnRoomObjectCreated += ObjectSpawned;
+        _transition.InstaFadeOut();
         StartCoroutine(StartLevel());
     }
 
@@ -32,11 +36,22 @@ public class GameStart : MonoBehaviour
         _player.transform.position = levelTask.Result.GetPlayerSpawn();
 
         _levelCreator.StartStreamingLevel(levelTask.Result);
+
+        yield return new WaitForSecondsRealtime(3);
+
+        _transition.FadeIn(1f);
     }
 
     private void NextLevel()
     {
         Debug.Log("Starting next level!");
+        StartCoroutine(NextLevelCoroutine());
+    }
+
+    private IEnumerator NextLevelCoroutine()
+    {
+        _transition.FadeOut(1f);
+        yield return new WaitForSecondsRealtime(2);
         _levelCreator.StopStreamingLevel();
         _levelCreator.DeleteCurrentLevel();
         StartCoroutine(StartLevel());
