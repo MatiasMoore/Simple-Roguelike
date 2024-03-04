@@ -24,7 +24,7 @@ MonoBehaviour:
   RecoilShake: {fileID: 0}
   ProjectileLifeTime: 7
   ProjectileSpeed: 10
-  ProjectilePrefab: {fileID: 7890867244237525666, guid: d6a3f22d0a2bebe458f5a8bda9170ea4, type: 3}
+  ProjectilePrefab: {fileID: 4224918980932443279, guid: 3a0cdc52961110945b79d2b3849e2afa, type: 3}
   WhatDamage:
     serializedVersion: 2
     m_Bits: 64
