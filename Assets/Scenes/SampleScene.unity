@@ -131,6 +131,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 253627723172501665, guid: 25453989806c7cd488f86d78925433b6, type: 3}
+      propertyPath: _hp
+      value: 200
+      objectReference: {fileID: 0}
     - target: {fileID: 1556232412110472830, guid: 25453989806c7cd488f86d78925433b6, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -1639,17 +1643,22 @@ MonoBehaviour:
     iterCount: 15
     cutoffSomeLeaves: 0
     startingArea:
-      _width: 200
-      _height: 200
+      _width: 20
+      _height: 20
       _center: {x: 0.5, y: 0.5}
     allignmentGrid:
       _gap: 2
     seed: 0
-    enemyObj:
-      _spawnObject: {fileID: 8440544541125941398, guid: 0e3dc0fa7375f1d41917dda508b4d933, type: 3}
-      _offset: {x: 0, y: 0, z: -1}
     finishObj:
       _spawnObject: {fileID: 3578741514648601537, guid: 6186fb6cfbd2cde479dddd91d7ee12d7, type: 3}
+      _offset: {x: 0, y: 0, z: -1}
+    enemies:
+    - _spawnObject: {fileID: 8440544541125941398, guid: 0e3dc0fa7375f1d41917dda508b4d933, type: 3}
+      _offset: {x: 0, y: 0, z: -1}
+    - _spawnObject: {fileID: 8992007138256043857, guid: e443141770073004fa4d39ac0077f7d9, type: 3}
+      _offset: {x: 0, y: 0, z: -1}
+    bosses:
+    - _spawnObject: {fileID: 4143514878052646430, guid: 47ca81598036c3440a0c8cf1477b9736, type: 3}
       _offset: {x: 0, y: 0, z: -1}
   _drawRoomEdges: 1
   _drawRoomCenter: 0
