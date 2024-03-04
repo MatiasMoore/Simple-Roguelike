@@ -395,6 +395,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _hp: 500
   _maxHp: 525
+  _type: 1
   _healthBar: {fileID: 4083534213156907830}
   _destroyOnDeath: 1
 --- !u!114 &4348999125784493489
@@ -429,7 +430,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _reload: 0
-  _attackDistance: 3
+  _attackDistance: 6
   _expansionAngle: 0
   _aggroCollider: {fileID: 4246815523961606100}
   _weapon: {fileID: 3976884599212736331}
@@ -446,11 +447,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _reload: 0
-  _lostAggroDistance: 7
-  _startAggroDistance: 4
-  _preferredDistance: 2
+  _lostAggroDistance: 14
+  _startAggroDistance: 8
+  _preferredDistance: 4
   _dangerousVision: {fileID: 7933933938470084476}
-  _evasionSphereRadius: 0.5
+  _evasionSphereRadius: 4
   _minEvasionCorrelationAngle: 45
   _maxEvasionCorrelationAngle: 85
   _aggroCollider: {fileID: 4246815523961606100}
@@ -472,6 +473,7 @@ MonoBehaviour:
   _coints:
   - _coinObj: {fileID: 4143514878052646430, guid: 47ca81598036c3440a0c8cf1477b9736, type: 3}
     _count: 2
+  parentsChild: {fileID: 0}
 --- !u!1001 &703033143191663324
 PrefabInstance:
   m_ObjectHideFlags: 0
