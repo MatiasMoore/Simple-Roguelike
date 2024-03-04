@@ -19,6 +19,9 @@ public class CoinSpawner : MonoBehaviour
     }
 
     [SerializeField]
+    private float _spawnRadius = 1;
+
+    [SerializeField]
     private List<CoinToSpawn> _coints = new List<CoinToSpawn>();
 
     private void Awake()
@@ -32,14 +35,12 @@ public class CoinSpawner : MonoBehaviour
         {
             for (int i = 0; i < coin._count; i++)
             {
-                var obj = Instantiate(coin._coinObj, this.transform.position, Quaternion.identity, null);
+                var spawnPos = _spawnRadius * UnityEngine.Random.insideUnitSphere;
+                var obj = Instantiate(coin._coinObj, this.transform.position + spawnPos, Quaternion.identity, null);
                 var rb = obj.GetComponent<Rigidbody2D>();
-                if (rb  != null)
+                if (rb != null)
                 {
-                    var r = new System.Random();
-                    var force = new Vector2(1, 1);
-                    force *= (float)r.NextDouble();
-                    rb.AddForce(force);
+                    rb.AddForce(UnityEngine.Random.insideUnitSphere);
                 }
             }
         }
