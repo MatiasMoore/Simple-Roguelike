@@ -119,6 +119,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _animator: {fileID: 2213912544902890776}
+  _dashSpeed: 25
+  _dashDuration: 0.1
+  _dashCooldown: 0.4
 --- !u!114 &8773774483238907578
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -168,6 +171,7 @@ MonoBehaviour:
   _hp: 200
   _maxHp: 200
   _healthBar: {fileID: 1165649268123869309}
+  _destroyOnDeath: 1
 --- !u!58 &3379418019725983831
 CircleCollider2D:
   m_ObjectHideFlags: 0

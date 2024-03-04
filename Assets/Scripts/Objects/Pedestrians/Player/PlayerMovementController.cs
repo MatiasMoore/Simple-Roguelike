@@ -10,6 +10,16 @@ public class PlayerMovementController : MonoBehaviour
 
     private ObjectMovement _objectMovement;
 
+    [SerializeField]
+    private float _dashSpeed;
+
+    [SerializeField]
+    private float _dashDuration;
+
+    [SerializeField]
+    private float _dashCooldown;
+
+    private float _currentDashCooldown;
     // START OF DEBUG FIELDS: \\
 
     private Vector2 _direction;
@@ -24,6 +34,8 @@ public class PlayerMovementController : MonoBehaviour
     { 
         _objectMovement = GetComponent<ObjectMovement>();
         _objectMovement.Init();
+
+        InputSystem.Instance.DashEvent += Dash;
     }
 
     private void Update()
@@ -37,7 +49,27 @@ public class PlayerMovementController : MonoBehaviour
 
             _objectMovement.SetDirection(new Vector2(InputSystem.Movement.x, InputSystem.Movement.y));
             UpdateDebug();
+
+            if (_currentDashCooldown > 0)
+            {
+                _currentDashCooldown -= Time.deltaTime;
+            }
         } 
+    }
+
+    private void Dash() 
+    {
+        if (_currentDashCooldown > 0) return;
+
+        StartCoroutine(DashCoroutine(_objectMovement.GetMaxSpeed()));
+    }
+
+    private IEnumerator DashCoroutine(float oldSpeed)
+    {
+        _objectMovement.SetMaxSpeed(_dashSpeed);
+        yield return new WaitForSeconds(_dashDuration);
+        _objectMovement.SetMaxSpeed(oldSpeed);
+        _currentDashCooldown = _dashCooldown;
     }
 
     private void UpdateDebug()

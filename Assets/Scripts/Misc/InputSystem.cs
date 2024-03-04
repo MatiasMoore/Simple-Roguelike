@@ -29,6 +29,8 @@ public class InputSystem : MonoBehaviour
 
     private InputAction _weaponNavigation;
 
+    private InputAction _dash;
+
     public UnityAction<Vector2> CursorClickEvent;
 
     public UnityAction<Vector2> CursorReleaseEvent;
@@ -38,6 +40,8 @@ public class InputSystem : MonoBehaviour
     public UnityAction ChooseNextWeapon;
 
     public UnityAction ChoosePreviousWeapon;
+
+    public UnityAction DashEvent;
 
     [SerializeField]
     private bool _isDebugOn;
@@ -53,10 +57,12 @@ public class InputSystem : MonoBehaviour
         _cursorClick = _playerInput.actions["CursorClick"];
         _cursorRelease = _playerInput.actions["CursorRelease"];
         _reloadAction = _playerInput.actions["Reload"];
+        _dash = _playerInput.actions["Dash"];
 
         _cursorClick.performed += (var) => OnCursorClick();
         _cursorRelease.performed += (var) => OnCursorRelease();
         _reloadAction.performed += (var) => ReloadEvent?.Invoke();
+        _dash.performed += (var) => DashEvent?.Invoke();
 
 
         _weaponNavigation = _playerInput.actions["WeaponNavigation"];
