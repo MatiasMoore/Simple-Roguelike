@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 1789475544921460557}
   m_Layer: 0
   m_Name: Bullet
-  m_TagString: Untagged
+  m_TagString: Projectile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -144,6 +144,7 @@ MonoBehaviour:
   _decelerationTime: 0.3
   _changeDirectionTime: 0.15
   _maxSpeed: 5
+  _rigidbody: {fileID: 0}
   IsDynamicUpdateData: 0
   _walkType: 0
 --- !u!1 &8063970266475369752
