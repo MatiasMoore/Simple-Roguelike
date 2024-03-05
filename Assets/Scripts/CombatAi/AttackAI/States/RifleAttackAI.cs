@@ -14,15 +14,20 @@ public class RifleAttackAI : AttackAIStatePrimitive
 
     private float _expansionAngle;
 
+    private float _velocityCoefficient;
+
     private Vector2 _futurePlayerPosition;
 
-    public RifleAttackAI(AttackAIStateManager stateManager, Transform player, Transform self, float attackDistance, Weapon weapon, float expansionAngle) : base(stateManager)
+    public RifleAttackAI(AttackAIStateManager stateManager, 
+        Transform player, Transform self, 
+        float attackDistance, Weapon weapon, float expansionAngle, float velocityCoefficient) : base(stateManager)
     {
         _self = self;
         _player = player;
         _attackDistance = attackDistance;
         _weapon = weapon;
         _expansionAngle = expansionAngle;
+        _velocityCoefficient = velocityCoefficient;
     }
 
     public override void DebugDrawGizmos()
@@ -56,7 +61,7 @@ public class RifleAttackAI : AttackAIStatePrimitive
         RifleData weaponData = ((Rifle)_weapon).Data;
         float bulletMaxSpeed = weaponData.ProjectileSpeed;
         float bulletTimeToTarget = Vector2.Distance(_self.position, _player.position) / bulletMaxSpeed;
-        _futurePlayerPosition =(Vector2)_player.position + _player.GetComponent<Rigidbody2D>().velocity * bulletTimeToTarget;
+        _futurePlayerPosition =(Vector2)_player.position + _velocityCoefficient * _player.GetComponent<Rigidbody2D>().velocity * bulletTimeToTarget;
         _weapon.RotateWeaponToPoint(_futurePlayerPosition);
         Shoot();
     }
