@@ -432,6 +432,7 @@ MonoBehaviour:
   _reload: 0
   _attackDistance: 3
   _expansionAngle: 26.6
+  _velocityCoefficient: 0.633
   _aggroCollider: {fileID: 4246815523961606100}
   _weapon: {fileID: 3976884599212736331}
 --- !u!114 &2117697201538292416
