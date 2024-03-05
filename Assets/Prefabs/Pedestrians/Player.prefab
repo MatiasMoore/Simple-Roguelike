@@ -170,7 +170,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _hp: 400
   _maxHp: 400
-  _type: 1
+  _type: 0
   _healthBar: {fileID: 1165649268123869309}
   _destroyOnDeath: 1
 --- !u!58 &3379418019725983831
