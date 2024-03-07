@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
+using static MovementAIStateManager;
 
 public class AttackAIStateManager : MonoBehaviour
 {
@@ -31,7 +32,7 @@ public class AttackAIStateManager : MonoBehaviour
 
     public enum AttackState
     {
-        Sleep, Idle, Attack
+       Idle, Attack
     }
 
     private AttackState _currentStateEnum;
@@ -55,19 +56,16 @@ public class AttackAIStateManager : MonoBehaviour
     }
 
     private void OnEnable()
-    {  
-        _aggroCollider.OnTriggerEnter += OnAggroTriggerEnter;
-
-        InitStates();
-        
+    {
         if (_player == null)
         {
             _aggroCollider.gameObject.SetActive(true);
-            _currentState = _states[AttackState.Sleep];
-        } else
-        {
-            _currentState = _states[AttackState.Idle];
         }
+
+        _aggroCollider.OnTriggerEnter += OnAggroTriggerEnter;
+
+        InitStates();
+        _currentState = _states[AttackState.Idle];
     }
 
     private void InitStates()
@@ -79,7 +77,6 @@ public class AttackAIStateManager : MonoBehaviour
 
         _states.Clear();
 
-        _states.Add(AttackState.Sleep, new SleepAttackAI(this));
         _states.Add(AttackState.Idle, new IdleAttackAI(this, _player, transform, _attackDistance));
         _states.Add(AttackState.Attack, new RifleAttackAI(this, _player, transform, _attackDistance, _weapon, _expansionAngle, _velocityCoefficient));
     }
@@ -105,8 +102,7 @@ public class AttackAIStateManager : MonoBehaviour
             if (_currentState != null)
             {
                 _currentState.DebugDrawGizmos();
-            }
-            
+            }        
         }
         else
         {
@@ -117,7 +113,7 @@ public class AttackAIStateManager : MonoBehaviour
 
    private void OnAggroTriggerEnter(Collider2D other)
     {
-        if (other.CompareTag("Player") && _currentState is SleepAttackAI)
+        if (other.CompareTag("Player"))
         {
             _player = other.transform;
             InitStates();

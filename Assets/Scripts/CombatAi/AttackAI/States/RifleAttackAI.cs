@@ -52,6 +52,12 @@ public class RifleAttackAI : AttackAIStatePrimitive
 
     public override void Update()
     {
+        if (_player == null)
+        {
+            _stateManager.SwitchToState(AttackAIStateManager.AttackState.Idle);
+            return;
+        }
+
         if (Vector2.Distance(_self.position, _player.position) > _attackDistance || !CanSeeObject(_self, _player))
         {
             _stateManager.SwitchToState(AttackAIStateManager.AttackState.Idle);
