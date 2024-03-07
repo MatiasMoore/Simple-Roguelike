@@ -50,6 +50,12 @@ public class FollowPlayerMovementAI : MovementAIStatePrimitive
 
     public override void Update()
     {
+        if (_player == null)
+        {
+            _stateManager.SwitchToState(MovementAIStateManager.MovementState.Calm);
+            return;
+        }
+
         var distToPlayer = Vector2.Distance(_player.position, _self.position);
 
         if (distToPlayer < _minDistance)

@@ -31,6 +31,11 @@ public class CalmMovementAI : MovementAIStatePrimitive
 
     public override void Update()
     {
+        if (_player == null)
+        {
+            return;
+        }
+
         var distToPlayer = Vector2.Distance(_player.position, _self.position);
 
         if (distToPlayer < _aggroDistance && CanSeeObject(_self, _player))

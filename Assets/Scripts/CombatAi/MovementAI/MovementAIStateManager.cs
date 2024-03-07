@@ -45,7 +45,7 @@ public class MovementAIStateManager : MonoBehaviour
 
     public enum MovementState
     {
-        Sleep, Calm, Follow, Idle, Evading
+        Calm, Follow, Idle, Evading
     }
 
     private MovementState _currentStateEnum;
@@ -88,18 +88,9 @@ public class MovementAIStateManager : MonoBehaviour
 
         _objectMovement.Init();
         _objectMovement.SetWalkType(ObjectMovement.WalkType.ByPoint);
-        InitStates();
-        _currentState = _states[MovementState.Sleep];
 
-        if (_player == null)
-        {
-            _aggroCollider.gameObject.SetActive(true);
-            _currentState = _states[MovementState.Sleep];
-        }
-        else
-        {
-            _currentState = _states[MovementState.Calm];
-        }
+        InitStates();
+        _currentState = _states[MovementState.Calm];
     }
 
     private void InitStates()
@@ -110,8 +101,6 @@ public class MovementAIStateManager : MonoBehaviour
         }
             
         _states.Clear();
-
-        _states.Add(MovementState.Sleep, new SleepMovementAI(this));
         _states.Add(MovementState.Idle, new IdleMovementAI(this, _player, transform, _preferredDistance));
         _states.Add(MovementState.Follow, new FollowPlayerMovementAI(this, _player, transform, _objectMovement, _lostAggroDistance, _preferredDistance));
         _states.Add(MovementState.Calm, new CalmMovementAI(this, _player, transform, _startAggroDistance));
@@ -156,7 +145,7 @@ public class MovementAIStateManager : MonoBehaviour
 
     private void OnAggroTriggerEnter(Collider2D other)
     {
-        if (other.CompareTag("Player") && _currentState is SleepMovementAI)
+        if (other.CompareTag("Player"))
         {
             _player = other.transform;
             InitStates();
@@ -170,13 +159,13 @@ public class MovementAIStateManager : MonoBehaviour
     private void OnDisable()
     {
         _aggroCollider.OnTriggerEnter -= OnAggroTriggerEnter;
+        _dangerousVision.OnTriggerEnter -= EvasionCheck;
     }
 
     private void EvasionCheck(Collider2D other)
     {
         if (other.CompareTag("Projectile"))
         {
-            // if other damage enemy
             Projectile projectile = other.GetComponent<Projectile>();
             LayerMask whatIDamage = projectile.GetWhatIDamage();
             if((whatIDamage.value & 1 << gameObject.layer) == 0)
