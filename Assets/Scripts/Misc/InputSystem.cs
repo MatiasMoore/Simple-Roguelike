@@ -19,6 +19,8 @@ public class InputSystem : MonoBehaviour
 
     private InputAction _moveAction;
 
+    private InputAction _lookAction;
+
     private InputAction _cursorPosition;
 
     private InputAction _cursorClick;
@@ -44,6 +46,19 @@ public class InputSystem : MonoBehaviour
     public UnityAction DashEvent;
 
     [SerializeField]
+    private bool _useRightStick = true;
+
+    private bool _rightStickEngagedLastFrame = false;
+    private float _rightStickClickThreshold = 0.1f;
+
+    [SerializeField] 
+    //How far the stick moves the cursor
+    private float _lookSensitivity = 5f;
+    [SerializeField] 
+    //Max distance cursor can move from center
+    private float _maxLookDistance = 5f; 
+
+    [SerializeField]
     private bool _isDebugOn;
 
     public void Init()
@@ -53,6 +68,7 @@ public class InputSystem : MonoBehaviour
         _playerInput = GetComponent<PlayerInput>();
 
         _moveAction = _playerInput.actions["Move"];
+        _lookAction = _playerInput.actions["Look"];
         _cursorPosition = _playerInput.actions["CursorPosition"];
         _cursorClick = _playerInput.actions["CursorClick"];
         _cursorRelease = _playerInput.actions["CursorRelease"];
@@ -76,13 +92,40 @@ public class InputSystem : MonoBehaviour
     {
         Movement = _moveAction.ReadValue<Vector2>();
 
-        //translate cursor position to scene position
-        CursorPosition = Camera.main.ScreenToWorldPoint(_cursorPosition.ReadValue<Vector2>());
-        
+        if (_useRightStick)
+        {
+            Vector2 lookInput = _lookAction.ReadValue<Vector2>();
+
+            bool isEngaged = lookInput.magnitude > _rightStickClickThreshold;
+
+            //simulate click
+            if (isEngaged && !_rightStickEngagedLastFrame)
+            {
+                OnCursorClick();
+            }
+            //simulate release
+            else if (!isEngaged && _rightStickEngagedLastFrame)
+            {
+                OnCursorRelease();
+            }
+
+            _rightStickEngagedLastFrame = isEngaged;
+
+            Vector2 clampedLook = Vector2.ClampMagnitude(lookInput * _lookSensitivity, _maxLookDistance);
+
+            Vector2 screenCenter = new Vector2(Screen.width / 2f, Screen.height / 2f);
+            Vector2 virtualCursorScreenPos = screenCenter + clampedLook * 100f; // 100f to convert world units to pixels
+
+            CursorPosition = Camera.main.ScreenToWorldPoint(virtualCursorScreenPos);
+        }
+        else
+        {
+            //translate cursor position to scene position
+            CursorPosition = Camera.main.ScreenToWorldPoint(_cursorPosition.ReadValue<Vector2>());
+        }
+
         if (_isDebugOn)
             Debug.Log($"Cursor position: {CursorPosition}");
-        
-
     }
 
     private void WeaponNavigation()
