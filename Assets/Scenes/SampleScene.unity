@@ -279,7 +279,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 2100000, guid: 0b709457290524442ad558f4d012a09a, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -1650,7 +1650,7 @@ MonoBehaviour:
     m_DissipationMode: 2
     m_DissipationDistance: 100
     m_PropagationSpeed: 343
-  m_DefaultVelocity: {x: 0.01336167, y: 0.09910332, z: 0}
+  m_DefaultVelocity: {x: 0.00000001192093, y: 0, z: -0.1}
 --- !u!4 &1476122651
 Transform:
   m_ObjectHideFlags: 0
@@ -1905,9 +1905,9 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1151713194}
-  - {fileID: 276149310}
   - {fileID: 930796853}
   - {fileID: 1395260349}
+  - {fileID: 276149310}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
