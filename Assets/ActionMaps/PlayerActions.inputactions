@@ -78,6 +78,15 @@
                     "initialStateCheck": true
                 },
                 {
+                    "name": "NextWeapon",
+                    "type": "Button",
+                    "id": "94c803a8-b9e8-4d8a-b1d7-add17ee5949b",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Dash",
                     "type": "Button",
                     "id": "f64ebf8a-2786-4ce1-adb0-453d89b1bf89",
@@ -336,6 +345,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Look",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9a7e4aa1-3395-4c96-9356-5feb16a2849e",
+                    "path": "<Keyboard>/c",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "NextWeapon",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

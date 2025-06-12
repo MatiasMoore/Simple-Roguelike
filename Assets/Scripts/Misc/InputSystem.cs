@@ -31,6 +31,8 @@ public class InputSystem : MonoBehaviour
 
     private InputAction _weaponNavigation;
 
+    private InputAction _nextWeapon;
+
     private InputAction _dash;
 
     public UnityAction<Vector2> CursorClickEvent;
@@ -84,6 +86,9 @@ public class InputSystem : MonoBehaviour
         _weaponNavigation = _playerInput.actions["WeaponNavigation"];
 
         _weaponNavigation.performed += (var) => WeaponNavigation();
+
+        _nextWeapon = _playerInput.actions["NextWeapon"];
+        _nextWeapon.performed += (var) => ChooseNextWeapon?.Invoke();
 
         Instance = this;
     }
