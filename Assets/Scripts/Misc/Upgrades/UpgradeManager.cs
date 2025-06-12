@@ -22,9 +22,7 @@ public class UpgradeManager : MonoBehaviour
 
     public void SpawnUpgrages()
     {
-        //TODO: choose coordinates
-
-        Vector2 coordinates = GameObject.FindGameObjectWithTag("Player").transform.position - new Vector3(0, 1, 0);
+        Vector2 coordinates = GameObject.FindGameObjectWithTag("Player").transform.position - new Vector3(0, 2, 0);
         
         for (int i = 0; i < _spawnCount; i++)
         {
