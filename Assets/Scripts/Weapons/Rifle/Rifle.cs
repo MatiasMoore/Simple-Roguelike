@@ -64,10 +64,29 @@ public class Rifle : Weapon
     {
         Vector2 toPos = pos - (Vector2)transform.position;
 
-        var desiredQuat = Quaternion.LookRotation(toPos);
+        Quaternion desiredQuat;
 
-        desiredQuat *= Quaternion.AngleAxis(-90, Vector3.up);
-        
+        if (toPos.sqrMagnitude < 0.0001f)
+        {
+            desiredQuat = Quaternion.identity;
+        }
+        else
+        {
+            //2D direction the X-axis should point to
+            Vector3 xAxis = toPos.normalized;
+
+            //Project world up onto the plane perpendicular to xAxis
+            Vector3 worldUp = Vector3.up;
+
+            //Find the new Y-axis as orthogonal to xAxis but close to worldUp
+            Vector3 yAxis = (worldUp - Vector3.Dot(worldUp, xAxis) * xAxis).normalized;
+
+            //Recalculate Z for a full rotation matrix
+            Vector3 zAxis = Vector3.Cross(xAxis, yAxis);
+
+            desiredQuat = Quaternion.LookRotation(zAxis, yAxis); // zAxis is forward, yAxis is up
+        }
+
         _weaponHolder.transform.rotation = desiredQuat;
 
     }
