@@ -49,6 +49,7 @@ public class AmmoBar : MonoBehaviour
 
     public void SetActiveReloadBar(bool isActive)
     {
-        _reloadProgressBar.gameObject.SetActive(isActive);
+        if (_reloadProgressBar)
+            _reloadProgressBar.gameObject.SetActive(isActive);
     }
 }
