@@ -17,6 +17,11 @@ public class GameStart : MonoBehaviour
     [SerializeField]
     private Pedestrian _playerPed;
 
+    [SerializeField]
+    private UpgradeManager _upgradeManager;
+
+    private RoomBlueprint _endRoom;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -34,6 +39,7 @@ public class GameStart : MonoBehaviour
             yield return null;
 
         _player.transform.position = levelTask.Result.GetPlayerSpawn();
+        _endRoom = levelTask.Result.GetEndRoom();
 
         _levelCreator.StartStreamingLevel(levelTask.Result);
 
@@ -41,6 +47,16 @@ public class GameStart : MonoBehaviour
 
         _transition.FadeIn(1f);
     }
+
+    private void SpawnUpgrades()
+    {
+        var loverRight = _endRoom.GetLowerRight();
+        var upperLeft = _endRoom.GetUpperLeft();
+
+        _upgradeManager.SpawnUpgrages(upperLeft, loverRight);
+        _upgradeManager.OnUpgradePickedUp += (upgrade) => NextLevel();
+    }
+
 
     [ContextMenu("Next Level")]
     private void NextLevel()
@@ -78,7 +94,7 @@ public class GameStart : MonoBehaviour
         var ped = newObject.GetComponent<Pedestrian>();
         if (ped != null && ped.GetPedType() == Pedestrian.PedType.boss)
         {
-            ped.OnDeath += NextLevel;
+            ped.OnDeath += SpawnUpgrades;
         }
     }
 

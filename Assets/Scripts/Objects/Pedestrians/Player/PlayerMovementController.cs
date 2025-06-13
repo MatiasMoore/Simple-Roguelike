@@ -5,19 +5,18 @@ using UnityEngine;
 [RequireComponent(typeof(ObjectMovement))]
 public class PlayerMovementController : MonoBehaviour
 {
+    public bool IsDashUpgraded = false;
+
     [SerializeField]
     private Animator _animator;
 
     private ObjectMovement _objectMovement;
 
-    [SerializeField]
-    private float _dashSpeed;
+    public float _dashSpeed;
 
-    [SerializeField]
-    private float _dashDuration;
+    public float _dashDuration;
 
-    [SerializeField]
-    private float _dashCooldown;
+    public float _dashCooldown;
 
     private float _currentDashCooldown;
     // START OF DEBUG FIELDS: \\
@@ -59,6 +58,8 @@ public class PlayerMovementController : MonoBehaviour
 
     private void Dash() 
     {
+        if (!IsDashUpgraded) return;
+
         if (_currentDashCooldown > 0) return;
 
         StartCoroutine(DashCoroutine(_objectMovement.GetMaxSpeed()));
