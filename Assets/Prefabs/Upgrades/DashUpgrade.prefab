@@ -131,6 +131,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _upgradePrefab: {fileID: 3514025395331840364}
+  _stage: 0
+  _dashSpeedMultiplier: 1.2
+  _dashDurationMultiplier: 1.1
+  _dashCooldownMultiplier: 0.9
 --- !u!58 &6002427710380636261
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -165,4 +169,4 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 0.2

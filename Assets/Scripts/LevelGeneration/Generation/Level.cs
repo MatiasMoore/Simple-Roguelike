@@ -25,6 +25,11 @@ public class Level
         return _data.playerSpawn;
     }
 
+    public RoomBlueprint GetEndRoom()
+    {
+        return _data.endRoom;
+    }
+
     public List<RoomBlueprint> GetRooms()
     {
         return _data.rooms;

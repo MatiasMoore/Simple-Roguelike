@@ -20,6 +20,8 @@ public class GameStart : MonoBehaviour
     [SerializeField]
     private UpgradeManager _upgradeManager;
 
+    private RoomBlueprint _endRoom;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -37,6 +39,7 @@ public class GameStart : MonoBehaviour
             yield return null;
 
         _player.transform.position = levelTask.Result.GetPlayerSpawn();
+        _endRoom = levelTask.Result.GetEndRoom();
 
         _levelCreator.StartStreamingLevel(levelTask.Result);
 
@@ -47,7 +50,10 @@ public class GameStart : MonoBehaviour
 
     private void SpawnUpgrades()
     {
-        _upgradeManager.SpawnUpgrages();
+        var loverRight = _endRoom.GetLowerRight();
+        var upperLeft = _endRoom.GetUpperLeft();
+
+        _upgradeManager.SpawnUpgrages(upperLeft, loverRight);
         _upgradeManager.OnUpgradePickedUp += (upgrade) => NextLevel();
     }
 
