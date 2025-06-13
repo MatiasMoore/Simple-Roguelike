@@ -1862,6 +1862,7 @@ MonoBehaviour:
   _transition: {fileID: 276149314}
   _player: {fileID: 615052862}
   _playerPed: {fileID: 19876439}
+  _upgradeManager: {fileID: 1820833987}
 --- !u!4 &1508753012
 Transform:
   m_ObjectHideFlags: 0
@@ -2196,6 +2197,57 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 958787346}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1820833986
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1820833988}
+  - component: {fileID: 1820833987}
+  m_Layer: 0
+  m_Name: UpgradeManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1820833987
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1820833986}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85a1b22d8d85f9e47a192935173a00d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _spawnCount: 3
+  _spawnMargin: 1.5
+  _wallMargin: 1.5
+  _randomUpgrades:
+  - {fileID: 3514025395331840364, guid: 0337ec9f116921442ae2f1bb39a5b098, type: 3}
+  _garanteedUpgrades:
+  - {fileID: 5833160879892407836, guid: f893cdeb24e586341ba0da18ebd2ebd9, type: 3}
+--- !u!4 &1820833988
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1820833986}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 28.578915, y: -42.58971, z: -0.24578916}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1854450417
 GameObject:
@@ -2532,6 +2584,7 @@ SceneRoots:
   m_Roots:
   - {fileID: 2041042451}
   - {fileID: 1508753012}
+  - {fileID: 1820833988}
   - {fileID: 2065996207}
   - {fileID: 835215436}
   - {fileID: 1454494151}
