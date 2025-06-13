@@ -13,7 +13,6 @@ public class DashUpgrade : AbstractUpgrade
 
     [SerializeField]
     private Stage _stage;
-
     [SerializeField]
     private float _dashSpeedMultiplier = 1.2f;
     [SerializeField]
@@ -21,7 +20,7 @@ public class DashUpgrade : AbstractUpgrade
     [SerializeField]
     private float _dashCooldownMultiplier = 0.9f;
     
-    public override void UpplyUpgrade(UpgradeData data)
+    public override bool UpplyUpgrade(UpgradeData data)
     {
         if (_stage == Stage.UpgradeDash)
         {
@@ -31,7 +30,8 @@ public class DashUpgrade : AbstractUpgrade
         {
             UpgradeDashStats(data);
         }
-        
+
+        return true;
     }
 
     private void UpgradeDash(UpgradeData data)

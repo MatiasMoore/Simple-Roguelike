@@ -16,7 +16,9 @@ public class UpgradeManager : MonoBehaviour
     private float _wallMargin = 0.5f;
 
     [SerializeField]
-    private List<GameObject> _upgrades;
+    private List<GameObject> _randomUpgrades;
+    [SerializeField]
+    private List<GameObject> _garanteedUpgrades;
 
     private List<GameObject> _spawnedUpgrades;
 
@@ -31,17 +33,27 @@ public class UpgradeManager : MonoBehaviour
         var coordinates = CalculateSpawnPositions(upperLeft, lowerRight, playerPosition);
         if (coordinates.Count < _spawnCount)
             return;
-
-        for (int i = 0; i < _spawnCount; i++)
+        int i;
+        for (i = 0; i < _garanteedUpgrades.Count && i < coordinates.Count; i++)
         {
-            var randomIndex = Random.Range(0, _upgrades.Count);
+             AddUpgradeOnScene(coordinates[i], _garanteedUpgrades[i].GetComponent<AbstractUpgrade>());
+        }
+
+        for (; i < _spawnCount && i < coordinates.Count; i++)
+        {
+            var randomIndex = Random.Range(0, _randomUpgrades.Count);
             Debug.Log("Spawning Index: " + randomIndex);
 
-            AbstractUpgrade prefabUpgrade = _upgrades[randomIndex].GetComponent<AbstractUpgrade>();
-            GameObject spawnedUpgrade = prefabUpgrade.SpawnUpgrade(coordinates[i]);
-            _spawnedUpgrades.Add(spawnedUpgrade);
-            spawnedUpgrade.GetComponent<AbstractUpgrade>().OnUpgradePickedUp += UpgradePickUp;
+            AddUpgradeOnScene(coordinates[i], _randomUpgrades[randomIndex].GetComponent<AbstractUpgrade>());
         }
+    }
+
+    private void AddUpgradeOnScene(Vector2 position, AbstractUpgrade upgradePrefab)
+    {
+        AbstractUpgrade prefabUpgrade = upgradePrefab.GetComponent<AbstractUpgrade>();
+        GameObject spawnedUpgrade = prefabUpgrade.SpawnUpgrade(position);
+        _spawnedUpgrades.Add(spawnedUpgrade);
+        spawnedUpgrade.GetComponent<AbstractUpgrade>().OnUpgradePickedUp += UpgradePickUp;
     }
 
     private List<Vector2> CalculateSpawnPositions(Vector2 upperLeft, Vector2 lowerRight, Vector2 playerPosition)

@@ -14,8 +14,10 @@ public abstract class AbstractUpgrade : MonoBehaviour
 
     [SerializeField]
     private GameObject _upgradePrefab;
+    [SerializeField]
+    private int _upgradeCost = 0;
 
-    public abstract void UpplyUpgrade(UpgradeData data);
+    public abstract bool UpplyUpgrade(UpgradeData data);
 
 
     public virtual GameObject SpawnUpgrade(Vector2 coordinates)
@@ -31,9 +33,19 @@ public abstract class AbstractUpgrade : MonoBehaviour
             {
                 Player = collision.gameObject
             };
-            UpplyUpgrade(data);
-            OnUpgradePickedUp?.Invoke(this);
-            Debug.Log("Upgrade picked up: " + gameObject.name);
+
+            CoinPickupCounter playerWallet = data.Player.GetComponent<CoinPickupCounter>();
+            if (playerWallet.Spend(_upgradeCost) == false)
+            {
+                Debug.Log("Not enough money to pick up upgrade: " + gameObject.name);
+                return;
+            }
+
+            if (UpplyUpgrade(data))
+            {
+                OnUpgradePickedUp?.Invoke(this);
+                Debug.Log("Upgrade picked up: " + gameObject.name);
+            }
         }
     }
 }

@@ -20,6 +20,16 @@ abstract public class PickupItemCounter : MonoBehaviour
 
     abstract public bool ShouldPickupItem(PickupItem item);
 
+    public bool Spend(int cost)
+    {
+        if (_counter >= cost)
+        {
+            SetCounterValue(_counter - cost);
+            return true;
+        }
+        return false;
+    }
+
     protected void SetCounterValue(int newValue)
     {
         _counter = newValue;
