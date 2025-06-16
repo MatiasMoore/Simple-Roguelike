@@ -2379,6 +2379,7 @@ MonoBehaviour:
   _wallMargin: 1.5
   _randomUpgrades:
   - {fileID: 3514025395331840364, guid: 0337ec9f116921442ae2f1bb39a5b098, type: 3}
+  - {fileID: 5833160879892407836, guid: 6fbbdf592fcd77a4087e8e60fa1f28dd, type: 3}
   _garanteedUpgrades:
   - {fileID: 5833160879892407836, guid: f893cdeb24e586341ba0da18ebd2ebd9, type: 3}
 --- !u!4 &1820833988

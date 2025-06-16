@@ -68,6 +68,11 @@ public class Pedestrian : MonoBehaviour, IDamagable
         return _hp;
     }
 
+    public float GetMaxHP()
+    {
+        return _maxHp;
+    }
+
     private void Die()
     {
         OnDeath?.Invoke();
