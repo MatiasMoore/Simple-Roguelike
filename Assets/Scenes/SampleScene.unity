@@ -183,8 +183,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 8773774483238907578, guid: 25453989806c7cd488f86d78925433b6, type: 3}
+      propertyPath: _weapons.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8773774483238907578, guid: 25453989806c7cd488f86d78925433b6, type: 3}
+      propertyPath: _weapons.Array.data[0]
+      value: 
+      objectReference: {fileID: 1857190277}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 2866306207984703017, guid: 25453989806c7cd488f86d78925433b6, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 25453989806c7cd488f86d78925433b6, type: 3}
@@ -2382,6 +2391,7 @@ MonoBehaviour:
   - {fileID: 5833160879892407836, guid: 6fbbdf592fcd77a4087e8e60fa1f28dd, type: 3}
   _garanteedUpgrades:
   - {fileID: 5833160879892407836, guid: f893cdeb24e586341ba0da18ebd2ebd9, type: 3}
+  - {fileID: 5833160879892407836, guid: b72352bcf772fcf48a09c352a3088266, type: 3}
 --- !u!4 &1820833988
 Transform:
   m_ObjectHideFlags: 0
@@ -2486,6 +2496,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1854450417}
   m_CullTransparentMesh: 1
+--- !u!114 &1857190277 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1971580669074844110, guid: 25453989806c7cd488f86d78925433b6, type: 3}
+  m_PrefabInstance: {fileID: 19876435}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebd7d481855fb4e4fbfd719b87629195, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1978087764
 GameObject:
   m_ObjectHideFlags: 0
