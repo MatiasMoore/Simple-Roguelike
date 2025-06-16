@@ -348,5 +348,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _upgradePrefab: {fileID: 5833160879892407836}
-  _upgradeCost: 1
+  _upgradeCost: 150
   _weaponPrefab: {fileID: 9215425247971391935, guid: ff1f763325bd5ca479337b2a67107029, type: 3}

@@ -16,7 +16,7 @@ MonoBehaviour:
   weaponDescription: Typical blue magical staff that shoots... fireballs?
   weaponIcon: {fileID: 21300000, guid: c107ad18630aa974898d3af222dddcbf, type: 3}
   weaponPrefab: {fileID: 9215425247971391935, guid: ff1f763325bd5ca479337b2a67107029, type: 3}
-  Damage: 18
+  Damage: 36
   FireRate: 0.2
   RealoadeTime: 0.7
   AmmoPerMagazine: 8
