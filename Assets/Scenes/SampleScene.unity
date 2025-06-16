@@ -183,6 +183,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 8135643786396415308, guid: 25453989806c7cd488f86d78925433b6, type: 3}
+      propertyPath: _accelerationTime
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8135643786396415308, guid: 25453989806c7cd488f86d78925433b6, type: 3}
+      propertyPath: _decelerationTime
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 8135643786396415308, guid: 25453989806c7cd488f86d78925433b6, type: 3}
+      propertyPath: _changeDirectionTime
+      value: 0.05
+      objectReference: {fileID: 0}
     - target: {fileID: 8773774483238907578, guid: 25453989806c7cd488f86d78925433b6, type: 3}
       propertyPath: _weapons.Array.size
       value: 1
@@ -2389,9 +2401,11 @@ MonoBehaviour:
   _randomUpgrades:
   - {fileID: 3514025395331840364, guid: 0337ec9f116921442ae2f1bb39a5b098, type: 3}
   - {fileID: 5833160879892407836, guid: 6fbbdf592fcd77a4087e8e60fa1f28dd, type: 3}
+  - {fileID: 5833160879892407836, guid: b72352bcf772fcf48a09c352a3088266, type: 3}
+  - {fileID: 5833160879892407836, guid: f74c7f9039cb15449bf3fd9ceceb3226, type: 3}
+  - {fileID: 5833160879892407836, guid: 54853091a89c37c4980996cca3ed98fe, type: 3}
   _garanteedUpgrades:
   - {fileID: 5833160879892407836, guid: f893cdeb24e586341ba0da18ebd2ebd9, type: 3}
-  - {fileID: 5833160879892407836, guid: b72352bcf772fcf48a09c352a3088266, type: 3}
 --- !u!4 &1820833988
 Transform:
   m_ObjectHideFlags: 0

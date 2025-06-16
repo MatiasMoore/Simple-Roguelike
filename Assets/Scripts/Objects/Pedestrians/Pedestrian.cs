@@ -51,13 +51,13 @@ public class Pedestrian : MonoBehaviour, IDamagable
         }
     }
 
-    public void SetHp(int hp)
+    public void SetHp(float hp)
     {
         _hp = hp;
         _healthBar.SetCurrentValue(_hp);
     }
 
-    public void SetMaxHp(int maxHp)
+    public void SetMaxHp(float maxHp)
     {
         _maxHp = maxHp;
         _healthBar.SetMaxValue(_maxHp);
