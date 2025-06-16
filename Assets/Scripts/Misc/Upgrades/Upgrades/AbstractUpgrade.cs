@@ -14,6 +14,9 @@ public abstract class AbstractUpgrade : MonoBehaviour
 
     [SerializeField]
     private GameObject _upgradePrefab;
+
+    public GameObject UpgradePrefab => _upgradePrefab;
+
     [SerializeField]
     private int _upgradeCost = 0;
 

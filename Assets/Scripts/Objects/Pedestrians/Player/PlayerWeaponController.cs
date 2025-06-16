@@ -24,6 +24,19 @@ public class PlayerWeaponController : MonoBehaviour
         inputSystem.ChoosePreviousWeapon += ChoosePreviousWeapon;
     }
 
+    public void AddNewWeapon(GameObject weeaponGameObject)
+    {
+        Weapon newWeapon = weeaponGameObject.GetComponent<Weapon>();
+
+        if (newWeapon == null)
+        {
+            Debug.LogError("Weapon prefab does not have a Weapon component!");
+            return;
+        }
+        _weapons.Add(newWeapon);
+        ChooseNextWeapon();
+     }
+
     public void SetActiveWeapon(Weapon weapon)
     {
         _currentWeapon = weapon;

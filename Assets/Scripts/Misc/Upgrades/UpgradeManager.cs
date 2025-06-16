@@ -39,13 +39,25 @@ public class UpgradeManager : MonoBehaviour
              AddUpgradeOnScene(coordinates[i], _garanteedUpgrades[i].GetComponent<AbstractUpgrade>());
         }
 
+        List<GameObject> upgrades = GetRandomisedUpgrades(_spawnCount - i, _randomUpgrades);
+
         for (; i < _spawnCount && i < coordinates.Count; i++)
         {
-            var randomIndex = Random.Range(0, _randomUpgrades.Count);
-            Debug.Log("Spawning Index: " + randomIndex);
-
-            AddUpgradeOnScene(coordinates[i], _randomUpgrades[randomIndex].GetComponent<AbstractUpgrade>());
+            AddUpgradeOnScene(coordinates[i], upgrades[i - _garanteedUpgrades.Count].GetComponent<AbstractUpgrade>());
         }
+    }
+
+    private List<GameObject> GetRandomisedUpgrades(int count, List<GameObject> upgradesList)
+    {
+        var randomisedUpgrades = new List<GameObject>();
+        var availableUpgrades = new List<GameObject>(upgradesList);
+        for (int i = 0; i < count && availableUpgrades.Count > 0; i++)
+        {
+            int randomIndex = Random.Range(0, availableUpgrades.Count);
+            randomisedUpgrades.Add(availableUpgrades[randomIndex]);
+            availableUpgrades.RemoveAt(randomIndex);
+        }
+        return randomisedUpgrades;
     }
 
     private void AddUpgradeOnScene(Vector2 position, AbstractUpgrade upgradePrefab)
@@ -97,6 +109,18 @@ public class UpgradeManager : MonoBehaviour
 
     private void UpgradePickUp(AbstractUpgrade upgrade)
     {
+        if (upgrade is NewWeaponUpgrade)
+        {
+            if (_randomUpgrades.Contains(upgrade.UpgradePrefab))
+            {
+                _randomUpgrades.Remove(upgrade.UpgradePrefab);
+            }
+
+            if (_garanteedUpgrades.Contains(upgrade.UpgradePrefab))
+            {
+                _garanteedUpgrades.Remove(upgrade.UpgradePrefab);
+            }
+        }
         foreach (var spawnedUpgrade in _spawnedUpgrades)
         {
             Destroy(spawnedUpgrade);
