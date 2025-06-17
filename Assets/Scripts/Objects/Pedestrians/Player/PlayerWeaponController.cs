@@ -8,6 +8,9 @@ public class PlayerWeaponController : MonoBehaviour
     [SerializeField]
     private List<Weapon> _weapons;
 
+    [SerializeField]
+    private Animator _hatAnimator;
+
     private Weapon _currentWeapon;
 
     public void Init(InputSystem inputSystem)
@@ -46,7 +49,14 @@ public class PlayerWeaponController : MonoBehaviour
     private void Update()
     {
         if (InputSystem.IsCursorPressed)
+        {
             Fire(InputSystem.CursorPosition);
+            _hatAnimator.SetBool("IsFiring", true);
+        }
+        else
+        {
+            _hatAnimator.SetBool("IsFiring", false);
+        }
         _currentWeapon.RotateWeaponToPoint(InputSystem.CursorPosition);
     }
 

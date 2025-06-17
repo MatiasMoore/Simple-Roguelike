@@ -10,6 +10,9 @@ public class PlayerMovementController : MonoBehaviour
     [SerializeField]
     private Animator _animator;
 
+    [SerializeField]
+    private Animator _hatAnimator;
+
     private ObjectMovement _objectMovement;
 
     public float _dashSpeed;
@@ -41,10 +44,13 @@ public class PlayerMovementController : MonoBehaviour
     {
         if (InputSystem.Instance != null)
         {
-            _animator.SetFloat(_moveSpeed, _objectMovement.GetCurrentSpeed() / _objectMovement.GetMaxSpeed());          
+            _animator.SetFloat(_moveSpeed, _objectMovement.GetCurrentSpeed() / _objectMovement.GetMaxSpeed());
+            _hatAnimator.SetFloat(_moveSpeed, _objectMovement.GetCurrentSpeed() / _objectMovement.GetMaxSpeed());
 
             _animator.SetFloat(_cursorX, InputSystem.CursorPosition.x - transform.position.x);
             _animator.SetFloat(_cursorY, InputSystem.CursorPosition.y - transform.position.y);
+            _hatAnimator.SetFloat(_cursorX, InputSystem.CursorPosition.x - transform.position.x);
+            _hatAnimator.SetFloat(_cursorY, InputSystem.CursorPosition.y - transform.position.y);
 
             _objectMovement.SetDirection(new Vector2(InputSystem.Movement.x, InputSystem.Movement.y));
             UpdateDebug();
